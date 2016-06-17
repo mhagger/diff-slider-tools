@@ -125,126 +125,136 @@ class Change(Group):
             raise RuntimeError('Empty Change!')
 
 
-def get_slide_range(pre_context, change, post_context):
-    """Return (shift_min, shift_limit), the limits of the allowed shift.
+class Slider:
+    def __init__(self, pre_context, change, post_context):
+        self.pre_context = pre_context
+        self.change = change
+        self.post_context = post_context
+        self.difflines = list(itertools.chain(pre_context, change, post_context))
 
-    I.e., the permitted shifts are range(shift_min, shift_limit)."""
+        (self.shift_min, self.shift_limit) = self._compute_slide_range()
 
-    if change.prefix == '?':
-        # Replacements cannot be slid:
-        return (0, 1)
+    def __getitem__(self, i):
+        """Return the line, counted from the first line of change."""
 
-    shift_min = 0
-    while (
-            -(shift_min - 1) <= len(pre_context)
-            and -(shift_min - 1) <= len(change)
-            and (pre_context.difflines[shift_min - 1].line
-                 == change.difflines[shift_min - 1].line)
-            ):
-        shift_min -= 1
+        if i < -len(self.pre_context):
+            raise KeyError(i)
 
-    shift_limit = 1
-    while (shift_limit < len(change)
-           and shift_limit < len(post_context)
-           and (change.difflines[shift_limit - 1].line
-                == post_context.difflines[shift_limit - 1].line)
-            ):
-        shift_limit += 1
+        return self.difflines[i + len(self.pre_context)]
 
-    return (shift_min, shift_limit)
+    def _compute_slide_range(self):
+        """Return (shift_min, shift_limit), the limits of the allowed shift.
 
+        I.e., the permitted shifts are range(shift_min, shift_limit)."""
 
-def slide(pre_context, change, post_context, shift):
-    if shift < 0:
-        sys.stderr.write('Sliding hunk up by %d\n' % (-shift,))
+        if self.change.prefix == '?':
+            # Replacements cannot be slid:
+            return (0, 1)
 
-        # Move lines from end of change to post-context:
-        difflines = change.difflines[shift:]
-        del change.difflines[shift:]
-        for diffline in difflines:
-            diffline.prefix = ' '
-        post_context.difflines[0:0] = difflines
+        shift_min = 0
+        while (
+                shift_min - 1 >= -len(self.pre_context)
+                and shift_min - 1 >= -len(self.change)
+                and (self[shift_min - 1].line
+                     == self[len(self.change) + shift_min - 1].line)
+                ):
+            shift_min -= 1
 
-        # Move lines from end of pre-context to change:
-        difflines = pre_context.difflines[shift:]
-        del pre_context.difflines[shift:]
-        for diffline in difflines:
-            diffline.prefix = change.prefix
-        change.difflines[0:0] = difflines
-        if change.prefix == '-':
-            change.deletes.difflines[0:0] = difflines
-        else:
-            change.adds.difflines[0:0] = difflines
-    elif shift > 0:
-        sys.stderr.write('Sliding hunk down by %d\n' % (shift,))
+        shift_limit = 1
+        while (shift_limit < len(self.change)
+               and shift_limit < len(self.post_context)
+               and (self[shift_limit - 1].line
+                    == self[len(self.change) + shift_limit - 1].line)
+                ):
+            shift_limit += 1
 
-        # Move lines from beginning of change to pre-context:
-        difflines = change.difflines[:shift]
-        del change.difflines[:shift]
-        for diffline in difflines:
-            diffline.prefix = ' '
-        pre_context.difflines.extend(difflines)
+        return (shift_min, shift_limit)
 
-        # Move lines from begining of post-context to change:
-        difflines = post_context.difflines[:shift]
-        del post_context.difflines[:shift]
-        for diffline in difflines:
-            diffline.prefix = change.prefix
-        change.difflines.extend(difflines)
-        if change.prefix == '-':
-            change.deletes.difflines.extend(difflines)
-        else:
-            change.adds.difflines.extend(difflines)
+    def slide(self, shift):
+        if shift < 0:
+            sys.stderr.write('Sliding hunk up by %d\n' % (-shift,))
 
+            # Move lines from end of change to post-context:
+            difflines = self.change.difflines[shift:]
+            del self.change.difflines[shift:]
+            for diffline in difflines:
+                diffline.prefix = ' '
+            self.post_context.difflines[0:0] = difflines
 
-def optimize_trio(pre_context, change, post_context):
-    best_shift = 0
-    best_score = pre_context.post_score
+            # Move lines from end of pre-context to change:
+            difflines = self.pre_context.difflines[shift:]
+            del self.pre_context.difflines[shift:]
+            for diffline in difflines:
+                diffline.prefix = self.change.prefix
+            self.change.difflines[0:0] = difflines
+            if self.change.prefix == '-':
+                self.change.deletes.difflines[0:0] = difflines
+            else:
+                self.change.adds.difflines[0:0] = difflines
+        elif shift > 0:
+            sys.stderr.write('Sliding hunk down by %d\n' % (shift,))
 
-    (shift_min, shift_limit) = get_slide_range(pre_context, change, post_context)
+            # Move lines from beginning of change to pre-context:
+            difflines = self.change.difflines[:shift]
+            del self.change.difflines[:shift]
+            for diffline in difflines:
+                diffline.prefix = ' '
+            self.pre_context.difflines.extend(difflines)
 
-    for shift in range(shift_min, 0):
-        score = pre_context.difflines[shift].pre_score
-        if score < best_score:
-            best_shift = shift
-            best_score = score
+            # Move lines from begining of post-context to change:
+            difflines = self.post_context.difflines[:shift]
+            del self.post_context.difflines[:shift]
+            for diffline in difflines:
+                diffline.prefix = self.change.prefix
+            self.change.difflines.extend(difflines)
+            if self.change.prefix == '-':
+                self.change.deletes.difflines.extend(difflines)
+            else:
+                self.change.adds.difflines.extend(difflines)
 
-    for shift in range(1, shift_limit):
-        score = change.difflines[shift].pre_score
-        if score <= best_score:
-            best_shift = shift
-            best_score = score
+    def optimize_trio(self):
+        best_shift = 0
+        best_score = self.pre_context.post_score
 
-    if best_shift:
-        slide(pre_context, change, post_context, best_shift)
+        for shift in range(self.shift_min, 0):
+            score = self.pre_context.difflines[shift].pre_score
+            if score < best_score:
+                best_shift = shift
+                best_score = score
 
+        for shift in range(1, self.shift_limit):
+            score = self.change.difflines[shift].pre_score
+            if score <= best_score:
+                best_shift = shift
+                best_score = score
 
-def show_sliders(pre_context, change, post_context, slider_context=5):
-    (shift_min, shift_limit) = get_slide_range(pre_context, change, post_context)
+        if best_shift:
+            slider.slide(best_shift)
 
-    if shift_limit == shift_min + 1:
-        return
+    def show_sliders(self, slider_context=5):
+        if self.shift_limit == self.shift_min + 1:
+            return
 
-    indexed_lines = enumerate(itertools.chain(pre_context, change, post_context),
-                              start=-len(pre_context))
+        indexed_lines = enumerate(itertools.chain(self.pre_context, self.change, self.post_context),
+                                  start=-len(self.pre_context))
 
-    for (i, diffline) in indexed_lines:
-        if not (shift_min - slider_context <= i < len(change) + shift_limit + slider_context):
-            continue
+        for (i, diffline) in indexed_lines:
+            if not (self.shift_min - slider_context <= i < len(self.change) + self.shift_limit + slider_context):
+                continue
 
-        if shift_min <= i < shift_min + len(change):
-            prefix = '|'
-        else:
-            prefix = ' '
+            if self.shift_min <= i < self.shift_min + len(self.change):
+                prefix = '|'
+            else:
+                prefix = ' '
 
-        if shift_limit - 1 <= i < shift_limit - 1 + len(change):
-            prefix += '|'
-        else:
-            prefix += ' '
+            if self.shift_limit - 1 <= i < self.shift_limit - 1 + len(self.change):
+                prefix += '|'
+            else:
+                prefix += ' '
 
-        print('%s  %s' % (prefix, diffline))
+            print('%s  %s' % (prefix, diffline))
 
-    print('=' * 60)
+        print('=' * 60)
 
 
 def iter_groups(difflines):
@@ -281,9 +291,9 @@ def iter_groups(difflines):
     yield Context(group, pre_score)
 
 
-def iter_trios(groups):
+def iter_sliders(groups):
     for i in range(0, len(groups) - 1, 2):
-        yield (groups[i], groups[i + 1], groups[i + 2])
+        yield Slider(groups[i], groups[i + 1], groups[i + 2])
 
 
 def process_hunk(lines):
@@ -293,12 +303,12 @@ def process_hunk(lines):
     groups = list(iter_groups(difflines))
 
     if True:
-        for (pre_context, change, post_context) in iter_trios(groups):
-            show_sliders(pre_context, change, post_context)
+        for slider in iter_sliders(groups):
+            slider.show_sliders()
 
     if False:
-        for (pre_context, change, post_context) in iter_trios(groups):
-            optimize_trio(pre_context, change, post_context)
+        for slider in iter_sliders(groups):
+            slider.optimize_trio()
 
     if False:
         for group in groups:
@@ -368,5 +378,3 @@ def main(args):
 
 if __name__ == '__main__':
     main(sys.argv[1:])
-
-
