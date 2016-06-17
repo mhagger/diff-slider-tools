@@ -142,6 +142,70 @@ class Slider:
 
         return self.difflines[i + len(self.pre_context)]
 
+    def get_score(self, shift):
+        """Return the score for using the specified shift."""
+
+        indent = get_indent(self[shift].line)
+        blank = (indent is None)
+
+        pre_indent = None
+        pre_blank = False
+        i = shift - 1
+        while i >= len(self.pre_context):
+            pre_indent = get_indent(self[i].line)
+            if pre_indent is not None:
+                break
+            pre_blank = True
+            i -= 1
+
+        if pre_indent is None:
+            pre_indent = 0
+
+        post_indent = None
+        i = shift + 1
+        while i < len(self.change) + len(self.post_context):
+            post_indent = get_indent(self[i].line)
+            if post_indent is not None:
+                break
+            i += 1
+
+        if post_indent is None:
+            post_indent = 0
+
+        if blank:
+            indent = post_indent
+
+        if pre_blank:
+            blank_bonus = -0.5
+        else:
+            blank_bonus = 0
+
+        if indent > pre_indent:
+            # The line is indented more than its predecessor. It is
+            # preferable to keep these lines together, so we score it
+            # based on the larger indent:
+            return indent + blank_bonus
+
+        elif indent < pre_indent:
+            # The line is indented less than its predecessor. It could
+            # be that this line is the start of a new block or it
+            # could be the end of the previous block.
+            if indent < post_indent:
+                # The following line is indented more. So it is likely
+                # that this line is the start of a block. It's a
+                # pretty good place to split, so score it based on the
+                # smaller indent:
+                return indent + blank_bonus
+            else:
+                # This was probably the end of a block. We score based
+                # on the following indent:
+                return post_indent + blank_bonus
+
+        else:
+            # The line has the same indentation level as its
+            # predecessor. We score it based on its own indent:
+            return indent + blank_bonus
+
     def _compute_slide_range(self):
         """Return (shift_min, shift_limit), the limits of the allowed shift.
 
@@ -212,47 +276,47 @@ class Slider:
             else:
                 self.change.adds.difflines.extend(difflines)
 
-    def optimize_trio(self):
+    def optimize(self):
         best_shift = 0
-        best_score = self.pre_context.post_score
+        best_score = None
 
-        for shift in range(self.shift_min, 0):
-            score = self.pre_context.difflines[shift].pre_score
-            if score < best_score:
-                best_shift = shift
-                best_score = score
-
-        for shift in range(1, self.shift_limit):
-            score = self.change.difflines[shift].pre_score
-            if score <= best_score:
+        for shift in range(self.shift_min, self.shift_limit):
+            score = self[shift].pre_score
+            if best_score is None or score < best_score:
                 best_shift = shift
                 best_score = score
 
         if best_shift:
-            slider.slide(best_shift)
+            self.slide(best_shift)
+
+    def prefix_for(self, shift, i, c='|'):
+        """Return c if the specified line number is in the shifted change.
+
+        Otherwise, return SP."""
+
+        if shift <= i < shift + len(self.change):
+            return c
+        else:
+            return ' '
+
+    def enumerate(self):
+        return enumerate(self.difflines, start=-len(self.pre_context))
 
     def show_sliders(self, slider_context=5):
         if self.shift_limit == self.shift_min + 1:
             return
 
-        indexed_lines = enumerate(itertools.chain(self.pre_context, self.change, self.post_context),
-                                  start=-len(self.pre_context))
-
-        for (i, diffline) in indexed_lines:
-            if not (self.shift_min - slider_context <= i < len(self.change) + self.shift_limit + slider_context):
+        for (i, diffline) in self.enumerate():
+            if not (self.shift_min - slider_context
+                    <= i
+                    < len(self.change) + self.shift_limit + slider_context
+                    ):
                 continue
 
-            if self.shift_min <= i < self.shift_min + len(self.change):
-                prefix = '|'
-            else:
-                prefix = ' '
-
-            if self.shift_limit - 1 <= i < self.shift_limit - 1 + len(self.change):
-                prefix += '|'
-            else:
-                prefix += ' '
-
-            print('%s  %s' % (prefix, diffline))
+            print('%s%s  %s' % (
+                self.prefix_for(self.shift_min, i),
+                self.prefix_for(self.shift_limit - 1, i),
+                diffline))
 
         print('=' * 60)
 
@@ -308,7 +372,7 @@ def process_hunk(lines):
 
     if False:
         for slider in iter_sliders(groups):
-            slider.optimize_trio()
+            slider.optimize()
 
     if False:
         for group in groups:
