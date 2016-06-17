@@ -126,30 +126,32 @@ class Change(Group):
 
 
 def get_slide_range(pre_context, change, post_context):
-    """Return (min_shift, max_shift), the min and max allowed shift."""
+    """Return (shift_min, shift_limit), the limits of the allowed shift.
+
+    I.e., the permitted shifts are range(shift_min, shift_limit)."""
 
     if change.prefix == '?':
         # Replacements cannot be slid:
-        return (0, 0)
+        return (0, 1)
 
-    min_shift = 0
+    shift_min = 0
     while (
-            -min_shift + 1 <= len(pre_context)
-            and -min_shift + 1 <= len(change)
-            and (pre_context.difflines[min_shift - 1].line
-                 == change.difflines[min_shift - 1].line)
+            -(shift_min - 1) <= len(pre_context)
+            and -(shift_min - 1) <= len(change)
+            and (pre_context.difflines[shift_min - 1].line
+                 == change.difflines[shift_min - 1].line)
             ):
-        min_shift -= 1
+        shift_min -= 1
 
-    max_shift = 0
-    while (max_shift + 1 < len(change)
-           and max_shift + 1 < len(post_context)
-           and (change.difflines[max_shift].line
-                == post_context.difflines[max_shift].line)
+    shift_limit = 1
+    while (shift_limit < len(change)
+           and shift_limit < len(post_context)
+           and (change.difflines[shift_limit - 1].line
+                == post_context.difflines[shift_limit - 1].line)
             ):
-        max_shift += 1
+        shift_limit += 1
 
-    return (min_shift, max_shift)
+    return (shift_min, shift_limit)
 
 
 def slide(pre_context, change, post_context, shift):
@@ -199,15 +201,15 @@ def optimize_trio(pre_context, change, post_context):
     best_shift = 0
     best_score = pre_context.post_score
 
-    (min_shift, max_shift) = get_slide_range(pre_context, change, post_context)
+    (shift_min, shift_limit) = get_slide_range(pre_context, change, post_context)
 
-    for shift in range(min_shift, 0):
+    for shift in range(shift_min, 0):
         score = pre_context.difflines[shift].pre_score
         if score < best_score:
             best_shift = shift
             best_score = score
 
-    for shift in range(1, max_shift + 1):
+    for shift in range(1, shift_limit):
         score = change.difflines[shift].pre_score
         if score <= best_score:
             best_shift = shift
@@ -218,23 +220,24 @@ def optimize_trio(pre_context, change, post_context):
 
 
 def show_sliders(pre_context, change, post_context, slider_context=5):
-    (min_shift, max_shift) = get_slide_range(pre_context, change, post_context)
-    if min_shift == max_shift:
+    (shift_min, shift_limit) = get_slide_range(pre_context, change, post_context)
+
+    if shift_limit == shift_min + 1:
         return
 
     indexed_lines = enumerate(itertools.chain(pre_context, change, post_context),
                               start=-len(pre_context))
 
     for (i, diffline) in indexed_lines:
-        if not (min_shift - slider_context <= i <= len(change) + max_shift + slider_context):
+        if not (shift_min - slider_context <= i < len(change) + shift_limit + slider_context):
             continue
 
-        if min_shift <= i < min_shift + len(change):
+        if shift_min <= i < shift_min + len(change):
             prefix = '|'
         else:
             prefix = ' '
 
-        if max_shift <= i < max_shift + len(change):
+        if shift_limit - 1 <= i < shift_limit - 1 + len(change):
             prefix += '|'
         else:
             prefix += ' '
