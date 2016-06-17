@@ -151,7 +151,7 @@ class Slider:
         pre_indent = None
         pre_blank = False
         i = shift - 1
-        while i >= len(self.pre_context):
+        while i >= -len(self.pre_context):
             pre_indent = get_indent(self[i].line)
             if pre_indent is not None:
                 break
@@ -276,16 +276,26 @@ class Slider:
             else:
                 self.change.adds.difflines.extend(difflines)
 
-    def optimize(self):
+        self.shift_min -= shift
+        self.shift_max -= shift
+
+    def find_best_shift(self):
         best_shift = 0
         best_score = None
 
         for shift in range(self.shift_min, self.shift_limit):
-            score = self[shift].pre_score
-            if best_score is None or score < best_score:
+            if True:
+                score = self.get_score(shift)
+            else:
+                score = self[shift].pre_score
+            if best_score is None or score <= best_score:
                 best_shift = shift
                 best_score = score
 
+        return best_shift
+
+    def optimize(self):
+        best_shift = self.find_best_shift()
         if best_shift:
             self.slide(best_shift)
 
@@ -306,6 +316,11 @@ class Slider:
         if self.shift_limit == self.shift_min + 1:
             return
 
+        best_shift = self.find_best_shift()
+
+        #if best_shift == 0:
+        #    return
+
         for (i, diffline) in self.enumerate():
             if not (self.shift_min - slider_context
                     <= i
@@ -313,9 +328,16 @@ class Slider:
                     ):
                 continue
 
-            print('%s%s  %s' % (
+            if self.shift_min <= i < self.shift_limit:
+                score = '%5.1f' % (self.get_score(i),)
+            else:
+                score = '     '
+
+            print('    %s%s %s %s  %s' % (
                 self.prefix_for(self.shift_min, i),
                 self.prefix_for(self.shift_limit - 1, i),
+                score,
+                self.prefix_for(best_shift, i, self.change.prefix),
                 diffline))
 
         print('=' * 60)
@@ -361,7 +383,7 @@ def iter_sliders(groups):
 
 
 def process_hunk(lines):
-    print('    Hunk start: %s' % (lines[0],))
+    #print('    Hunk start: %s' % (lines[0],))
     difflines = [DiffLine(line) for line in lines[1:]]
 
     groups = list(iter_groups(difflines))
