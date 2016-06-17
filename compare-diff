@@ -1,0 +1,8 @@
+#! /bin/bash
+
+c="${1:-HEAD}"
+shift
+
+diff "$@" \
+     <(git diff -U10 $c^..$c | ./improve-diff) \
+     <(git diff -U10 $c^..$c | ./improve-diff --optimize)
