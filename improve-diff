@@ -1,0 +1,303 @@
+#! /usr/bin/env python3
+
+import sys
+import itertools
+import functools
+
+
+def get_indent(line):
+    line = line.rstrip()
+    if not line:
+        return None
+
+    ret = 0
+    for c in line:
+        if c == ' ':
+            ret += 1
+        elif c == '\t':
+            ret += 8 - ret % 8
+        else:
+            break
+
+    return ret
+
+
+@functools.total_ordering
+class Score:
+    """A lower score is better."""
+
+    def __init__(self, indent, blank):
+        self.indent = indent
+        self.blank = blank
+
+    def __eq__(self, other):
+        return self.indent == other.indent and self.blank == other.blank
+
+    def __lt__(self, other):
+        return (self.indent, -int(self.blank)) < (other.indent, -int(other.blank))
+
+    def __str__(self):
+        if self.blank:
+            return '%d*' % (self.indent,)
+        else:
+            return '%d ' % (self.indent,)
+
+
+class DiffLine:
+    def __init__(self, line):
+        self.prefix = line[0]
+        self.line = line[1:]
+
+    def compute_score(self, pre_score):
+        self.pre_score = pre_score
+        if not self:
+            self.score = Score(pre_score.indent, True)
+        else:
+            self.score = Score(get_indent(self.line), False)
+
+    def __bool__(self):
+        return bool(self.line)
+
+    def __str__(self):
+        return self.prefix + self.line
+
+
+class Group:
+    def __init__(self, difflines, pre_score):
+        self.difflines = list(difflines)
+        self.pre_score = pre_score
+
+        score = pre_score
+        for diffline in self.difflines:
+            diffline.compute_score(score)
+            score = diffline.score
+        self.post_score = score
+
+    def __len__(self):
+        return len(self.difflines)
+
+    def __iter__(self):
+        return iter(self.difflines)
+
+
+class Context(Group):
+    pass
+
+
+class Change(Group):
+    def __init__(self, difflines, pre_score):
+        assert difflines
+        self.difflines = list(difflines)
+
+        self.pre_score = pre_score
+
+        self.deletes = Group([
+            diffline
+            for diffline in difflines
+            if diffline.prefix == '-'
+            ], pre_score)
+        self.adds = Group([
+            diffline
+            for diffline in difflines
+            if diffline.prefix == '+'
+            ], pre_score)
+
+        # Maybe min() would be better here?
+        self.post_score = max(self.deletes.post_score, self.adds.post_score)
+
+        self.prefix = self._compute_prefix()
+
+    def __len__(self):
+        return len(self.difflines)
+
+    def __iter__(self):
+        return iter(self.difflines)
+
+    def _compute_prefix(self):
+        if self.deletes and self.adds:
+            return '?'
+        elif self.deletes:
+            return '-'
+        elif self.adds:
+            return '+'
+        else:
+            raise RuntimeError('Empty Change!')
+
+
+def optimize_trio(pre_context, change, post_context):
+    if change.prefix == '?':
+        # Replacements cannot be optimized:
+        return (pre_context, change, post_context)
+
+    best_shift = 0
+    best_score = pre_context.post_indent
+
+    shift = -1
+    while -shift <= len(pre_context) \
+          and -shift <= len(change) \
+          and pre_context.difflines[shift].line == change.difflines[shift].line:
+        score = pre_context.difflines[shift].score
+        if score <= best_score:
+            best_shift = shift
+            best_score = score
+        shift -= 1
+
+    shift = 1
+    while shift < len(change) \
+          and shift < len(post_context) \
+          and change.difflines[shift].line == post_context.difflines[shift].line:
+        score = change.difflines[shift].score
+        if score < best_score:
+            best_shift = shift
+            best_score = score
+        shift += 1
+
+    if best_shift < 0:
+        # Move lines from end of change to post-context:
+        difflines = change.difflines[shift:]
+        del change.difflines[shift:]
+        for diffline in difflines:
+            diffline.prefix = ' '
+        post_context.difflines[0:0] = difflines
+
+        # Move lines from end of pre-context to change:
+        difflines = pre_context.difflines[shift:]
+        del pre_context.difflines[shift:]
+        for diffline in difflines:
+            diffline.prefix = change.prefix
+        change.difflines[0:0] = difflines
+        if change.prefix == '-':
+            change.deletes.difflines[0:0] = difflines
+        else:
+            change.adds.difflines[0:0] = difflines
+    elif best_shift > 0:
+        # Move lines from beginning of change to pre-context:
+        difflines = change.difflines[:shift]
+        del change.difflines[:shift]
+        for diffline in difflines:
+            diffline.prefix = ' '
+        pre_context.difflines.extend(difflines)
+
+        # Move lines from begining of post-context to change:
+        difflines = post_context.difflines[:shift]
+        del post_context.difflines[:shift]
+        for diffline in difflines:
+            diffline.prefix = change.prefix
+        change.difflines.extend(difflines)
+        if change.prefix == '-':
+            change.deletes.difflines.extend(difflines)
+        else:
+            change.adds.difflines.extend(difflines)
+
+
+def iter_groups(difflines):
+    """Split difflines into context, change, context, change, ..., context."""
+
+    processing_change = False
+    group = []
+    pre_score = Score(0, True)
+
+    for diffline in difflines:
+        if diffline.prefix == '\\':
+            continue
+        is_change_line = (diffline.prefix != ' ')
+        if is_change_line and not processing_change:
+            g = Context(group, pre_score)
+            yield g
+            pre_score = g.post_score
+            processing_change = not processing_change
+            group = []
+        elif not is_change_line and processing_change:
+            g = Change(group, pre_score)
+            yield g
+            pre_score = g.post_score
+            processing_change = not processing_change
+            group = []
+        group.append(diffline)
+
+    if processing_change:
+        g = Change(group, pre_score)
+        yield g
+        pre_score = g.post_score
+        group = []
+
+    yield Context(group, pre_score)
+
+
+def process_hunk(lines):
+    print('    Hunk start: %s' % (lines[0],))
+    difflines = [DiffLine(line) for line in lines[1:]]
+
+    groups = list(iter_groups(difflines))
+
+    if optimize:
+        for i in range(0, len(groups) - 1, 2):
+            optimize_trio(groups[i], groups[i + 1], groups[i + 2])
+
+    print('         %s' % ('-' * 60,))
+    for group in groups:
+        for diffline in group:
+            print('%6s  %s' % (diffline.pre_score, diffline,))
+        print('         %s' % ('-' * 60,))
+
+
+def process_file(lines):
+    i = 0
+    assert lines[i].startswith('diff ')
+    print('File start: %s' % (lines[i],))
+    i += 1
+
+    if lines[i].startswith('similarity '):
+        i += 1
+        while i < len(lines) and lines[i].startswith('rename '):
+            i += 1
+
+    if i < len(lines) and (
+            lines[i].startswith('new ')
+            or lines[i].startswith('deleted ')
+            ):
+        i += 1
+
+    if i < len(lines) and lines[i].startswith('index '):
+        i += 1
+        assert lines[i].startswith('--- ')
+        i += 1
+        assert lines[i].startswith('+++ ')
+        i += 1
+
+        while i < len(lines):
+            assert lines[i].startswith('@@ ')
+            start = i
+            i += 1
+            while i < len(lines) and not lines[i].startswith('@@ '):
+                i += 1
+            end = i
+
+            process_hunk(lines[start:end])
+
+        print()
+
+
+def process_diff(lines):
+    i = 0
+
+    while i < len(lines):
+        assert lines[i].startswith('diff ')
+        start = i
+        i += 1
+        while i < len(lines) and not lines[i].startswith('diff '):
+            i += 1
+        end = i
+
+        process_file(lines[start:end])
+
+
+def main(args):
+    global optimize
+    optimize = bool(args)
+    process_diff([line.rstrip('\n\r') for line in sys.stdin.readlines()])
+
+if __name__ == '__main__':
+    main(sys.argv[1:])
+
+
