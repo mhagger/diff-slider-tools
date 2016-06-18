@@ -1,0 +1,19 @@
+#! /bin/bash
+
+GIT_DIFF1="git -c diff.algorithm=myers diff -U10"
+GIT_DIFF2="bgit -c diff.algorithm=myers diff --compaction-heuristic -U10"
+
+git rev-list --no-merges HEAD |
+	while read c
+	do
+		echo $c
+		if ! diff -q \
+			<($GIT_DIFF1 $c^..$c </dev/null) \
+			<($GIT_DIFF2 $c^..$c </dev/null) \
+			2>/dev/null
+		then
+			diff -y -W282 \
+			     <($GIT_DIFF1 $c^..$c </dev/null) \
+			     <($GIT_DIFF2 $c^..$c </dev/null)
+		fi
+	done
