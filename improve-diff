@@ -115,39 +115,10 @@ def score_split(lines, index):
     return 10 * score - bonus
 
 
-@functools.total_ordering
-class Score:
-    """A lower score is better."""
-
-    def __init__(self, indent, blank):
-        assert indent is not None
-        self.indent = indent
-        self.blank = blank
-
-    def __eq__(self, other):
-        return self.indent == other.indent and self.blank == other.blank
-
-    def __lt__(self, other):
-        return (self.indent, -int(self.blank)) < (other.indent, -int(other.blank))
-
-    def __str__(self):
-        if self.blank:
-            return '%d*' % (self.indent,)
-        else:
-            return '%d ' % (self.indent,)
-
-
 class DiffLine:
     def __init__(self, line):
         self.prefix = line[0]
         self.line = line[1:]
-
-    def compute_score(self, pre_score):
-        self.pre_score = pre_score
-        if not self:
-            self.score = Score(pre_score.indent, True)
-        else:
-            self.score = Score(get_indent(self.line), False)
 
     def __bool__(self):
         return bool(self.line.rstrip())
@@ -157,15 +128,8 @@ class DiffLine:
 
 
 class Group:
-    def __init__(self, difflines, pre_score):
+    def __init__(self, difflines):
         self.difflines = list(difflines)
-        self.pre_score = pre_score
-
-        score = pre_score
-        for diffline in self.difflines:
-            diffline.compute_score(score)
-            score = diffline.score
-        self.post_score = score
 
     def __len__(self):
         return len(self.difflines)
@@ -179,24 +143,20 @@ class Context(Group):
 
 
 class Change(Group):
-    def __init__(self, difflines, pre_score):
+    def __init__(self, difflines):
         assert difflines
         self.difflines = list(difflines)
 
-        self.pre_score = pre_score
         self.deletes = Group([
             diffline
             for diffline in difflines
             if diffline.prefix == '-'
-            ], pre_score)
+            ])
         self.adds = Group([
             diffline
             for diffline in difflines
             if diffline.prefix == '+'
-            ], pre_score)
-
-        # Maybe min() would be better here?
-        self.post_score = max(self.deletes.post_score, self.adds.post_score)
+            ])
 
         self.prefix = self._compute_prefix()
 
@@ -328,10 +288,7 @@ class Slider:
         best_score = None
 
         for shift in range(self.shift_min, self.shift_limit):
-            if True:
-                score = self.get_score(shift)
-            else:
-                score = self[shift].pre_score
+            score = self.get_score(shift)
             if best_score is None or score <= best_score:
                 best_shift = shift
                 best_score = score
@@ -394,33 +351,29 @@ def iter_groups(difflines):
 
     processing_change = False
     group = []
-    pre_score = Score(0, True)
 
     for diffline in difflines:
         if diffline.prefix == '\\':
             continue
         is_change_line = (diffline.prefix != ' ')
         if is_change_line and not processing_change:
-            g = Context(group, pre_score)
+            g = Context(group)
             yield g
-            pre_score = g.post_score
             processing_change = True
             group = []
         elif not is_change_line and processing_change:
-            g = Change(group, pre_score)
+            g = Change(group)
             yield g
-            pre_score = g.post_score
             processing_change = False
             group = []
         group.append(diffline)
 
     if processing_change:
-        g = Change(group, pre_score)
+        g = Change(group)
         yield g
-        pre_score = g.post_score
         group = []
 
-    yield Context(group, pre_score)
+    yield Context(group)
 
 
 def iter_sliders(groups):
@@ -444,11 +397,6 @@ def process_hunk(lines):
     if False:
         for slider in iter_sliders(groups):
             slider.optimize()
-
-    if False:
-        for group in groups:
-            for diffline in group:
-                print('%6s  %s' % (diffline.pre_score, diffline,))
 
 
 def process_file(lines):
