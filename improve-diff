@@ -23,6 +23,98 @@ def get_indent(line):
     return ret
 
 
+def score_split(lines, index):
+    """Return the badness of splitting lines before lines[index].
+
+    The lower the score, the more preferable the split."""
+
+    try:
+        line = lines[index]
+        indent = get_indent(line)
+    except IndexError:
+        indent = None
+
+    blank = (indent is None)
+
+    pre_indent = None
+    pre_blank = False
+    i = index - 1
+    while i >= 0:
+        pre_indent = get_indent(lines[i])
+        if pre_indent is not None:
+            break
+        pre_blank = True
+        i -= 1
+
+    post_indent = None
+    post_blank = None
+    i = index + 1
+    while i < len(lines):
+        post_indent = get_indent(lines[i])
+        if post_indent is not None:
+            break
+        post_blank = True
+        i += 1
+
+    # A place to accumulate bonus factors (positive makes this
+    # index more favored):
+    bonus = 0
+
+    # Bonuses based on the location of blank lines:
+    if pre_blank and not blank:
+        bonus += 3
+    elif blank and not pre_blank:
+        bonus += 2
+    elif blank and pre_blank:
+        bonus += 1
+
+    # Now fill in missing indent values:
+    if pre_indent is None:
+        pre_indent = 0
+
+    if post_indent is None:
+        post_indent = 0
+
+    if blank:
+        indent = post_indent
+
+    if indent > pre_indent:
+        # The line is indented more than its predecessor. It is
+        # preferable to keep these lines together, so we score it
+        # based on the larger indent:
+        score = indent
+        bonus -= 4
+
+    elif indent < pre_indent:
+        # The line is indented less than its predecessor. It could
+        # be that this line is the start of a new block (e.g., of
+        # an "else" block, or of a block without a block
+        # terminator) or it could be the end of the previous
+        # block.
+        if indent < post_indent:
+            # The following line is indented more. So it is likely
+            # that this line is the start of a block. It's a
+            # pretty good place to split, so score it based on the
+            # smaller indent:
+            score = indent
+            bonus += 2
+        else:
+            # This was probably the end of a block. We score based
+            # on the line's own indent:
+            score = indent
+
+    else:
+        # The line has the same indentation level as its
+        # predecessor. We score it based on its own indent:
+        score = indent
+        # ...but if it's not blank, give it a small bonus because
+        # this is more likely to span a balanced block:
+        #if not blank:
+        #    bonus += 1
+
+    return 10 * score - bonus
+
+
 @functools.total_ordering
 class Score:
     """A lower score is better."""
@@ -133,6 +225,7 @@ class Slider:
         self.difflines = list(itertools.chain(pre_context, change, post_context))
 
         (self.shift_min, self.shift_limit) = self._compute_slide_range()
+        self.lines = [diffline.line for diffline in self.difflines]
 
     def __getitem__(self, i):
         """Return the line, counted from the first line of change."""
@@ -147,78 +240,7 @@ class Slider:
 
         The lower the score, the more preferable the shift."""
 
-        # A place to accumulate bonus factors (positive makes this
-        # shift more favored):
-        bonus = 0
-
-        indent = get_indent(self[shift].line)
-        blank = (indent is None)
-
-        pre_indent = None
-        pre_blank = False
-        i = shift - 1
-        while i >= -len(self.pre_context):
-            pre_indent = get_indent(self[i].line)
-            if pre_indent is not None:
-                break
-            pre_blank = True
-            i -= 1
-
-        if pre_blank:
-            bonus += 2
-        elif pre_indent is None:
-            pre_indent = 0
-            # This is likely the beginning of the file:
-            bonus += 2
-
-        post_indent = None
-        post_blank = None
-        i = shift + 1
-        while i < len(self.change) + len(self.post_context):
-            post_indent = get_indent(self[i].line)
-            if post_indent is not None:
-                break
-            post_blank = True
-            i += 1
-
-        if post_indent is None:
-            post_indent = 0
-
-        if blank:
-            indent = post_indent
-            bonus += 1
-
-        if indent > pre_indent:
-            # The line is indented more than its predecessor. It is
-            # preferable to keep these lines together, so we score it
-            # based on the larger indent:
-            score = indent
-
-        elif indent < pre_indent:
-            # The line is indented less than its predecessor. It could
-            # be that this line is the start of a new block or it
-            # could be the end of the previous block.
-            if indent < post_indent:
-                # The following line is indented more. So it is likely
-                # that this line is the start of a block. It's a
-                # pretty good place to split, so score it based on the
-                # smaller indent:
-                score = indent
-            else:
-                # This was probably the end of a block. We score based
-                # on the following indent:
-                score = post_indent
-
-        else:
-            # The line has the same indentation level as its
-            # predecessor. We score it based on its own indent:
-            score = indent
-            # ...but if it's not blank, give it a small bonus because
-            # this is more likely to span a balanced block:
-            if not blank:
-                bonus += 1
-
-        return 10 * score - bonus
+        return score_split(self.lines, shift + len(self.pre_context))
 
     def get_score(self, shift):
         score = self.get_score_for_line(shift)
@@ -403,7 +425,10 @@ def iter_groups(difflines):
 
 def iter_sliders(groups):
     for i in range(0, len(groups) - 1, 2):
-        yield Slider(groups[i], groups[i + 1], groups[i + 2])
+        pre_context = groups[i]
+        change = groups[i + 1]
+        post_context = groups[i + 2]
+        yield Slider(pre_context, change, post_context)
 
 
 def process_hunk(lines):
@@ -483,6 +508,15 @@ def main(args):
     optimize = bool(args)
     input = io.TextIOWrapper(sys.stdin.buffer, encoding='utf-8', errors='replace')
     process_diff([line.rstrip('\n\r') for line in input.readlines()])
+
+
+def main2(args):
+    input = io.TextIOWrapper(sys.stdin.buffer, encoding='utf-8', errors='replace')
+    lines = [line.rstrip('\n\r') for line in input.readlines()]
+    for (i, line) in enumerate(lines):
+        print('%5d|%s' % (score_split(lines, i), line))
+    print('%5d' % (score_split(lines, len(lines))))
+
 
 if __name__ == '__main__':
     main(sys.argv[1:])
