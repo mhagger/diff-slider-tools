@@ -3,6 +3,7 @@
 import sys
 import itertools
 import functools
+import re
 
 
 def get_indent(line):
@@ -376,7 +377,9 @@ def iter_groups(difflines):
 
 
 class Hunk:
-    def __init__(self, lines):
+    def __init__(self, old_filename, new_filename, lines):
+        self.old_filename = old_filename
+        self.new_filename = new_filename
         self.difflines = [DiffLine(line) for line in lines[1:]]
         self.groups = list(iter_groups(self.difflines))
 
@@ -397,6 +400,15 @@ class Hunk:
 
 
 class FileDiff:
+    OLD_FILE_RE = re.compile(r'^\-\-\- (/dev/null|a/(?P<filename>.*))$')
+    NEW_FILE_RE = re.compile(r'^\+\+\+ (/dev/null|b/(?P<filename>.*))$')
+
+    @staticmethod
+    def get_filename(file_re, line):
+        m = file_re.match(line)
+        assert m
+        return m.group('filename')
+
     def __init__(self, lines):
         i = 0
         assert lines[i].startswith('diff ')
@@ -421,9 +433,10 @@ class FileDiff:
             if i < len(lines) and lines[i].startswith('Binary files '):
                 i += 1
             else:
-                assert lines[i].startswith('--- ')
+                old_filename = self.get_filename(FileDiff.OLD_FILE_RE, lines[i])
                 i += 1
-                assert lines[i].startswith('+++ ')
+
+                new_filename = self.get_filename(FileDiff.NEW_FILE_RE, lines[i])
                 i += 1
 
                 while i < len(lines):
@@ -434,7 +447,9 @@ class FileDiff:
                         i += 1
                     end = i
 
-                    self.hunks.append(Hunk(lines[start:end]))
+                    self.hunks.append(
+                        Hunk(old_filename, new_filename, lines[start:end])
+                        )
 
     def show_sliders(self):
         for hunk in self.hunks:
