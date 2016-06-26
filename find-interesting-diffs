@@ -1,7 +1,7 @@
 #! /bin/sh
 
-#GIT_DIFF="git -c diff.algorithm=myers diff -U10"
-GIT_DIFF="bgit -c diff.algorithm=myers diff --compaction-heuristic -U10"
+GIT_DIFF="git -c diff.algorithm=myers diff -U10"
+#GIT_DIFF="bgit -c diff.algorithm=myers diff --compaction-heuristic -U10"
 
 git rev-list --no-merges HEAD |
 	while read c
