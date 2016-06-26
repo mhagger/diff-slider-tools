@@ -424,9 +424,35 @@ class Hunk:
 
     def iter_sliders(self):
         for i in range(1, len(self.groups) - 1, 2):
-            pre_context = self.groups[i - 1]
             change = self.groups[i]
-            post_context = self.groups[i + 1]
+            if change.prefix == '-':
+                pre_lines = functools.reduce(
+                    list.__add__,
+                    [group.old_lines() for group in self.groups[:i]],
+                    []
+                    )
+                post_lines = functools.reduce(
+                    list.__add__,
+                    [group.old_lines() for group in self.groups[i + 1:]],
+                    []
+                    )
+            elif change.prefix == '+':
+                pre_lines = functools.reduce(
+                    list.__add__,
+                    [group.new_lines() for group in self.groups[:i]],
+                    []
+                    )
+                post_lines = functools.reduce(
+                    list.__add__,
+                    [group.new_lines() for group in self.groups[i + 1:]],
+                    []
+                    )
+            else:
+                # Mixed deletion/additions cannot be sliders:
+                continue
+
+            pre_context = Context(pre_lines)
+            post_context = Context(post_lines)
             yield Slider(pre_context, change, post_context)
 
     def show_sliders(self):
