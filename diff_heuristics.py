@@ -358,36 +358,6 @@ class Slider:
         print('^' * 60)
 
 
-def iter_groups(difflines):
-    """Split difflines into context, change, context, change, ..., context."""
-
-    processing_change = False
-    group = []
-
-    for diffline in difflines:
-        if diffline.prefix == '\\':
-            continue
-        is_change_line = (diffline.prefix != ' ')
-        if is_change_line and not processing_change:
-            g = Context(group)
-            yield g
-            processing_change = True
-            group = []
-        elif not is_change_line and processing_change:
-            g = Change(group)
-            yield g
-            processing_change = False
-            group = []
-        group.append(diffline)
-
-    if processing_change:
-        g = Change(group)
-        yield g
-        group = []
-
-    yield Context(group)
-
-
 class Hunk:
     HEADER_RE = re.compile(
         r'''
@@ -401,6 +371,36 @@ class Hunk:
         \@\@
         ''',
         re.VERBOSE)
+
+    @staticmethod
+    def iter_groups(difflines):
+        """Split difflines into context, change, context, change, ..., context."""
+
+        processing_change = False
+        group = []
+
+        for diffline in difflines:
+            if diffline.prefix == '\\':
+                continue
+            is_change_line = (diffline.prefix != ' ')
+            if is_change_line and not processing_change:
+                g = Context(group)
+                yield g
+                processing_change = True
+                group = []
+            elif not is_change_line and processing_change:
+                g = Change(group)
+                yield g
+                processing_change = False
+                group = []
+            group.append(diffline)
+
+        if processing_change:
+            g = Change(group)
+            yield g
+            group = []
+
+        yield Context(group)
 
     def __init__(self, old_filename, new_filename, lines):
         self.old_filename = old_filename
@@ -420,13 +420,13 @@ class Hunk:
         else:
             self.new_len = int(m.group('new_len'))
         self.difflines = [DiffLine(line) for line in lines[1:]]
-        self.groups = list(iter_groups(self.difflines))
+        self.groups = list(self.iter_groups(self.difflines))
 
     def iter_sliders(self):
-        for i in range(0, len(self.groups) - 1, 2):
-            pre_context = self.groups[i]
-            change = self.groups[i + 1]
-            post_context = self.groups[i + 2]
+        for i in range(1, len(self.groups) - 1, 2):
+            pre_context = self.groups[i - 1]
+            change = self.groups[i]
+            post_context = self.groups[i + 1]
             yield Slider(pre_context, change, post_context)
 
     def show_sliders(self):
@@ -508,5 +508,3 @@ def process_diff(lines):
 
         file_diff = FileDiff(lines[start:end])
         file_diff.show_sliders()
-
-
