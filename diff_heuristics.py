@@ -137,6 +137,12 @@ class Group:
     def __iter__(self):
         return iter(self.difflines)
 
+    def old_lines(self):
+        return list(self.difflines)
+
+    def new_lines(self):
+        return list(self.difflines)
+
 
 class Context(Group):
     pass
@@ -165,6 +171,12 @@ class Change(Group):
 
     def __iter__(self):
         return iter(self.difflines)
+
+    def old_lines(self):
+        return list(self.deletes)
+
+    def new_lines(self):
+        return list(self.adds)
 
     def _compute_prefix(self):
         if self.deletes and self.adds:
