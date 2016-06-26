@@ -375,30 +375,28 @@ def iter_groups(difflines):
     yield Context(group)
 
 
-def iter_sliders(groups):
-    for i in range(0, len(groups) - 1, 2):
-        pre_context = groups[i]
-        change = groups[i + 1]
-        post_context = groups[i + 2]
-        yield Slider(pre_context, change, post_context)
+class Hunk:
+    def __init__(self, lines):
+        self.difflines = [DiffLine(line) for line in lines[1:]]
+        self.groups = list(iter_groups(self.difflines))
 
+    def iter_sliders(self):
+        for i in range(0, len(self.groups) - 1, 2):
+            pre_context = self.groups[i]
+            change = self.groups[i + 1]
+            post_context = self.groups[i + 2]
+            yield Slider(pre_context, change, post_context)
 
-def process_hunk(lines):
-    #print('    Hunk start: %s' % (lines[0],))
-    difflines = [DiffLine(line) for line in lines[1:]]
-
-    groups = list(iter_groups(difflines))
-
-    if True:
-        for slider in iter_sliders(groups):
+    def show_sliders(self):
+        for slider in self.iter_sliders():
             slider.show_sliders()
 
-    if False:
-        for slider in iter_sliders(groups):
+    def optimize(self):
+        for slider in self.iter_sliders():
             slider.optimize()
 
 
-def process_file(lines):
+def process_file_diff(lines):
     i = 0
     assert lines[i].startswith('diff ')
     print('File start: %s' % (lines[i],))
@@ -433,7 +431,8 @@ def process_file(lines):
                     i += 1
                 end = i
 
-                process_hunk(lines[start:end])
+                hunk = Hunk(lines[start:end])
+                hunk.show_sliders()
 
 
 def process_diff(lines):
@@ -447,6 +446,6 @@ def process_diff(lines):
             i += 1
         end = i
 
-        process_file(lines[start:end])
+        process_file_diff(lines[start:end])
 
 
