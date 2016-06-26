@@ -1,0 +1,28 @@
+#! /usr/bin/env python3
+
+import sys
+import os
+import io
+
+sys.path.insert(0, os.path.dirname(sys.argv[0]))
+
+import diff_heuristics
+
+from diff_heuristics import iter_file_diffs
+
+
+def main(args):
+    diff_heuristics.optimize = bool(args)
+    input = io.TextIOWrapper(sys.stdin.buffer, encoding='utf-8', errors='replace')
+
+    lines = [line.rstrip('\n\r') for line in input.readlines()]
+
+    for file_diff in iter_file_diffs(lines):
+        for hunk in file_diff.hunks:
+            for line in hunk.new_lines():
+                #print('line is %r\n' % (line,))
+                print(line)
+
+
+if __name__ == '__main__':
+    main(sys.argv[1:])

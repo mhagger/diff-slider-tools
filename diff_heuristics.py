@@ -437,6 +437,16 @@ class Hunk:
         for slider in self.iter_sliders():
             slider.optimize()
 
+    def old_lines(self):
+        for group in self.groups:
+            for line in group.old_lines():
+                yield line
+
+    def new_lines(self):
+        for group in self.groups:
+            for line in group.new_lines():
+                yield line
+
 
 class FileDiff:
     OLD_FILE_RE = re.compile(r'^\-\-\- (/dev/null|a/(?P<filename>.*))$')
