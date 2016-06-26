@@ -509,8 +509,3 @@ def iter_file_diffs(lines):
         yield FileDiff(lines[start:end])
 
 
-def process_diff(lines):
-    for file_diff in iter_file_diffs(lines):
-        file_diff.show_sliders()
-
-
