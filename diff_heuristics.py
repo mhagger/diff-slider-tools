@@ -396,43 +396,49 @@ class Hunk:
             slider.optimize()
 
 
-def process_file_diff(lines):
-    i = 0
-    assert lines[i].startswith('diff ')
-    print('File start: %s' % (lines[i],))
-    i += 1
-
-    if lines[i].startswith('similarity '):
-        i += 1
-        while i < len(lines) and lines[i].startswith('rename '):
-            i += 1
-
-    if i < len(lines) and (
-            lines[i].startswith('new ')
-            or lines[i].startswith('deleted ')
-            ):
+class FileDiff:
+    def __init__(self, lines):
+        i = 0
+        assert lines[i].startswith('diff ')
+        print('File start: %s' % (lines[i],))
         i += 1
 
-    if i < len(lines) and lines[i].startswith('index '):
-        i += 1
-        if i < len(lines) and lines[i].startswith('Binary files '):
+        if lines[i].startswith('similarity '):
             i += 1
-        else:
-            assert lines[i].startswith('--- ')
-            i += 1
-            assert lines[i].startswith('+++ ')
-            i += 1
-
-            while i < len(lines):
-                assert lines[i].startswith('@@ ')
-                start = i
+            while i < len(lines) and lines[i].startswith('rename '):
                 i += 1
-                while i < len(lines) and not lines[i].startswith('@@ '):
-                    i += 1
-                end = i
 
-                hunk = Hunk(lines[start:end])
-                hunk.show_sliders()
+        if i < len(lines) and (
+                lines[i].startswith('new ')
+                or lines[i].startswith('deleted ')
+                ):
+            i += 1
+
+        self.hunks = []
+
+        if i < len(lines) and lines[i].startswith('index '):
+            i += 1
+            if i < len(lines) and lines[i].startswith('Binary files '):
+                i += 1
+            else:
+                assert lines[i].startswith('--- ')
+                i += 1
+                assert lines[i].startswith('+++ ')
+                i += 1
+
+                while i < len(lines):
+                    assert lines[i].startswith('@@ ')
+                    start = i
+                    i += 1
+                    while i < len(lines) and not lines[i].startswith('@@ '):
+                        i += 1
+                    end = i
+
+                    self.hunks.append(Hunk(lines[start:end]))
+
+    def show_sliders(self):
+        for hunk in self.hunks:
+            hunk.show_sliders()
 
 
 def process_diff(lines):
@@ -446,6 +452,7 @@ def process_diff(lines):
             i += 1
         end = i
 
-        process_file_diff(lines[start:end])
+        file_diff = FileDiff(lines[start:end])
+        file_diff.show_sliders()
 
 
