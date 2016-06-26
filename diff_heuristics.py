@@ -495,7 +495,7 @@ class FileDiff:
             hunk.show_sliders()
 
 
-def process_diff(lines):
+def iter_file_diffs(lines):
     i = 0
 
     while i < len(lines):
@@ -506,5 +506,11 @@ def process_diff(lines):
             i += 1
         end = i
 
-        file_diff = FileDiff(lines[start:end])
+        yield FileDiff(lines[start:end])
+
+
+def process_diff(lines):
+    for file_diff in iter_file_diffs(lines):
         file_diff.show_sliders()
+
+
