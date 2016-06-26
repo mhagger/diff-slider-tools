@@ -8,13 +8,15 @@ sys.path.insert(0, os.path.dirname(sys.argv[0]))
 
 import diff_heuristics
 
-from diff_heuristics import process_diff
+from diff_heuristics import score_split
 
 
 def main(args):
-    diff_heuristics.optimize = bool(args)
     input = io.TextIOWrapper(sys.stdin.buffer, encoding='utf-8', errors='replace')
-    process_diff([line.rstrip('\n\r') for line in input.readlines()])
+    lines = [line.rstrip('\n\r') for line in input.readlines()]
+    for (i, line) in enumerate(lines):
+        print('%5d|%s' % (score_split(lines, i), line))
+    print('%5d' % (score_split(lines, len(lines))))
 
 
 if __name__ == '__main__':
