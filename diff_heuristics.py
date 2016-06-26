@@ -377,9 +377,36 @@ def iter_groups(difflines):
 
 
 class Hunk:
+    HEADER_RE = re.compile(
+        r'''
+        ^
+        \@\@
+        \s
+        \-(?P<old_line>\d+)(\,(?P<old_len>\d+))?
+        \s
+        \+(?P<new_line>\d+)(\,(?P<new_len>\d+))?
+        \s
+        \@\@
+        ''',
+        re.VERBOSE)
+
     def __init__(self, old_filename, new_filename, lines):
         self.old_filename = old_filename
         self.new_filename = new_filename
+        m = self.HEADER_RE.match(lines[0])
+        if not m:
+            sys.stderr.write('Error parsing %r\n' % (lines[0],))
+        assert m
+        self.old_line = int(m.group('old_line'))
+        if m.group('old_len') is None:
+            self.old_len = None
+        else:
+            self.old_len = int(m.group('old_len'))
+        self.new_line = int(m.group('new_line'))
+        if m.group('new_len') is None:
+            self.new_len = None
+        else:
+            self.new_len = int(m.group('new_len'))
         self.difflines = [DiffLine(line) for line in lines[1:]]
         self.groups = list(iter_groups(self.difflines))
 
