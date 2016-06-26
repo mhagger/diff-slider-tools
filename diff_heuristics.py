@@ -190,11 +190,14 @@ class Change(Group):
 
 
 class Slider:
-    def __init__(self, pre_context, change, post_context):
+    def __init__(self, pre_context, change, post_context, line_number):
         self.pre_context = pre_context
         self.change = change
         self.post_context = post_context
         self.difflines = list(itertools.chain(pre_context, change, post_context))
+
+        # The line number of the first line of the change:
+        self.line_number = line_number
 
         (self.shift_min, self.shift_limit) = self._compute_slide_range()
         self.lines = [diffline.line for diffline in self.difflines]
@@ -294,6 +297,7 @@ class Slider:
 
         self.shift_min -= shift
         self.shift_max -= shift
+        self.line_number -= shift
 
     def find_best_shift(self):
         best_shift = 0
@@ -436,6 +440,7 @@ class Hunk:
                     [group.old_lines() for group in self.groups[i + 1:]],
                     []
                     )
+                line_number = self.old_line + len(pre_lines)
             elif change.prefix == '+':
                 pre_lines = functools.reduce(
                     list.__add__,
@@ -447,13 +452,14 @@ class Hunk:
                     [group.new_lines() for group in self.groups[i + 1:]],
                     []
                     )
+                line_number = self.new_line + len(pre_lines)
             else:
                 # Mixed deletion/additions cannot be sliders:
                 continue
 
             pre_context = Context(pre_lines)
             post_context = Context(post_lines)
-            yield Slider(pre_context, change, post_context)
+            yield Slider(pre_context, change, post_context, line_number)
 
     def show_sliders(self):
         for slider in self.iter_sliders():
