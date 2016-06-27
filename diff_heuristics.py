@@ -433,32 +433,26 @@ class Hunk:
         for i in range(1, len(self.groups) - 1, 2):
             change = self.groups[i]
             if change.prefix == '-':
-                pre_lines = functools.reduce(
-                    list.__iadd__,
-                    [group.old_lines() for group in self.groups[:i]],
-                    []
-                    )
-                post_lines = functools.reduce(
-                    list.__iadd__,
-                    [group.old_lines() for group in self.groups[i + 1:]],
-                    []
-                    )
-                line_number = self.old_line + len(pre_lines)
+                selector = lambda group: group.old_lines()
+                reference_line = self.old_line
             elif change.prefix == '+':
-                pre_lines = functools.reduce(
-                    list.__iadd__,
-                    [group.new_lines() for group in self.groups[:i]],
-                    []
-                    )
-                post_lines = functools.reduce(
-                    list.__iadd__,
-                    [group.new_lines() for group in self.groups[i + 1:]],
-                    []
-                    )
-                line_number = self.new_line + len(pre_lines)
+                selector = lambda group: group.new_lines()
+                reference_line = self.new_line
             else:
                 # Mixed deletion/additions cannot be sliders:
                 continue
+
+            pre_lines = functools.reduce(
+                list.__iadd__,
+                [selector(group) for group in self.groups[:i]],
+                []
+                )
+            post_lines = functools.reduce(
+                list.__iadd__,
+                [selector(group) for group in self.groups[i + 1:]],
+                []
+                )
+            line_number = reference_line + len(pre_lines)
 
             pre_context = Context(pre_lines)
             post_context = Context(post_lines)
