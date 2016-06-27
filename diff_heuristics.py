@@ -207,6 +207,8 @@ class Slider:
         # The line number of the first line of the change:
         self.line_number = line_number
 
+        self.prefix = self.change.prefix
+
         self.shift_range = self._compute_shift_range()
         self.lines = [diffline.line for diffline in self.difflines]
 
