@@ -121,6 +121,8 @@ def score_split(lines, index):
 
 class DiffLine:
     def __init__(self, line):
+        if not line:
+            raise ParsingError('empty line passed to DiffLine')
         self.prefix = line[0]
         self.line = line[1:]
 
