@@ -66,6 +66,9 @@ def main(args):
 
     options = parser.parse_args(args)
 
+    if options.verbose:
+        diff_heuristics.verbose = True
+
     for line in sys.stdin:
         line = line.rstrip()
         m = INPUT_RE.match(line)

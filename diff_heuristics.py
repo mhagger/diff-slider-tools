@@ -6,6 +6,9 @@ import functools
 import re
 
 
+verbose = False
+
+
 class ParsingError(Exception):
     pass
 
@@ -211,6 +214,11 @@ class Slider:
 
         self.shift_range = self._compute_shift_range()
         self.lines = [diffline.line for diffline in self.difflines]
+        if verbose:
+            sys.stderr.write(
+                '    Slider: %d..%d at line %d\n'
+                % (self.shift_range[0], self.shift_range[-1], self.line_number)
+                )
 
     def __getitem__(self, i):
         """Return the line, counted from the first line of change."""
@@ -281,7 +289,8 @@ class Slider:
             return
 
         if shift < 0:
-            sys.stderr.write('Sliding hunk up by %d\n' % (-shift,))
+            if verbose:
+                sys.stderr.write('Sliding hunk up by %d\n' % (-shift,))
 
             # Move lines from end of change to post-context:
             difflines = self.change.difflines[shift:]
@@ -301,7 +310,8 @@ class Slider:
             else:
                 self.change.adds.difflines[0:0] = difflines
         elif shift > 0:
-            sys.stderr.write('Sliding hunk down by %d\n' % (shift,))
+            if verbose:
+                sys.stderr.write('Sliding hunk down by %d\n' % (shift,))
 
             # Move lines from beginning of change to pre-context:
             difflines = self.change.difflines[:shift]
@@ -522,7 +532,9 @@ class FileDiff:
             if i >= len(lines):
                 raise ParsingError('diff line not found in FileDiff')
 
-        print('File start: %s' % (lines[i],))
+        if verbose:
+            sys.stderr.write('File start: %s\n' % (lines[i],))
+
         i += 1
 
         if lines[i].startswith('similarity '):
