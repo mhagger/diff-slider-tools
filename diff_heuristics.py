@@ -337,6 +337,9 @@ class Slider:
         self.line_number += shift
 
     def find_best_shift(self):
+        if len(self.shift_range) == 1:
+            return self.shift_range[0]
+
         best_shift = 0
         best_score = None
 
@@ -367,9 +370,6 @@ class Slider:
         return enumerate(self.difflines, start=-len(self.pre_context))
 
     def show_sliders(self, slider_context=5):
-        if len(self.shift_range) == 1:
-            return
-
         best_shift = self.find_best_shift()
 
         if best_shift == 0:
