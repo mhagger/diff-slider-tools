@@ -1,0 +1,77 @@
+#! /usr/bin/env python3
+
+"""Read the shift chosen for a particular slider in a diff.
+
+usage:
+
+    read-shift <old-sha1>:<old-filename> <new-sha1>:<new-filename> [-/+] <line-number>
+
+where
+
+* <sha1>:<filename> names a blob to be diffed.
+
+* [-/+] is '-' if lines are being deleted, '+' if lines are being
+  added.
+
+* <line-number> is the line number of the first line being
+  added/deleted, when the slider is shifted to its canonical position.
+  The line number is relative to the old blob if lines are being
+  deleted and relative to the new blob if lines are being added.
+
+Output the shift chosen for that slider in a diff read from stdin.
+Output the result to stdout as
+
+    <old-sha1>:<old-filename> <new-sha1>:<new-filename> [-/+] <line-number> <shift>
+
+"""
+
+import sys
+import os
+import io
+import re
+import argparse
+
+sys.path.insert(0, os.path.dirname(sys.argv[0]))
+
+import diff_heuristics
+from diff_heuristics import iter_file_diffs
+from diff_heuristics import find_slider
+
+
+INPUT_RE = re.compile(r'^(?P<old_sha1>[0-9a-f]{40})\.\.(?P<new_sha1>[0-9a-f]{40})$')
+
+def main(args):
+    parser = argparse.ArgumentParser(
+        description='Read a slider shift from a diff'
+        )
+    parser.add_argument('old', type=str)
+    parser.add_argument('new', type=str)
+    parser.add_argument('prefix', type=str, choices=['-', '+'])
+    parser.add_argument('line_number', type=int)
+    parser.add_argument('--verbose', '-v')
+
+    options = parser.parse_args(args)
+
+    (old_sha1, old_filename) = options.old.split(':', 1)
+    (new_sha1, new_filename) = options.new.split(':', 1)
+
+    if options.verbose:
+        diff_heuristics.verbose = True
+
+    input = io.TextIOWrapper(sys.stdin.buffer, encoding='utf-8', errors='replace')
+    lines = [line.rstrip('\n\r') for line in input.readlines()]
+    slider = find_slider(lines, old_filename, new_filename, options.prefix, options.line_number)
+
+    shift = slider.shift_canonically()
+
+    print(
+        '%s:%s %s:%s %s %d %d' % (
+            old_sha1, old_filename,
+            new_sha1, new_filename,
+            slider.prefix, slider.line_number,
+            shift
+            )
+        )
+
+if __name__ == '__main__':
+    main(sys.argv[1:])

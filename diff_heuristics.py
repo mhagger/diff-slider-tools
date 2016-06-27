@@ -627,3 +627,35 @@ def compute_diff(repo, old, new):
     return out.decode('utf-8', errors='replace').split('\n')[:-1]
 
 
+def find_slider(lines, old_filename, new_filename, prefix, line_number):
+    """Find the specified slider in the lines provided."""
+
+    for file_diff in iter_file_diffs(lines):
+        for hunk in file_diff.hunks:
+            for slider in hunk.iter_sliders():
+                if (
+                        slider.prefix == prefix
+                        and slider.line_number + slider.shift_range[-1] == line_number
+                    ):
+                    return slider
+
+    raise ParsingError('requested Slider was not found')
+
+
+def compute_slider(repo,
+                old_sha1, old_filename,
+                new_sha1, new_filename,
+                prefix, line_number):
+    """Read the specified Slider."""
+
+    lines = compute_diff(
+        repo,
+        '%s:%s' % (old_sha1, old_filename),
+        '%s:%s' % (new_sha1, new_filename),
+        )
+
+    slider = find_slider(lines, old_filename, new_filename, prefix, line_number)
+    slider.shift_canonically()
+    return slider
+
+
