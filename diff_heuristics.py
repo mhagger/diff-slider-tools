@@ -398,6 +398,24 @@ class Slider:
 
         print('^' * 60)
 
+    def show_comparison(self, columns, slider_context=5):
+        show_range = range(self.shift_range.start - slider_context,
+                           len(self.change) + self.shift_range.stop + slider_context)
+
+        for (i, diffline) in self.enumerate():
+            if not i in show_range:
+                continue
+
+            flags = ''
+            for (column_name, shift) in columns:
+                flags += self.prefix_for(shift, i, column_name)
+
+            print('    %s%s %s  %s' % (
+                self.prefix_for(self.shift_range[0], i),
+                self.prefix_for(self.shift_range[-1], i),
+                flags,
+                diffline.line))
+
 
 class Hunk:
     HEADER_RE = re.compile(
@@ -657,5 +675,27 @@ def compute_slider(repo,
     slider = find_slider(lines, old_filename, new_filename, prefix, line_number)
     slider.shift_canonically()
     return slider
+
+
+def iter_shifts(path):
+    """Iterate over (old, new, prefix, line_number, shift) read from path."""
+
+    with open(path) as f:
+        for line in f:
+            words = line.rstrip().split()
+            if len(words) == 5:
+                (old, new, prefix, line_number, shift) = words
+                shift = int(shift)
+            elif len(words) == 4:
+                (old, new, prefix, line_number) = words
+                shift = None
+            else:
+                raise ParsingError('could not read %r' % (line,))
+
+            old = old
+            new = new
+            prefix = prefix
+            line_number = int(line_number)
+            yield (old, new, prefix, line_number, shift)
 
 
