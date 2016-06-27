@@ -4,6 +4,7 @@ import sys
 import itertools
 import functools
 import re
+import subprocess
 
 
 verbose = False
@@ -605,5 +606,24 @@ def iter_file_diffs(lines):
             yield FileDiff(lines[start:end])
         except ParsingError as e:
             sys.stderr.write('%s\n' % (e,))
+
+
+def compute_diff(repo, old, new):
+    """Compute a git diff between old and new in the specified repo.
+
+    Set some options to try to get consistent output.
+
+    """
+
+    cmd = [
+        'git',
+        '-C', repo,
+        '-c', 'diff.algorithm=myers',
+        'diff', '-U10',
+        old, new,
+        '--',
+        ]
+    out = subprocess.check_output(cmd)
+    return out.decode('utf-8', errors='replace').split('\n')[:-1]
 
 

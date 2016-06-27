@@ -31,8 +31,6 @@ where
 
 import sys
 import os
-import io
-import subprocess
 import re
 import argparse
 
@@ -40,19 +38,7 @@ sys.path.insert(0, os.path.dirname(sys.argv[0]))
 
 import diff_heuristics
 from diff_heuristics import iter_file_diffs
-
-
-def compute_diff(repo, old_sha1, new_sha1):
-    cmd = [
-        'git',
-        '-C', repo,
-        '-c', 'diff.algorithm=myers',
-        'diff', '-U10',
-        '%s..%s' % (old_sha1, new_sha1),
-        '--',
-        ]
-    out = subprocess.check_output(cmd)
-    return out.decode('utf-8', errors='replace').split('\n')[:-1]
+from diff_heuristics import compute_diff
 
 
 INPUT_RE = re.compile(r'^(?P<old_sha1>[0-9a-f]{40})\.\.(?P<new_sha1>[0-9a-f]{40})$')
