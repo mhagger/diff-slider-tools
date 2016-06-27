@@ -434,24 +434,24 @@ class Hunk:
             change = self.groups[i]
             if change.prefix == '-':
                 pre_lines = functools.reduce(
-                    list.__add__,
+                    list.__iadd__,
                     [group.old_lines() for group in self.groups[:i]],
                     []
                     )
                 post_lines = functools.reduce(
-                    list.__add__,
+                    list.__iadd__,
                     [group.old_lines() for group in self.groups[i + 1:]],
                     []
                     )
                 line_number = self.old_line + len(pre_lines)
             elif change.prefix == '+':
                 pre_lines = functools.reduce(
-                    list.__add__,
+                    list.__iadd__,
                     [group.new_lines() for group in self.groups[:i]],
                     []
                     )
                 post_lines = functools.reduce(
-                    list.__add__,
+                    list.__iadd__,
                     [group.new_lines() for group in self.groups[i + 1:]],
                     []
                     )
