@@ -216,6 +216,21 @@ class Slider:
 
         return self.difflines[i + len(self.pre_context)]
 
+    def shift_canonically(self):
+        """Shift this slider as far down as possible.
+
+        This is the shift used by Git as of release 2.9.0 by default.
+
+        Return the shift that this Slider had before, measured
+        relative to the canonical shift (i.e., the value will always
+        be less than or equal to zero).
+
+        """
+
+        max_shift = self.shift_range[-1]
+        self.slide(max_shift)
+        return -max_shift
+
     def get_score_for_line(self, shift):
         """Return the score for using the specified shift.
 
@@ -258,6 +273,9 @@ class Slider:
         return range(shift_min, shift_limit)
 
     def slide(self, shift):
+        if shift == 0:
+            return
+
         if shift < 0:
             sys.stderr.write('Sliding hunk up by %d\n' % (-shift,))
 
