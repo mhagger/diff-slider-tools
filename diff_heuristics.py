@@ -205,7 +205,7 @@ class Slider:
         # The line number of the first line of the change:
         self.line_number = line_number
 
-        (self.shift_min, self.shift_limit) = self._compute_slide_range()
+        self.shift_range = self._compute_shift_range()
         self.lines = [diffline.line for diffline in self.difflines]
 
     def __getitem__(self, i):
@@ -231,14 +231,12 @@ class Slider:
             # The shift probably bumps up against the end of the file:
             return score + (score - 1)
 
-    def _compute_slide_range(self):
-        """Return (shift_min, shift_limit), the limits of the allowed shift.
-
-        I.e., the permitted shifts are range(shift_min, shift_limit)."""
+    def _compute_shift_range(self):
+        """Return a range object describing the limits of the allowed shift."""
 
         if self.change.prefix == '?':
             # Replacements cannot be slid:
-            return (0, 1)
+            return range(0, 1)
 
         shift_min = 0
         while (
@@ -257,7 +255,7 @@ class Slider:
                 ):
             shift_limit += 1
 
-        return (shift_min, shift_limit)
+        return range(shift_min, shift_limit)
 
     def slide(self, shift):
         if shift < 0:
@@ -301,15 +299,15 @@ class Slider:
             else:
                 self.change.adds.difflines.extend(difflines)
 
-        self.shift_min -= shift
-        self.shift_max -= shift
+        self.shift_range = range(self.shift_range.start - shift,
+                                 self.shift_range.stop - shift)
         self.line_number -= shift
 
     def find_best_shift(self):
         best_shift = 0
         best_score = None
 
-        for shift in range(self.shift_min, self.shift_limit):
+        for shift in self.shift_range:
             score = self.get_score(shift)
             if best_score is None or score <= best_score:
                 best_shift = shift
@@ -336,7 +334,7 @@ class Slider:
         return enumerate(self.difflines, start=-len(self.pre_context))
 
     def show_sliders(self, slider_context=5):
-        if self.shift_limit == self.shift_min + 1:
+        if len(self.shift_range) == 1:
             return
 
         best_shift = self.find_best_shift()
@@ -346,21 +344,21 @@ class Slider:
 
         print('v' * 60)
 
+        show_range = range(self.shift_range.start - slider_context,
+                           self.shift_range.stop + slider_context)
+
         for (i, diffline) in self.enumerate():
-            if not (self.shift_min - slider_context
-                    <= i
-                    < len(self.change) + self.shift_limit + slider_context
-                    ):
+            if not i in show_range:
                 continue
 
-            if self.shift_min <= i < self.shift_limit:
+            if i in self.shift_range:
                 score = '%5d' % (self.get_score(i),)
             else:
                 score = '     '
 
             print('    %s%s %s %s  %s' % (
-                self.prefix_for(self.shift_min, i),
-                self.prefix_for(self.shift_limit - 1, i),
+                self.prefix_for(self.shift_range[0], i),
+                self.prefix_for(self.shift_range[-1], i),
                 score,
                 self.prefix_for(best_shift, i, self.change.prefix),
                 diffline))
