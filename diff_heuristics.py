@@ -500,6 +500,8 @@ class Hunk:
 
 
 class FileDiff:
+    INDEX_RE = re.compile(r'^index (?P<old_sha1>[0-9a-f]+)\.\.(?P<new_sha1>[0-9a-f]+) [0-7]+$')
+
     OLD_FILE_RE = re.compile(r'^\-\-\- (/dev/null|a/(?P<filename>.*))$')
     NEW_FILE_RE = re.compile(r'^\+\+\+ (/dev/null|b/(?P<filename>.*))$')
 
@@ -536,31 +538,40 @@ class FileDiff:
 
         self.hunks = []
 
-        if i < len(lines) and lines[i].startswith('index '):
+        if i >= len(lines):
+            return
+
+        m = FileDiff.INDEX_RE.match(lines[i])
+        i += 1
+        if not m:
+            return
+
+        self.old_sha1 = m.group('old_sha1')
+        self.new_sha1 = m.group('new_sha1')
+
+        if i < len(lines) and lines[i].startswith('Binary files '):
             i += 1
-            if i < len(lines) and lines[i].startswith('Binary files '):
-                i += 1
-            else:
-                old_filename = self.get_filename(FileDiff.OLD_FILE_RE, lines[i])
-                i += 1
+        else:
+            self.old_filename = self.get_filename(FileDiff.OLD_FILE_RE, lines[i])
+            i += 1
 
-                new_filename = self.get_filename(FileDiff.NEW_FILE_RE, lines[i])
-                i += 1
+            self.new_filename = self.get_filename(FileDiff.NEW_FILE_RE, lines[i])
+            i += 1
 
-                while i < len(lines):
-                    assert lines[i].startswith('@@ ')
-                    start = i
+            while i < len(lines):
+                assert lines[i].startswith('@@ ')
+                start = i
+                i += 1
+                while i < len(lines) and not lines[i].startswith('@@ '):
                     i += 1
-                    while i < len(lines) and not lines[i].startswith('@@ '):
-                        i += 1
-                    end = i
+                end = i
 
-                    try:
-                        self.hunks.append(
-                            Hunk(old_filename, new_filename, lines[start:end])
-                            )
-                    except ParsingError as e:
-                        sys.stderr.write('%s\n' % (e,))
+                try:
+                    self.hunks.append(
+                        Hunk(self.old_filename, self.new_filename, lines[start:end])
+                        )
+                except ParsingError as e:
+                    sys.stderr.write('%s\n' % (e,))
 
     def show_sliders(self):
         for hunk in self.hunks:
