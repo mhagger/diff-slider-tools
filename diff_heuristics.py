@@ -334,7 +334,7 @@ class Slider:
 
         self.shift_range = range(self.shift_range.start - shift,
                                  self.shift_range.stop - shift)
-        self.line_number -= shift
+        self.line_number += shift
 
     def find_best_shift(self):
         best_shift = 0
