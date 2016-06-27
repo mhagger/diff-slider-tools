@@ -6,6 +6,10 @@ import functools
 import re
 
 
+class ParsingError(Exception):
+    pass
+
+
 def get_indent(line):
     line = line.rstrip()
     if not line:
@@ -150,7 +154,9 @@ class Context(Group):
 
 class Change(Group):
     def __init__(self, difflines):
-        assert difflines
+        if not difflines:
+            raise ParsingError('difflines is empty')
+
         self.difflines = list(difflines)
 
         self.deletes = Group([
@@ -411,8 +417,7 @@ class Hunk:
         self.new_filename = new_filename
         m = self.HEADER_RE.match(lines[0])
         if not m:
-            sys.stderr.write('Error parsing %r\n' % (lines[0],))
-        assert m
+            raise ParsingError('Error parsing %r\n' % (lines[0],))
         self.old_line = int(m.group('old_line'))
         if m.group('old_len') is None:
             self.old_len = None
@@ -487,12 +492,20 @@ class FileDiff:
     @staticmethod
     def get_filename(file_re, line):
         m = file_re.match(line)
-        assert m
+        if not m:
+            raise ParsingError('could not parse filename from %r' % (line,))
         return m.group('filename')
 
     def __init__(self, lines):
+        if not lines:
+            raise ParsingError('no lines in FileDiff')
+
         i = 0
-        assert lines[i].startswith('diff ')
+        while not lines[i].startswith('diff '):
+            i += 1
+            if i >= len(lines):
+                raise ParsingError('diff line not found in FileDiff')
+
         print('File start: %s' % (lines[i],))
         i += 1
 
@@ -528,9 +541,12 @@ class FileDiff:
                         i += 1
                     end = i
 
-                    self.hunks.append(
-                        Hunk(old_filename, new_filename, lines[start:end])
-                        )
+                    try:
+                        self.hunks.append(
+                            Hunk(old_filename, new_filename, lines[start:end])
+                            )
+                    except ParsingError as e:
+                        sys.stderr.write('%s\n' % (e,))
 
     def show_sliders(self):
         for hunk in self.hunks:
@@ -548,6 +564,9 @@ def iter_file_diffs(lines):
             i += 1
         end = i
 
-        yield FileDiff(lines[start:end])
+        try:
+            yield FileDiff(lines[start:end])
+        except ParsingError as e:
+            sys.stderr.write('%s\n' % (e,))
 
 
