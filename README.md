@@ -153,6 +153,13 @@ Basic use:
 5. If there are any other algorithms you want to test against the existing ones, invoke it the way `$GIT_EXPERIMENTAL` is invoked in `analyze`, and writing the output to a file like `corpus/$repo-your-algo.sliders`. Then run `compare-shifts`, adding your results as an additional column in the output by adding an argument like `y=corpus/$repo-your-algo.sliders`.
 
 
+## Prototype heuristic
+
+The heuristic that is prototyped here chooses its shifts based only on the indentation of lines around the slider plus the presence/absence of blank lines nearby. It computes a score for the split that would have to be introduced at the top of the slider, and one for the split at the bottom of the slider, then adds the scores together to get an overall score for a slider shift. The shift with the lowest score wins.
+
+The implementation of the scoring algorithm is in `diff_heuristics.py`, function `score_split()`. Feel free to play with it and tweak it. Remember, whatever heuristic we build into Git has to work acceptably well across a wide variety of programming languages and other textual input!
+
+
 ## To Do
 
 There is still no tool to allow a human to state which shift looks best for a particular slider. This would be relatively easy to add. It should write its output to a `*.slider` file in the same format as the others. Then it would be nice to have a tool that rates algorithms numerically by comparing them to the human-generated results.
