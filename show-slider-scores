@@ -31,6 +31,14 @@ def main(args):
 
         lines = compute_diff(options.repo, old, new)
         slider = find_slider(lines, old_filename, new_filename, prefix, line_number)
+
+        print(
+            '%s:%s %s:%s %s %d' % (
+                old_sha1, old_filename,
+                new_sha1, new_filename,
+                slider.prefix, slider.line_number,
+                )
+            )
         slider.show()
 
 
