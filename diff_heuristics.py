@@ -367,13 +367,10 @@ class Slider:
     def show(self, slider_context=5):
         best_shift = self.find_best_shift()
 
-        if best_shift == 0:
-            return
-
         print('v' * 60)
 
         show_range = range(self.shift_range.start - slider_context,
-                           self.shift_range.stop + slider_context)
+                           len(self.change) + self.shift_range.stop + slider_context)
 
         for (i, diffline) in self.enumerate():
             if not i in show_range:
