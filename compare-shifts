@@ -50,10 +50,11 @@ def main(args):
     for column in options.columns:
         (column_name, path) = column.split('=', 1)
         column_names.append(column_name)
-        for (old, new, prefix, line_number, shift) in iter_shifts(path):
-            params = (old, new, prefix, line_number)
-            params = slider_intern.setdefault(params, params)
-            shifts.setdefault(params, {})[column_name] = shift
+        with open(path) as f:
+            for (old, new, prefix, line_number, shift) in iter_shifts(f):
+                params = (old, new, prefix, line_number)
+                params = slider_intern.setdefault(params, params)
+                shifts.setdefault(params, {})[column_name] = shift
 
     for ((old, new, prefix, line_number), values) in shifts.items():
         (old_sha1, old_filename) = old.split(':', 1)
