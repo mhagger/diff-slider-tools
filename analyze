@@ -1,0 +1,34 @@
+#! /bin/sh
+
+GIT_EXPERIMENTAL="bgit -c diff.algorithm=myers"
+GIT_EXPERIMENTAL_OPTS="--compaction-heuristic"
+
+analyze() {
+    local repo="$1"
+
+    git -C corpus/$repo log --min-parents=1 --max-parents=1 --format='%P..%H' HEAD |
+	./enumerate-sliders --repo=corpus/$repo >corpus/$repo.sliders
+
+    cat corpus/$repo.sliders |
+        while read old new prefix line_number
+        do
+            $GIT_EXPERIMENTAL -C corpus/$repo diff $GIT_EXPERIMENTAL_OPTS -U10 "$old" "$new" -- |
+                ./read-shift "$old" "$new" "$prefix" $line_number
+        done >corpus/$repo-compaction.sliders
+
+    cat corpus/$repo.sliders |
+        while read old new prefix line_number
+        do
+            ./improve-slider --repo=corpus/$repo "$old" "$new" "$prefix" $line_number
+        done >corpus/$repo-indent.sliders
+
+    ./compare-shifts --repo=corpus/$repo \
+		     c=corpus/$repo-compaction.sliders \
+		     i=corpus/$repo-indent.sliders \
+		     >corpus/$repo-compare-shifts.out
+}
+
+for repo in "$@"
+do
+    analyze "$repo"
+done
