@@ -402,6 +402,9 @@ class Slider:
         show_range = range(self.shift_range.start - slider_context,
                            len(self.change) + self.shift_range.stop + slider_context)
 
+        annotation_width = 9 + len(columns)
+        padding = ' ' * ((8 - annotation_width % 8) % 8)
+
         for (i, diffline) in self.enumerate():
             if not i in show_range:
                 continue
@@ -410,7 +413,8 @@ class Slider:
             for (column_name, shift) in columns:
                 flags += self.prefix_for(shift, i, column_name)
 
-            print('    %s%s %s  %s' % (
+            print('    %s%s%s %s  %s' % (
+                padding,
                 self.prefix_for(self.shift_range[0], i),
                 self.prefix_for(self.shift_range[-1], i),
                 flags,
