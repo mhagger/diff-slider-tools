@@ -35,6 +35,7 @@ sys.path.insert(0, os.path.dirname(sys.argv[0]))
 import diff_heuristics
 from diff_heuristics import compute_diff
 from diff_heuristics import find_slider
+from diff_heuristics import iter_shifts
 
 
 INPUT_RE = re.compile(r'^(?P<old_sha1>[0-9a-f]{40})\.\.(?P<new_sha1>[0-9a-f]{40})$')
@@ -44,32 +45,30 @@ def main(args):
         description='Read a slider shift from a diff'
         )
     parser.add_argument('--repo', type=str)
-    parser.add_argument('old', type=str)
-    parser.add_argument('new', type=str)
-    parser.add_argument('prefix', type=str, choices=['-', '+'])
-    parser.add_argument('line_number', type=int)
     parser.add_argument('--verbose', '-v')
 
     options = parser.parse_args(args)
 
-    (old_sha1, old_filename) = options.old.split(':', 1)
-    (new_sha1, new_filename) = options.new.split(':', 1)
-
     if options.verbose:
         diff_heuristics.verbose = True
 
-    lines = compute_diff(options.repo, options.old, options.new)
-    slider = find_slider(lines, old_filename, new_filename, options.prefix, options.line_number)
-    slider.shift_canonically()
+    for (old, new, prefix, line_number, shift) in iter_shifts(sys.stdin):
+        (old_sha1, old_filename) = old.split(':', 1)
+        (new_sha1, new_filename) = new.split(':', 1)
 
-    print(
-        '%s:%s %s:%s %s %d %d' % (
-            old_sha1, old_filename,
-            new_sha1, new_filename,
-            slider.prefix, slider.line_number,
-            slider.find_best_shift(),
+        lines = compute_diff(options.repo, old, new)
+        slider = find_slider(lines, old_filename, new_filename, prefix, line_number)
+        slider.shift_canonically()
+
+        print(
+            '%s:%s %s:%s %s %d %d' % (
+                old_sha1, old_filename,
+                new_sha1, new_filename,
+                slider.prefix, slider.line_number,
+                slider.find_best_shift(),
+                )
             )
-        )
+
 
 if __name__ == '__main__':
     main(sys.argv[1:])

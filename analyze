@@ -17,10 +17,7 @@ analyze() {
         done >corpus/$repo-compaction.sliders
 
     cat corpus/$repo.sliders |
-        while read old new prefix line_number
-        do
-            ./improve-slider --repo=corpus/$repo "$old" "$new" "$prefix" $line_number
-        done >corpus/$repo-indent.sliders
+        ./improve-slider --repo=corpus/$repo >corpus/$repo-indent.sliders
 
     ./compare-shifts --repo=corpus/$repo \
 		     c=corpus/$repo-compaction.sliders \
