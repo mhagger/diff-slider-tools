@@ -68,7 +68,7 @@ def main(args):
 
         shifts_seen = set(shift for (column_name, shift) in columns)
 
-        if options.all or len(shifts_seen) > 1:
+        if options.all or len(shifts_seen) > 1 or list(shifts_seen) != [0]:
             slider = compute_slider(
                 options.repo,
                 old_sha1, old_filename,
