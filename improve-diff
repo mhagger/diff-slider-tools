@@ -3,23 +3,35 @@
 import sys
 import os
 import io
+import argparse
 
 sys.path.insert(0, os.path.dirname(sys.argv[0]))
 
 import diff_heuristics
-
-from diff_heuristics import iter_file_diffs
+from diff_heuristics import compute_diff
+from diff_heuristics import iter_shifts
+from diff_heuristics import find_slider
 
 
 def main(args):
-    input = io.TextIOWrapper(sys.stdin.buffer, encoding='utf-8', errors='replace')
+    parser = argparse.ArgumentParser(
+        description='Improve sliders read from stdin, showing scores'
+        )
+    parser.add_argument('--repo', type=str)
+    parser.add_argument('--verbose', '-v')
 
-    lines = [line.rstrip('\n\r') for line in input.readlines()]
+    options = parser.parse_args(args)
 
-    for file_diff in iter_file_diffs(lines):
-        for hunk in file_diff.hunks:
-            for slider in hunk.iter_sliders():
-                slider.show()
+    if options.verbose:
+        diff_heuristics.verbose = True
+
+    for (old, new, prefix, line_number, shift) in iter_shifts(sys.stdin):
+        (old_sha1, old_filename) = old.split(':', 1)
+        (new_sha1, new_filename) = new.split(':', 1)
+
+        lines = compute_diff(options.repo, old, new)
+        slider = find_slider(lines, old_filename, new_filename, prefix, line_number)
+        slider.show()
 
 
 if __name__ == '__main__':
