@@ -17,7 +17,9 @@ def main(args):
     lines = [line.rstrip('\n\r') for line in input.readlines()]
 
     for file_diff in iter_file_diffs(lines):
-        file_diff.show_sliders()
+        for hunk in file_diff.hunks:
+            for slider in hunk.iter_sliders():
+                slider.show()
 
 
 if __name__ == '__main__':

@@ -351,11 +351,6 @@ class Slider:
 
         return best_shift
 
-    def optimize(self):
-        best_shift = self.find_best_shift()
-        if best_shift:
-            self.slide(best_shift)
-
     def prefix_for(self, shift, i, c='|'):
         """Return c if the specified line number is in the shifted change.
 
@@ -369,7 +364,7 @@ class Slider:
     def enumerate(self):
         return enumerate(self.difflines, start=-len(self.pre_context))
 
-    def show_sliders(self, slider_context=5):
+    def show(self, slider_context=5):
         best_shift = self.find_best_shift()
 
         if best_shift == 0:
@@ -402,9 +397,6 @@ class Slider:
         show_range = range(self.shift_range.start - slider_context,
                            len(self.change) + self.shift_range.stop + slider_context)
 
-        annotation_width = 9 + len(columns)
-        padding = ' ' * ((8 - annotation_width % 8) % 8)
-
         for (i, diffline) in self.enumerate():
             if not i in show_range:
                 continue
@@ -413,12 +405,19 @@ class Slider:
             for (column_name, shift) in columns:
                 flags += self.prefix_for(shift, i, column_name)
 
-            print('    %s%s%s %s  %s' % (
-                padding,
+            if i in self.shift_range:
+                shift_string = '%d' % (i,)
+            else:
+                shift_string = ''
+
+            annotation = '%s %s%s %s  ' % (
+                shift_string,
                 self.prefix_for(self.shift_range[0], i),
                 self.prefix_for(self.shift_range[-1], i),
                 flags,
-                diffline.line))
+                )
+
+            print('%16s%s' % (annotation, diffline.line))
 
 
 class Hunk:
@@ -513,14 +512,6 @@ class Hunk:
             post_context = Context(post_lines)
             yield Slider(pre_context, change, post_context, line_number)
 
-    def show_sliders(self):
-        for slider in self.iter_sliders():
-            slider.show_sliders()
-
-    def optimize(self):
-        for slider in self.iter_sliders():
-            slider.optimize()
-
     def old_lines(self):
         for group in self.groups:
             for line in group.old_lines():
@@ -607,10 +598,6 @@ class FileDiff:
                         )
                 except ParsingError as e:
                     sys.stderr.write('%s\n' % (e,))
-
-    def show_sliders(self):
-        for hunk in self.hunks:
-            hunk.show_sliders()
 
 
 def iter_file_diffs(lines):
