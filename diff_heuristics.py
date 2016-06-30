@@ -384,7 +384,7 @@ class Slider:
             else:
                 score = '     '
 
-            print('    %s%s %s %s  %s' % (
+            print('    %s%s %s %s >%s' % (
                 self.prefix_for(self.shift_range[0], i),
                 self.prefix_for(self.shift_range[-1], i),
                 score,
@@ -410,7 +410,7 @@ class Slider:
             else:
                 shift_string = ''
 
-            annotation = '%s %s%s %s  ' % (
+            annotation = '%s %s%s %s >' % (
                 shift_string,
                 self.prefix_for(self.shift_range[0], i),
                 self.prefix_for(self.shift_range[-1], i),
