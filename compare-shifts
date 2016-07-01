@@ -68,6 +68,8 @@ def main(args):
             for values in all_shifts.values():
                 values[column_name] = [0]
 
+    differences = 0
+
     for ((old, new, prefix, line_number), values) in all_shifts.items():
         (old_sha1, old_filename) = old.split(':', 1)
         (new_sha1, new_filename) = new.split(':', 1)
@@ -103,6 +105,14 @@ def main(args):
             slider.show_comparison(columns, line_prefix='# ')
             print('# %s' % ('^' * 60,))
             print('#')
+
+            differences += 1
+
+    if options.correct:
+        print(
+            'Number of incorrect shifts: %d' % (differences,),
+            file=sys.stderr
+            )
 
 
 if __name__ == '__main__':
