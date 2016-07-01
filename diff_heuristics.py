@@ -36,6 +36,10 @@ def score_split(lines, index):
 
     The lower the score, the more preferable the split."""
 
+    # A place to accumulate bonus factors (positive makes this
+    # index more favored):
+    bonus = 0
+
     try:
         line = lines[index]
         indent = get_indent(line)
@@ -44,7 +48,6 @@ def score_split(lines, index):
 
     blank = (indent is None)
 
-    pre_indent = None
     pre_blank = False
     i = index - 1
     while i >= 0:
@@ -53,8 +56,9 @@ def score_split(lines, index):
             break
         pre_blank = True
         i -= 1
+    else:
+        pre_indent = 0
 
-    post_indent = None
     post_blank = None
     i = index + 1
     while i < len(lines):
@@ -63,10 +67,13 @@ def score_split(lines, index):
             break
         post_blank = True
         i += 1
+    else:
+        post_indent = 0
 
-    # A place to accumulate bonus factors (positive makes this
-    # index more favored):
-    bonus = 0
+    if blank:
+        # Blank lines are treated as if they were indented like the
+        # following non-blank line:
+        indent = post_indent
 
     # Bonuses based on the location of blank lines:
     if pre_blank and not blank:
@@ -75,16 +82,6 @@ def score_split(lines, index):
         bonus += 2
     elif blank and pre_blank:
         bonus += 1
-
-    # Now fill in missing indent values:
-    if pre_indent is None:
-        pre_indent = 0
-
-    if post_indent is None:
-        post_indent = 0
-
-    if blank:
-        indent = post_indent
 
     if indent > pre_indent:
         # The line is indented more than its predecessor. It is
