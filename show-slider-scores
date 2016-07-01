@@ -25,7 +25,7 @@ def main(args):
     if options.verbose:
         diff_heuristics.verbose = True
 
-    for (old, new, prefix, line_number, shift) in iter_shifts(sys.stdin):
+    for (old, new, prefix, line_number, shifts) in iter_shifts(sys.stdin):
         (old_sha1, old_filename) = old.split(':', 1)
         (new_sha1, new_filename) = new.split(':', 1)
 

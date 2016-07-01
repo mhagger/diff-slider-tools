@@ -670,25 +670,20 @@ def compute_slider(repo,
 
 
 def iter_shifts(lines):
-    """Iterate over (old, new, prefix, line_number, shift) read from lines.
+    """Iterate over (old, new, prefix, line_number, [shift,...]) read from lines.
 
     lines can be any iterable over lines."""
 
     for line in lines:
         words = line.rstrip().split()
-        if len(words) == 5:
-            (old, new, prefix, line_number, shift) = words
-            shift = int(shift)
-        elif len(words) == 4:
-            (old, new, prefix, line_number) = words
-            shift = None
-        else:
+
+        if len(words) < 4:
             raise ParsingError('could not read %r' % (line,))
 
-        old = old
-        new = new
-        prefix = prefix
+        (old, new, prefix, line_number, *shifts) = words
         line_number = int(line_number)
-        yield (old, new, prefix, line_number, shift)
+        shifts = [int(shift) for shift in shifts]
+
+        yield (old, new, prefix, line_number, shifts)
 
 

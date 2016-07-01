@@ -34,6 +34,7 @@ def main(args):
     parser.add_argument('--all', '-a')
     parser.add_argument('--any-nonzero', action='store_true')
     parser.add_argument('--verbose', '-v')
+    parser.add_argument('--correct', type=str)
     parser.add_argument('columns', nargs='+')
 
     options = parser.parse_args(args)
@@ -44,7 +45,7 @@ def main(args):
     column_names = []
 
     # A dict {(old, new, prefix, line_number) : {column_name : shift}}:
-    shifts = OrderedDict()
+    all_shifts = OrderedDict()
 
     slider_intern = {}
 
@@ -56,33 +57,38 @@ def main(args):
                 sys.stderr.write('Skipping non-existing file %r\n' % (path,))
                 continue
             with open(path) as f:
-                for (old, new, prefix, line_number, shift) in iter_shifts(f):
+                for (old, new, prefix, line_number, shifts) in iter_shifts(f):
                     params = (old, new, prefix, line_number)
                     params = slider_intern.setdefault(params, params)
-                    shifts.setdefault(params, {})[column_name] = shift
+                    all_shifts.setdefault(params, {})[column_name] = shifts
 
     for column in options.columns:
         (column_name, path) = column.split('=', 1)
         if path == '0':
-            for values in shifts.values():
-                values[column_name] = 0
+            for values in all_shifts.values():
+                values[column_name] = [0]
 
-    for ((old, new, prefix, line_number), values) in shifts.items():
+    for ((old, new, prefix, line_number), values) in all_shifts.items():
         (old_sha1, old_filename) = old.split(':', 1)
         (new_sha1, new_filename) = new.split(':', 1)
         columns = []
+        shifts_seen = set()
+        correct = None
         for column_name in column_names:
-            shift = values.get(column_name)
-            if shift is None:
-                column_name = ' '
-                shift = 0
-            columns.append((column_name, shift))
+            shifts = values.get(column_name, [])
 
-        shifts_seen = set(shift for (column_name, shift) in columns)
+            if options.correct and column_name == options.correct:
+                correct = set(shifts)
+                for shift in shifts:
+                    columns.append((column_name, shift))
+            else:
+                for shift in shifts:
+                    columns.append((column_name, shift))
+                    shifts_seen.add(shift)
 
         if (
                 options.all
-                or len(shifts_seen) > 1
+                or options.correct and correct and shifts_seen - correct
                 or options.any_nonzero and list(shifts_seen) != [0]
                 ):
             slider = compute_slider(
