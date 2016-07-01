@@ -1,0 +1,6 @@
+#! /bin/sh
+
+for f in corpus/*.info
+do
+    basename "$f" .info
+done
