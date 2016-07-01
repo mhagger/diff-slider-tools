@@ -6,3 +6,8 @@ The Git repositories here can be bare.
 
 The tools are quite general; they can analyze diffs between arbitrary commits or blobs. But currently `analyze` only uses the non-merge, non-orphan commits on the HEAD branch of a repo. (It might be interesting to analyze bigger diffs, like `git diff HEAD~1000..HEAD`, to see if they behave differently.)
 
+Let's accumulate "human"-determined optimum shifts in this directory:
+
+* `$repo.info` -- a file containing the URL of a test repo.
+* `$repo-human.sliders` -- a "sliders" file containing human-determined shifts. These can be used for comparison against shifts determined by various heuristics.
+
