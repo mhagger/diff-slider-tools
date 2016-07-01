@@ -42,9 +42,10 @@ def score_split(lines, index):
 
     try:
         line = lines[index]
-        indent = get_indent(line)
     except IndexError:
         indent = None
+    else:
+        indent = get_indent(line)
 
     blank = (indent is None)
 
