@@ -1,0 +1,14 @@
+#! /bin/sh
+
+evaluate() {
+    local repo="$1"
+    ./compare-shifts --repo=corpus/$repo --correct=h \
+		     h=corpus/$repo-human.sliders \
+		     i=corpus/$repo-indent.sliders \
+		     >corpus/$repo-compare-shifts.out
+}
+
+for repo in "$@"
+do
+    analyze "$repo"
+done
