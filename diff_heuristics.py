@@ -90,7 +90,7 @@ def score_split(lines, index):
     if pre_blank and not blank:
         bonus += 3
     elif blank and not pre_blank:
-        bonus += 2
+        bonus += 1
     elif blank and pre_blank:
         bonus += 1
 
