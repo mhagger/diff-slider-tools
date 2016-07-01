@@ -20,6 +20,7 @@ analyze() {
         ./improve-slider --repo=corpus/$repo >corpus/$repo-indent.sliders
 
     ./compare-shifts --repo=corpus/$repo \
+		     g=0 \
 		     c=corpus/$repo-compaction.sliders \
 		     i=corpus/$repo-indent.sliders \
 		     >corpus/$repo-compare-shifts.out
