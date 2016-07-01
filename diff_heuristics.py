@@ -50,26 +50,36 @@ def score_split(lines, index):
     blank = (indent is None)
 
     pre_blank = False
-    i = index - 1
-    while i >= 0:
-        pre_indent = get_indent(lines[i])
-        if pre_indent is not None:
-            break
-        pre_blank = True
-        i -= 1
-    else:
+    if index < 0:
         pre_indent = 0
+        pre_blank = 1
+        bonus += 5
+    else:
+        i = index - 1
+        while i >= 0:
+            pre_indent = get_indent(lines[i])
+            if pre_indent is not None:
+                break
+            pre_blank = True
+            i -= 1
+        else:
+            pre_indent = 0
 
     post_blank = None
-    i = index + 1
-    while i < len(lines):
-        post_indent = get_indent(lines[i])
-        if post_indent is not None:
-            break
-        post_blank = True
-        i += 1
-    else:
+    if index == len(lines):
         post_indent = 0
+        post_blank = True
+        bonus += 5
+    else:
+        i = index + 1
+        while i < len(lines):
+            post_indent = get_indent(lines[i])
+            if post_indent is not None:
+                break
+            post_blank = True
+            i += 1
+        else:
+            post_indent = 0
 
     if blank:
         # Blank lines are treated as if they were indented like the
@@ -250,12 +260,11 @@ class Slider:
         return score_split(self.lines, shift + len(self.pre_context))
 
     def get_score(self, shift):
-        score = self.get_score_for_line(shift)
-        if shift + len(self.change) < len(self.change) + len(self.post_context):
-            return score + self.get_score_for_line(shift + len(self.change))
-        else:
-            # The shift probably bumps up against the end of the file:
-            return score + (score - 1)
+        assert shift + len(self.change) <= len(self.change) + len(self.post_context)
+        return (
+            self.get_score_for_line(shift)
+            + self.get_score_for_line(shift + len(self.change))
+            )
 
     def _compute_shift_range(self):
         """Return a range object describing the limits of the allowed shift."""
@@ -368,14 +377,16 @@ class Slider:
         print('v' * 60)
 
         show_range = range(self.shift_range.start - slider_context,
-                           len(self.change) + self.shift_range.stop + slider_context)
+                           self.shift_range.stop + len(self.change) + slider_context)
 
         for (i, diffline) in self.enumerate():
-            if not i in show_range:
+            if i not in show_range:
                 continue
 
             if i in self.shift_range:
-                score = '%5d' % (self.get_score(i),)
+                score = '%5d' % (self.get_score_for_line(i),)
+            elif i - len(self.change) in self.shift_range:
+                score = '%5d' % (self.get_score_for_line(i),)
             else:
                 score = '     '
 
@@ -385,6 +396,18 @@ class Slider:
                 score,
                 self.prefix_for(best_shift, i, self.change.prefix),
                 diffline))
+
+        i = self.shift_range[-1] + len(self.change)
+        if (
+                i == len(self.change) + len(self.post_context)
+                and i - len(self.change) in self.shift_range
+                ):
+            score = '%5d' % (self.get_score_for_line(i),)
+            print('    %s%s %s %s >%s' % (
+                ' ', ' ',
+                score,
+                ' ',
+                '<EOF>'))
 
         print('^' * 60)
 
