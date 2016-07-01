@@ -390,7 +390,7 @@ class Slider:
 
         print('^' * 60)
 
-    def show_comparison(self, columns, slider_context=5):
+    def show_comparison(self, columns, line_prefix='', slider_context=5):
         show_range = range(self.shift_range.start - slider_context,
                            len(self.change) + self.shift_range.stop + slider_context)
 
@@ -414,7 +414,11 @@ class Slider:
                 flags,
                 )
 
-            print('%16s%s' % (annotation, diffline.line))
+            print('%s%*s%s' % (
+                line_prefix,
+                16 - len(line_prefix), annotation,
+                diffline.line
+                ))
 
 
 class Hunk:

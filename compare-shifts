@@ -78,10 +78,10 @@ def main(args):
                 )
 
             print('%s %s %s %d' % (old, new, prefix, line_number))
-            print('v' * 60)
-            slider.show_comparison(columns)
-            print('^' * 60)
-            print()
+            print('# %s' % ('v' * 60,))
+            slider.show_comparison(columns, line_prefix='# ')
+            print('# %s' % ('^' * 60,))
+            print('#')
 
 
 if __name__ == '__main__':
