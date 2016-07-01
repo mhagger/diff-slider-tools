@@ -1,0 +1,17 @@
+eba0dd8c38f9aba1d9e3402b1e7d823da6e119ac:t/Test2/modules/API/Instance.t 3aa36b6a2ce950bd5c9a9154a8e8f255ba796cbc:t/Test2/modules/API/Instance.t + 284 -1
+0a4a929fb52191dc111fe15f59312ec84fa4108b:t/Test2/modules/API/Instance.t fcd9514d6ce70bc25ce54f4adda430dc659ece3f:t/Test2/modules/API/Instance.t + 256 -1
+6adf84d1cebec352ea26cde2bf121a154bf6485b:t/modules/API/Context.t 8dd4349435c96dd48524ac1518847fdc13b7aa47:t/modules/API/Context.t - 273 -1
+98193d48c95e179f992c629c5438c9e8c4795da8:t/modules/Context.t 79a9e21c4698eb3b3386f866c943f7f10f87f658:t/modules/Context.t - 246 -1
+23df7dd041f420542765998de66fd60a20b2fb26:t/modules/Plugin/Compare.t bab4e51e05f27c7e239188efaa05b634d1b7d101:t/modules/Plugin/Compare.t + 95 -2
+10a6e011e034c7631d38513dcc90ac3e1c8112b1:t/modules/Plugin/Grab.t ce62a5ea4742218d671e8a18a79eb11e4dc824fa:t/modules/Plugin/Grab.t + 15 -1
+10a6e011e034c7631d38513dcc90ac3e1c8112b1:t/modules/Sync.t ce62a5ea4742218d671e8a18a79eb11e4dc824fa:t/modules/Sync.t + 131 -1
+656a8af1a3f8efbb160a7552cf4030d019c9f424:t/modules/Sync.t 23f8bf20ef40d163693990a025f7eb2babf2b3b6:t/modules/Sync.t + 210 -1
+7d7dbe8fcb7f2a24e1ef0449ccfc772325fdc31f:lib/Test/Stream/Util.pm 847e0a1e517ae4a72ed819b38f09ab68ff442d70:lib/Test/Stream/Util.pm - 93 -1
+da2de78dd6f1bc78735f634221dbb96cf93ef797:Changes ba561ae1fa444d6b3a3dfb07807faa027c20981e:Changes + 2 -1
+54c4fa7b6e4cd24017c4f522aca87e505378367d:t/Nested/basic.t a08848f83255001fd81b159ba16bf383d9c8389b:t/Nested/basic.t + 151 -1
+509a1a2ba89457e5f214f621d45405f3ff663cb3:t/is_deeply.t 9f46f500c4bf07d77206bb6d96c6707d9e70af0e:t/is_deeply.t + 256 0
+ac89433363e1efecf4a3bb04740641f7554670b7:TODO e244811f1bcc3c7ed4ce8c01b8bf5a4cbd0cc4da:TODO + 32 0
+13ff40c3ce3720636196b59ca1e34a763628147a:t/no_ending.t 72054737cc9e5efdd4325ad68d424bbcdfa0a68b:t/no_ending.t + 4 -1
+13ff40c3ce3720636196b59ca1e34a763628147a:t/plan_no_plan.t 72054737cc9e5efdd4325ad68d424bbcdfa0a68b:t/plan_no_plan.t + 11 -1
+13ff40c3ce3720636196b59ca1e34a763628147a:t/todo.t 72054737cc9e5efdd4325ad68d424bbcdfa0a68b:t/todo.t + 4 -1
+d9f2ba2e7b6b0213a4856f79d3e6962e38a5056c:lib/Test/Builder.pm 18c7461b0e2eef059d931014f91be25163af6da4:lib/Test/Builder.pm + 436 -1
