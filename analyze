@@ -19,7 +19,7 @@ analyze() {
     cat corpus/$repo.sliders |
         ./improve-slider --repo=corpus/$repo >corpus/$repo-indent.sliders
 
-    ./compare-shifts --repo=corpus/$repo \
+    ./compare-shifts --repo=corpus/$repo --any-nonzero \
 		     g=0 \
 		     c=corpus/$repo-compaction.sliders \
 		     i=corpus/$repo-indent.sliders \
