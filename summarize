@@ -1,0 +1,31 @@
+#! /bin/sh
+
+printf "| %-20s " "repository"
+for algo in "$@"
+do
+    printf "| %s " $algo
+done
+printf "|\n"
+
+printf "| -------------------- "
+for algo in "$@"
+do
+    printf "| %s " "$(for i in $(seq ${#algo}); do printf "%s" "-"; done)"
+done
+printf "|\n"
+
+for repo in $(./repos)
+do
+    printf "| %-20s " $repo
+    for algo in "$@"
+    do
+	if test -f corpus/$repo-$algo-incorrect.out
+	then
+            printf "| %${#algo}d " $(grep -v '^#' <corpus/$repo-$algo-incorrect.out | wc -l)
+	else
+            printf "| %${#algo}s " "n/a"
+	fi
+    done
+    printf "|\n"
+done
+
