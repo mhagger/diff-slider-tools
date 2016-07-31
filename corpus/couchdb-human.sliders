@@ -48,10 +48,8 @@ dcde7c3c10c4a36611daefc7eef020b886c98961:test/etap/060-kt-merging.t f9e1dc5bf2fc
 2f18f60fea5a1de6a221c6124038399c47d42aa2:share/www/script/test/list_views.js 9ccb235a2d58d6b7caf406952f18ca13d9889f3e:share/www/script/test/list_views.js + 239 0
 2f18f60fea5a1de6a221c6124038399c47d42aa2:share/www/script/test/show_documents.js 9ccb235a2d58d6b7caf406952f18ca13d9889f3e:share/www/script/test/show_documents.js + 150 -2
 4aac0f7c6dcd3f3a29cfe5e1bf2bee84b9bae9d5:src/couchdb/couch_file.erl 16ccd4c0b8ae4272fa27d32948658b1424a291fc:src/couchdb/couch_file.erl - 55 -1
-887c9b1a8b551272c3ca06906cfdc4fb901830a8:src/couchdb/couch_key_tree.erl 4b5e0a20aa087dd26df644c0432627aa3e5826d4:src/couchdb/couch_key_tree.erl + 294
 194975152f9c7d3d6f0c35c44a25415bc0fbafb6:share/www/script/test/view_errors.js 5442bdb4f36f6079c5e63b5ddd8486acd032e5ad:share/www/script/test/view_errors.js + 84 -1
 c91f851dc421466402721eb7baa644860f874ce1:share/www/script/couch_tests.js 146bc594aef47b675670e7a7fd7f89b7c6a10843:share/www/script/couch_tests.js + 2428 0
-8ec0f5d5407ccd9a7cee0fc579ad08d8f4be5bd7:src/couchdb/couch_db.hrl 2c260766864a56e10aa45c3b1782f640b21a0bac:src/couchdb/couch_db.hrl - 88
 496e3b2e876b74b3da3007268271c3c667e8fbee:src/mochiweb/mochiweb.erl 65e850a01858509e0bc519832686aa52d58809b0:src/mochiweb/mochiweb.erl + 80 -4
 449ad331057100adc830016d08dac081077b3df2:etc/couchdb/local_dev.ini e27fb8eaa628128f0ec8f1797805e92ec39ec6cb:etc/couchdb/local_dev.ini + 23 -2
 5018945adf233336e6777e3dd085e565ffc4cccb:etc/couchdb/local_dev.ini 6cc0a3fcaddb3094f8f0fcd5bd51b3e74e70d11c:etc/couchdb/local_dev.ini + 57 -2

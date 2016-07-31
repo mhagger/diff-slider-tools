@@ -36,7 +36,6 @@ cc4ee718190d21aca006e6e9c85a0b9c2ba41550:docs/source/development/figs/notebook_c
 db90ecea8aefb96bf30677b185d500169747dd53:IPython/nbconvert/exporters/tests/files/prompt_numbers.ipynb 64589602aa321c253d341d3b85e90bb29f7300eb:IPython/nbconvert/exporters/tests/files/prompt_numbers.ipynb - 11 -1
 db90ecea8aefb96bf30677b185d500169747dd53:IPython/nbconvert/exporters/tests/files/prompt_numbers.ipynb 64589602aa321c253d341d3b85e90bb29f7300eb:IPython/nbconvert/exporters/tests/files/prompt_numbers.ipynb - 58 -1
 db90ecea8aefb96bf30677b185d500169747dd53:IPython/nbconvert/exporters/tests/files/prompt_numbers.ipynb 64589602aa321c253d341d3b85e90bb29f7300eb:IPython/nbconvert/exporters/tests/files/prompt_numbers.ipynb - 127 -1
-b6eeb6f5a44df8d20f8ae1a05857fc8099067372:IPython/nbconvert/templates/html/basic.tpl 1f267245efc95473ac8ec7c845ca16270480bcdb:IPython/nbconvert/templates/html/basic.tpl + 61
 a59dfd02b7ef1a068d7b36e0cbff28a872b772b4:IPython/core/interactiveshell.py 33ed38311277e85458b17aeb5dc39a646b5b2df6:IPython/core/interactiveshell.py - 2422 -1
 5838172cee4d5f63e2d7eda27d082300a5b95054:IPython/consoleapp.py 4bd3adb8d19d01d6402174408cd57e8d4c950410:IPython/consoleapp.py - 50 -1
 f894cfcefdc837343019ede263d653517760144a:IPython/html/static/notebook/js/celltoolbar.js 3443308368896d7f3b58db6a7f6eb50c9f0199d1:IPython/html/static/notebook/js/celltoolbar.js + 353 -1
@@ -408,7 +407,6 @@ e6ce8115fc5dccef747984ad01a457da86bcaba1:IPython/Extensions/ipy_leo.py b29443918
 68dd5927e5beac3bd09520200ea5ee4c5316cb59:IPython/genutils.py 82adfa53a0fa5d1c99e63a087b9b4cfdc5f13abc:IPython/genutils.py + 840 -1
 c429ca7198024984ce948a726fcdd3ea369c6d08:doc/ChangeLog 6e4a2e556723122612251f3e5b8f1818d77dfc0b:doc/ChangeLog + 3 -2
 3b7d7e503ad242a0db89c7e5e41f4bfc7486474e:IPython/genutils.py f99a2008a2937ffbaa389f15243bbb62d1b707f7:IPython/genutils.py + 802 -1
-35c07ebe340b1e1d72fd065f59b28210aa7dc51d:IPython/ipapi.py 3b7d7e503ad242a0db89c7e5e41f4bfc7486474e:IPython/ipapi.py + 289
 1167d1470f1077e9eaa79d0c0aa5b5fc12e8222f:IPython/genutils.py 527ca8e673473ce792079ff9f91ec1aaa42f24b6:IPython/genutils.py + 1745 -1
 61d30f9ab4f20bf0917ecc03a1b4b591a0643396:IPython/Extensions/pspersistence.py 4803755dfc7126abffce2b812d4bd8edc883f376:IPython/Extensions/pspersistence.py - 40 0 -1
 e8088df8ca519d4866f40c1e859ccfb9cf94d34e:doc/manual_base.lyx 1f47d1a9d65dfd808bae5ca424ddd7ea613ecd89:doc/manual_base.lyx + 8776 0

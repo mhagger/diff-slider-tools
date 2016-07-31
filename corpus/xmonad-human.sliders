@@ -3,7 +3,6 @@ d9e3ebf53194d1cf02bae28f0c885b5c75610cfa:src/XMonad/Main.hsc d01b9135943c30be8dd
 44bc9558d9498ee5502cffd386287cfb33519d26:XMonad/Core.hs 73e406f4a667b61df2033815289df77dcdf61436:XMonad/Core.hs + 352 -1
 750544fda9a6fd99bf2549d0b882cdd7da79dfbd:tests/Properties.hs dbbd934b0b0c5b7891cd3ce4adf776345db128ea:tests/Properties.hs + 814 -1
 cc2754d82afd07adda240a6b4011bc9bfd652e60:man/xmonad.hs 9d9acba45feaf96b521812e3b8d61b72fed887ae:man/xmonad.hs + 251 -1
-934fb2c36873d68f4191afb5c9872d0643b3236e:XMonad/DefaultConfig.hs c9142952c24473bb77d23db72e89248b9c9c722a:XMonad/DefaultConfig.hs + 139
 ab0ebe105014395b758385acdb894ae26944385e:Config.hs 89645e0999e2170d032797fe36c271250dbe31f5:Config.hs - 108 -1
 ab0ebe105014395b758385acdb894ae26944385e:Config.hs 89645e0999e2170d032797fe36c271250dbe31f5:Config.hs + 137 -1
 e70fb29efc365f7cd6c931c9ce88d9b4183d6afa:Config.hs 8e303a6beaad56c3099b23f8815743513717af53:Config.hs - 142 -1

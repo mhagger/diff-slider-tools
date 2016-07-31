@@ -79,7 +79,6 @@ b6be6451971afc7798c1aa22ff73d681c4e0019b:daemon/execdriver/native/seccomp_defaul
 2bb8c85bc5e59d2f5a154b58bb9a4b6e86775a40:integration-cli/check_test.go 1fa2e3115105f6b2334f452bd08415e8f00633d7:integration-cli/check_test.go + 66 -1
 5ccd33134fdfa837df4a59d658d91a81a978cf31:docs/extend/plugins_volume.md 5d1dd8069bd8217f946da531c2575280a68bc085:docs/extend/plugins_volume.md + 167 0
 ca3ae72e43a0e6ad2f4f548586110c2e296ae1e9:daemon/execdriver/native/seccomp_default.go 822c4f79ab5c84d48bbdd5534cdfd98990cdcee7:daemon/execdriver/native/seccomp_default.go + 1553 -1
-b2d00e312b23b9942a1db2ccf6b56288ac3bc57d:docs/reference/api/docker_remote_api_v1.22.md 72472f5639fc92f3fd554e4eb860b0cb6938f7c2:docs/reference/api/docker_remote_api_v1.22.md - 2977
 db738dd77f699e93f976441d5fc11ab48a2d6c68:docs/reference/api/remote_api_client_libraries.md 09e0c9fc24db44217885c58fb6023bcfef211ae0:docs/reference/api/remote_api_client_libraries.md + 211 -1
 923609179b18fb5fc9d4ad7820646af7e09786a2:daemon/execdriver/native/seccomp_default.go d8e06d54cf3f6478ba85f60cca4a9b03bbc68f10:daemon/execdriver/native/seccomp_default.go + 1312 -1
 d6a9c5abed7370d9ef20b488e315b9730f22ed44:daemon/execdriver/native/seccomp_default.go 923609179b18fb5fc9d4ad7820646af7e09786a2:daemon/execdriver/native/seccomp_default.go + 647 -1
@@ -134,7 +133,6 @@ ae76f7e23e0b9d7aceb711077a7ffc1f0e57de9c:contrib/check-config.sh cde9e8bc83182f0
 0d2ea52f03f2b62e5053ed056fc4db6ab305a6bc:pkg/archive/copy_test.go 92600bdec1284f9031868751f61bef476d2e1dbd:pkg/archive/copy_test.go + 861 0
 fb2bae5e162c91175f7cbc654de8e0fd132a0998:docs/reference/api/remote_api_client_libraries.md 4e4a68415cc2a85a77241a0e63d7ea2a5d4e6090:docs/reference/api/remote_api_client_libraries.md + 113 -1
 b2f14f9bec0c4c8f14e9ac5446fbb49d88310bae:contrib/docker-engine-selinux/docker.te 3b5fac462d21ca164b3778647420016315289034:contrib/docker-engine-selinux/docker.te - 391 -1
-8d5695470ae909d0abb62e10f41c6e5f342520cd:docs/reference/api/docker_remote_api_v1.22.md 39dfc536d444df8745124ffa38504241a0a985f7:docs/reference/api/docker_remote_api_v1.22.md + 2713
 2e466bafda752c3f51adc6ad7e862d65f4c43deb:vendor/src/github.com/docker/distribution/registry/api/v2/descriptors.go 257c59251bd9a03aea4f3188a8160c54f37950ae:vendor/src/github.com/docker/distribution/registry/api/v2/descriptors.go - 367 -1
 a154b95d06869ab6d76059114a18b3e672e73603:daemon/execdriver/lxc/lxc_template_unit_test.go 9d14866d7173e974b9eff34e251b16083647f056:daemon/execdriver/lxc/lxc_template_unit_test.go - 56 0
 b96e076af9478f37c5efd3f56e5f0aa42c846b66:vendor/src/github.com/aws/aws-sdk-go/service/cloudwatchlogs/api.go 70083e6fc3a7f64755fcf4752e6d24758bdd0543:vendor/src/github.com/aws/aws-sdk-go/service/cloudwatchlogs/api.go + 2693 -1
