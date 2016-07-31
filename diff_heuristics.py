@@ -161,7 +161,8 @@ class Group:
 
 
 class Context(Group):
-    pass
+    def __getitem__(self, i):
+        return self.difflines[i]
 
 
 class Change(Group):
@@ -313,7 +314,7 @@ class Slider:
             # Move lines from end of pre-context to change:
             difflines = [
                 DiffLine(self.change.prefix, diffline.line)
-                for diffline in self.pre_context.difflines[shift:]
+                for diffline in self.pre_context[shift:]
                 ]
             del self.pre_context.difflines[shift:]
             self.change.difflines[0:0] = difflines
@@ -340,7 +341,7 @@ class Slider:
             # Move lines from begining of post-context to change:
             difflines = [
                 DiffLine(self.change.prefix, diffline.line)
-                for diffline in self.post_context.difflines[:shift]
+                for diffline in self.post_context[:shift]
                 ]
             del self.post_context.difflines[:shift]
             self.change.difflines.extend(difflines)
