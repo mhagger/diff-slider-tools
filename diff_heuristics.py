@@ -32,8 +32,30 @@ def get_indent(line):
 
 
 class SplitScorer:
-    def __init__(self):
-        pass
+    # A list [(parameter_name, default_value), ...]
+    PARAMETERS = [
+        ('start_of_hunk_bonus', 5),
+        ('end_of_hunk_bonus', 5),
+        ('follows_blank_bonus', 3),
+        ('precedes_blank_bonus', 1),
+        ('between_blanks_bonus', 1),
+        ('indent_bonus', -4),
+        ('outdent_bonus', 2),
+        ('dedent_bonus', 0),
+        ('block_bonus', 0),
+        ]
+
+    def __init__(self, **kw):
+        for (parameter, default) in SplitScorer.PARAMETERS:
+            setattr(self, parameter, kw.pop(parameter, default))
+
+        if kw:
+            print(
+                'The following SplitScorer parameter(s) are unknown '
+                'and will be ignored:',
+                *['    %s' % (k,) for k in kw],
+                file=sys.stderr, sep='\n'
+                )
 
     def __call__(self, lines, index):
         """Return the badness of splitting lines before lines[index].
@@ -57,7 +79,7 @@ class SplitScorer:
         if index == 0:
             pre_indent = 0
             pre_blank = 1
-            bonus += 5
+            bonus += self.start_of_hunk_bonus
         else:
             i = index - 1
             while i >= 0:
@@ -73,7 +95,7 @@ class SplitScorer:
         if index == len(lines):
             post_indent = 0
             post_blank = True
-            bonus += 5
+            bonus += self.end_of_hunk_bonus
         else:
             i = index + 1
             while i < len(lines):
@@ -92,18 +114,18 @@ class SplitScorer:
 
         # Bonuses based on the location of blank lines:
         if pre_blank and not blank:
-            bonus += 3
+            bonus += self.follows_blank_bonus
         elif blank and not pre_blank:
-            bonus += 1
+            bonus += self.precedes_blank_bonus
         elif blank and pre_blank:
-            bonus += 1
+            bonus += self.between_blanks_bonus
 
         if indent > pre_indent:
             # The line is indented more than its predecessor. It is
             # preferable to keep these lines together, so we score it
             # based on the larger indent:
             score = indent
-            bonus -= 4
+            bonus += self.indent_bonus
 
         elif indent < pre_indent:
             # The line is indented less than its predecessor. It could
@@ -117,11 +139,12 @@ class SplitScorer:
                 # pretty good place to split, so score it based on the
                 # smaller indent:
                 score = indent
-                bonus += 2
+                bonus += self.outdent_bonus
             else:
                 # This was probably the end of a block. We score based
                 # on the line's own indent:
                 score = indent
+                bonus += self.dedent_bonus
 
         else:
             # The line has the same indentation level as its
@@ -129,8 +152,8 @@ class SplitScorer:
             score = indent
             # ...but if it's not blank, give it a small bonus because
             # this is more likely to span a balanced block:
-            #if not blank:
-            #    bonus += 1
+            if not blank:
+                bonus += self.block_bonus
 
         return 10 * score - bonus
 
