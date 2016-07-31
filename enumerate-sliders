@@ -47,7 +47,7 @@ def main(args):
     parser = argparse.ArgumentParser(
         description='Enumerate slideable add/delete groups in a diff'
         )
-    parser.add_argument('--repo', type=str)
+    parser.add_argument('--repo', type=str, required=True)
     parser.add_argument('--verbose', '-v')
 
     options = parser.parse_args(args)

@@ -44,7 +44,7 @@ def main(args):
     parser = argparse.ArgumentParser(
         description='Read a slider shift from a diff'
         )
-    parser.add_argument('--repo', type=str)
+    parser.add_argument('--repo', type=str, required=True)
     parser.add_argument('--verbose', '-v')
 
     options = parser.parse_args(args)
