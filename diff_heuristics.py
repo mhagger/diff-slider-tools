@@ -639,12 +639,21 @@ def iter_file_diffs(lines):
             sys.stderr.write('%s\n' % (e,))
 
 
+last_diff_args = None
+last_diff = None
+
 def compute_diff(repo, old, new):
     """Compute a git diff between old and new in the specified repo.
 
     Set some options to try to get consistent output.
 
     """
+
+    global last_diff_args, last_diff
+
+    args = (repo, old, new)
+    if last_diff_args == args:
+        return last_diff
 
     cmd = [
         'git',
@@ -655,7 +664,9 @@ def compute_diff(repo, old, new):
         '--',
         ]
     out = subprocess.check_output(cmd)
-    return out.decode('utf-8', errors='replace').split('\n')[:-1]
+    last_diff_args = args
+    last_diff = out.decode('utf-8', errors='replace').split('\n')[:-1]
+    return last_diff
 
 
 def find_slider(lines, old_filename, new_filename, prefix, line_number):
