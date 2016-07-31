@@ -132,11 +132,9 @@ def score_split(lines, index):
 
 
 class DiffLine:
-    def __init__(self, line):
-        if not line:
-            raise ParsingError('empty line passed to DiffLine')
-        self.prefix = line[0]
-        self.line = line[1:]
+    def __init__(self, prefix, line):
+        self.prefix = prefix
+        self.line = line
 
     def __bool__(self):
         return bool(self.line.rstrip())
@@ -502,7 +500,7 @@ class Hunk:
             self.new_len = None
         else:
             self.new_len = int(m.group('new_len'))
-        self.difflines = [DiffLine(line) for line in lines[1:]]
+        self.difflines = [DiffLine(line[0], line[1:]) for line in lines[1:]]
         self.groups = list(self.iter_groups(self.difflines))
 
     def iter_sliders(self):
