@@ -57,17 +57,28 @@ def main(args):
         (new_sha1, new_filename) = new.split(':', 1)
 
         lines = compute_diff(options.repo, old, new)
-        slider = find_slider(lines, old_filename, new_filename, prefix, line_number)
-        slider.shift_canonically()
-
-        print(
-            '%s:%s %s:%s %s %d %d' % (
-                old_sha1, old_filename,
-                new_sha1, new_filename,
-                slider.prefix, slider.line_number,
-                slider.find_best_shift(),
+        try:
+            slider = find_slider(lines, old_filename, new_filename, prefix, line_number)
+        except diff_heuristics.ParsingError as e:
+            sys.stderr.write(
+                'Error parsing slider %s:%s %s:%s %s %d: %s\n' % (
+                    old_sha1, old_filename,
+                    new_sha1, new_filename,
+                    prefix, line_number,
+                    e,
+                    )
                 )
-            )
+        else:
+            slider.shift_canonically()
+
+            print(
+                '%s:%s %s:%s %s %d %d' % (
+                    old_sha1, old_filename,
+                    new_sha1, new_filename,
+                    slider.prefix, slider.line_number,
+                    slider.find_best_shift(),
+                    )
+                )
 
 
 if __name__ == '__main__':
