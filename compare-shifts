@@ -22,7 +22,6 @@ sys.path.insert(0, os.path.dirname(sys.argv[0]))
 
 import diff_heuristics
 from diff_heuristics import compute_slider
-from diff_heuristics import find_slider
 from diff_heuristics import iter_shifts
 
 
