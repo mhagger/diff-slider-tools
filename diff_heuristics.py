@@ -45,6 +45,20 @@ class SplitScorer:
         ('block_bonus', 0),
         ]
 
+    @classmethod
+    def add_arguments(klass, parser):
+        for (parameter, default) in klass.PARAMETERS:
+            parser.add_argument(
+                '--%s' % (parameter.replace('_', '-'),), type=int, default=default,
+                )
+
+    @classmethod
+    def from_options(klass, options):
+        kw = {}
+        for (parameter, default) in klass.PARAMETERS:
+            kw[parameter] = getattr(options, parameter, default)
+        return klass(**kw)
+
     def __init__(self, **kw):
         for (parameter, default) in SplitScorer.PARAMETERS:
             setattr(self, parameter, kw.pop(parameter, default))

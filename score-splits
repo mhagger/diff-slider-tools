@@ -12,7 +12,19 @@ from diff_heuristics import SplitScorer
 
 
 def main(args):
-    scorer = SplitScorer()
+    parser = argparse.ArgumentParser(
+        description='Show the scores for splitting the lines on stdin'
+        )
+    parser.add_argument('--verbose', '-v', action='store_true')
+    SplitScorer.add_arguments(parser)
+
+    options = parser.parse_args(args)
+
+    if options.verbose:
+        diff_heuristics.verbose = True
+
+    scorer = SplitScorer.from_options(options)
+
     input = io.TextIOWrapper(sys.stdin.buffer, encoding='utf-8', errors='replace')
     lines = [line.rstrip('\n\r') for line in input.readlines()]
     for (i, line) in enumerate(lines):
