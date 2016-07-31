@@ -31,104 +31,108 @@ def get_indent(line):
     return ret
 
 
-def score_split(lines, index):
-    """Return the badness of splitting lines before lines[index].
+class SplitScorer:
+    def __init__(self):
+        pass
 
-    The lower the score, the more preferable the split."""
+    def __call__(self, lines, index):
+        """Return the badness of splitting lines before lines[index].
 
-    # A place to accumulate bonus factors (positive makes this
-    # index more favored):
-    bonus = 0
+        The lower the score, the more preferable the split."""
 
-    try:
-        line = lines[index]
-    except IndexError:
-        indent = None
-    else:
-        indent = get_indent(line)
+        # A place to accumulate bonus factors (positive makes this
+        # index more favored):
+        bonus = 0
 
-    blank = (indent is None)
-
-    pre_blank = False
-    if index == 0:
-        pre_indent = 0
-        pre_blank = 1
-        bonus += 5
-    else:
-        i = index - 1
-        while i >= 0:
-            pre_indent = get_indent(lines[i])
-            if pre_indent is not None:
-                break
-            pre_blank = True
-            i -= 1
+        try:
+            line = lines[index]
+        except IndexError:
+            indent = None
         else:
+            indent = get_indent(line)
+
+        blank = (indent is None)
+
+        pre_blank = False
+        if index == 0:
             pre_indent = 0
-
-    post_blank = None
-    if index == len(lines):
-        post_indent = 0
-        post_blank = True
-        bonus += 5
-    else:
-        i = index + 1
-        while i < len(lines):
-            post_indent = get_indent(lines[i])
-            if post_indent is not None:
-                break
-            post_blank = True
-            i += 1
+            pre_blank = 1
+            bonus += 5
         else:
+            i = index - 1
+            while i >= 0:
+                pre_indent = get_indent(lines[i])
+                if pre_indent is not None:
+                    break
+                pre_blank = True
+                i -= 1
+            else:
+                pre_indent = 0
+
+        post_blank = None
+        if index == len(lines):
             post_indent = 0
-
-    if blank:
-        # Blank lines are treated as if they were indented like the
-        # following non-blank line:
-        indent = post_indent
-
-    # Bonuses based on the location of blank lines:
-    if pre_blank and not blank:
-        bonus += 3
-    elif blank and not pre_blank:
-        bonus += 1
-    elif blank and pre_blank:
-        bonus += 1
-
-    if indent > pre_indent:
-        # The line is indented more than its predecessor. It is
-        # preferable to keep these lines together, so we score it
-        # based on the larger indent:
-        score = indent
-        bonus -= 4
-
-    elif indent < pre_indent:
-        # The line is indented less than its predecessor. It could
-        # be that this line is the start of a new block (e.g., of
-        # an "else" block, or of a block without a block
-        # terminator) or it could be the end of the previous
-        # block.
-        if indent < post_indent:
-            # The following line is indented more. So it is likely
-            # that this line is the start of a block. It's a
-            # pretty good place to split, so score it based on the
-            # smaller indent:
-            score = indent
-            bonus += 2
+            post_blank = True
+            bonus += 5
         else:
-            # This was probably the end of a block. We score based
-            # on the line's own indent:
+            i = index + 1
+            while i < len(lines):
+                post_indent = get_indent(lines[i])
+                if post_indent is not None:
+                    break
+                post_blank = True
+                i += 1
+            else:
+                post_indent = 0
+
+        if blank:
+            # Blank lines are treated as if they were indented like the
+            # following non-blank line:
+            indent = post_indent
+
+        # Bonuses based on the location of blank lines:
+        if pre_blank and not blank:
+            bonus += 3
+        elif blank and not pre_blank:
+            bonus += 1
+        elif blank and pre_blank:
+            bonus += 1
+
+        if indent > pre_indent:
+            # The line is indented more than its predecessor. It is
+            # preferable to keep these lines together, so we score it
+            # based on the larger indent:
             score = indent
+            bonus -= 4
 
-    else:
-        # The line has the same indentation level as its
-        # predecessor. We score it based on its own indent:
-        score = indent
-        # ...but if it's not blank, give it a small bonus because
-        # this is more likely to span a balanced block:
-        #if not blank:
-        #    bonus += 1
+        elif indent < pre_indent:
+            # The line is indented less than its predecessor. It could
+            # be that this line is the start of a new block (e.g., of
+            # an "else" block, or of a block without a block
+            # terminator) or it could be the end of the previous
+            # block.
+            if indent < post_indent:
+                # The following line is indented more. So it is likely
+                # that this line is the start of a block. It's a
+                # pretty good place to split, so score it based on the
+                # smaller indent:
+                score = indent
+                bonus += 2
+            else:
+                # This was probably the end of a block. We score based
+                # on the line's own indent:
+                score = indent
 
-    return 10 * score - bonus
+        else:
+            # The line has the same indentation level as its
+            # predecessor. We score it based on its own indent:
+            score = indent
+            # ...but if it's not blank, give it a small bonus because
+            # this is more likely to span a balanced block:
+            #if not blank:
+            #    bonus += 1
+
+        return 10 * score - bonus
 
 
 class DiffLine:
@@ -257,22 +261,22 @@ class Slider:
         self.slide(max_shift)
         return -max_shift
 
-    def get_score_for_split(self, split):
+    def get_score_for_split(self, scorer, split):
         """Return the score for splitting above the specified line.
 
         The lower the score, the less bad the split."""
 
-        return score_split(self.lines, split + len(self.pre_context))
+        return scorer(self.lines, split + len(self.pre_context))
 
-    def get_score(self, shift):
+    def get_score(self, scorer, shift):
         split1 = shift
         split2 = shift + len(self.change)
 
         assert -len(self.pre_context) <= split1
         assert split2 <= len(self.change) + len(self.post_context)
         return (
-            self.get_score_for_split(split1)
-            + self.get_score_for_split(split2)
+            self.get_score_for_split(scorer, split1)
+            + self.get_score_for_split(scorer, split2)
             )
 
     def _compute_shift_range(self):
@@ -360,7 +364,7 @@ class Slider:
                                  self.shift_range.stop - shift)
         self.line_number += shift
 
-    def find_best_shift(self):
+    def find_best_shift(self, scorer):
         if len(self.shift_range) == 1:
             return self.shift_range[0]
 
@@ -368,7 +372,7 @@ class Slider:
         best_score = None
 
         for shift in self.shift_range:
-            score = self.get_score(shift)
+            score = self.get_score(scorer, shift)
             if best_score is None or score <= best_score:
                 best_shift = shift
                 best_score = score
@@ -388,8 +392,8 @@ class Slider:
     def enumerate(self):
         return enumerate(self.difflines, start=-len(self.pre_context))
 
-    def show(self, slider_context=5):
-        best_shift = self.find_best_shift()
+    def show(self, scorer, slider_context=5):
+        best_shift = self.find_best_shift(scorer)
 
         print('v' * 60)
 
@@ -401,9 +405,9 @@ class Slider:
                 continue
 
             if i in self.shift_range:
-                score = '%5d' % (self.get_score_for_split(i),)
+                score = '%5d' % (self.get_score_for_split(scorer, i),)
             elif i - len(self.change) in self.shift_range:
-                score = '%5d' % (self.get_score_for_split(i),)
+                score = '%5d' % (self.get_score_for_split(scorer, i),)
             else:
                 score = '     '
 
@@ -419,7 +423,7 @@ class Slider:
                 i == len(self.change) + len(self.post_context)
                 and i - len(self.change) in self.shift_range
                 ):
-            score = '%5d' % (self.get_score_for_split(i),)
+            score = '%5d' % (self.get_score_for_split(scorer, i),)
             print('    %s%s %s %s >%s' % (
                 ' ', ' ',
                 score,

@@ -157,7 +157,7 @@ Basic use:
 
 The heuristic that is prototyped here chooses its shifts based only on the indentation of lines around the slider plus the presence/absence of blank lines nearby. It computes a score for the split that would have to be introduced at the top of the slider, and one for the split at the bottom of the slider, then adds the scores together to get an overall score for a slider shift. The shift with the lowest score wins.
 
-The implementation of the scoring algorithm is in `diff_heuristics.py`, function `score_split()`. Feel free to play with it and tweak it. Remember, whatever heuristic we build into Git has to work acceptably well across a wide variety of programming languages and other textual input!
+The implementation of the scoring algorithm is in `diff_heuristics.py`, class `SplitScorer()`. Feel free to play with it and tweak it. Remember, whatever heuristic we build into Git has to work acceptably well across a wide variety of programming languages and other textual input!
 
 
 ## To Do

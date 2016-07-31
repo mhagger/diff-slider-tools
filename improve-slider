@@ -36,6 +36,7 @@ import diff_heuristics
 from diff_heuristics import compute_diff
 from diff_heuristics import find_slider
 from diff_heuristics import iter_shifts
+from diff_heuristics import SplitScorer
 
 
 INPUT_RE = re.compile(r'^(?P<old_sha1>[0-9a-f]{40})\.\.(?P<new_sha1>[0-9a-f]{40})$')
@@ -51,6 +52,8 @@ def main(args):
 
     if options.verbose:
         diff_heuristics.verbose = True
+
+    scorer = SplitScorer()
 
     for (old, new, prefix, line_number, shifts) in iter_shifts(sys.stdin):
         (old_sha1, old_filename) = old.split(':', 1)
@@ -76,7 +79,7 @@ def main(args):
                     old_sha1, old_filename,
                     new_sha1, new_filename,
                     slider.prefix, slider.line_number,
-                    slider.find_best_shift(),
+                    slider.find_best_shift(scorer),
                     )
                 )
 

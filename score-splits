@@ -8,15 +8,16 @@ sys.path.insert(0, os.path.dirname(sys.argv[0]))
 
 import diff_heuristics
 
-from diff_heuristics import score_split
+from diff_heuristics import SplitScorer
 
 
 def main(args):
+    scorer = SplitScorer()
     input = io.TextIOWrapper(sys.stdin.buffer, encoding='utf-8', errors='replace')
     lines = [line.rstrip('\n\r') for line in input.readlines()]
     for (i, line) in enumerate(lines):
-        print('%5d|%s' % (score_split(lines, i), line))
-    print('%5d' % (score_split(lines, len(lines))))
+        print('%5d|%s' % (scorer(lines, i), line))
+    print('%5d' % (scorer(lines, len(lines))))
 
 
 if __name__ == '__main__':
