@@ -551,13 +551,11 @@ class Hunk:
 
     def old_lines(self):
         for group in self.groups:
-            for line in group.old_lines():
-                yield line
+            yield from group.old_lines()
 
     def new_lines(self):
         for group in self.groups:
-            for line in group.new_lines():
-                yield line
+            yield from group.new_lines()
 
 
 class FileDiff:
