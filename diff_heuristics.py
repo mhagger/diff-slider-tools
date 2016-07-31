@@ -542,7 +542,7 @@ class Hunk:
 
             pre_context = Context(pre_lines)
             post_context = Context(post_lines)
-            yield Slider(pre_context, change, post_context, line_number)
+            yield Slider(pre_context, Change(change.difflines), post_context, line_number)
 
     def old_lines(self):
         for group in self.groups:
