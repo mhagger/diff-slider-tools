@@ -523,7 +523,7 @@ class Hunk:
 
     def iter_sliders(self):
         for i in range(1, len(self.groups) - 1, 2):
-            change = self.groups[i]
+            pre_group, change, post_group = self.groups[i - 1:i + 2]
             if change.prefix == '-':
                 selector = lambda group: group.old_lines()
                 reference_line = self.old_line
@@ -534,6 +534,17 @@ class Hunk:
                 # Mixed deletion/additions cannot be sliders:
                 continue
 
+            if pre_group and pre_group[-1].line == change.difflines[-1].line:
+                # This change can be slid up; proceed:
+                pass
+            elif post_group and post_group[0].line == change.difflines[0].line:
+                # This change can be slid down; proceed:
+                pass
+            else:
+                # This change cannot be slid:
+                continue
+
+            # Use all of the lines in the hunk as context:
             pre_lines = functools.reduce(
                 list.__iadd__,
                 [selector(group) for group in self.groups[:i]],
@@ -546,9 +557,12 @@ class Hunk:
                 )
             line_number = reference_line + len(pre_lines)
 
-            pre_context = Context(pre_lines)
-            post_context = Context(post_lines)
-            yield Slider(pre_context, Change(change.difflines), post_context, line_number)
+            yield Slider(
+                Context(pre_lines),
+                Change(change.difflines),
+                Context(post_lines),
+                line_number,
+                )
 
     def old_lines(self):
         for group in self.groups:
