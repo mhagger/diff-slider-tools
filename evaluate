@@ -10,5 +10,5 @@ evaluate() {
 
 for repo in "$@"
 do
-    analyze "$repo"
+    evaluate "$repo"
 done
