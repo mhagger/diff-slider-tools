@@ -50,7 +50,7 @@ def score_split(lines, index):
     blank = (indent is None)
 
     pre_blank = False
-    if index < 0:
+    if index == 0:
         pre_indent = 0
         pre_blank = 1
         bonus += 5
