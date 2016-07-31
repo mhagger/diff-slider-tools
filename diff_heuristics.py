@@ -210,6 +210,9 @@ class Change(Group):
 
 class Slider:
     def __init__(self, pre_context, change, post_context, line_number):
+        # Replacements cannot be slid:
+        assert change.prefix in '+-'
+
         self.pre_context = pre_context
         self.change = change
         self.post_context = post_context
@@ -221,6 +224,9 @@ class Slider:
         self.prefix = self.change.prefix
 
         self.shift_range = self._compute_shift_range()
+        # Ensure we have no non-slidable sliders:
+        assert len(self.shift_range) > 1
+
         self.lines = [diffline.line for diffline in self.difflines]
         if verbose:
             sys.stderr.write(
@@ -267,10 +273,6 @@ class Slider:
 
     def _compute_shift_range(self):
         """Return a range object describing the limits of the allowed shift."""
-
-        if self.change.prefix == '?':
-            # Replacements cannot be slid:
-            return range(0, 1)
 
         shift_min = 0
         while (
