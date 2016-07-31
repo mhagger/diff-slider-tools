@@ -468,7 +468,12 @@ class Hunk:
 
     @staticmethod
     def iter_groups(difflines):
-        """Split difflines into context, change, context, change, ..., context."""
+        """Split difflines into context, change, context, change, ..., context.
+
+        The first and last elements are always Context instances
+        (however, they may be empty).
+
+        """
 
         processing_change = False
         group = []
