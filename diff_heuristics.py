@@ -31,17 +31,43 @@ def get_indent(line):
     return ret
 
 
+class SplitMeasurements:
+    def __init__(self):
+        # Is the split at the end of the hunk (aside from any blank
+        # lines)?
+        self.end_of_hunk = False
+
+        # How much is the line immediately following the split
+        # indented (or None if the line is blank):
+        self.indent = None
+
+        # How many lines above the split are blank?
+        self.pre_blank = 0
+
+        # How much is the nearest non-blank line above the split
+        # indented (or None if there is no such line)?
+        self.pre_indent = None
+
+        # How many lines after the line following the split are blank?
+        self.post_blank = 0
+
+        # How much is the nearest non-blank line after the line
+        # following the split indented (or None if there is no such
+        # line)?
+        self.post_indent = None
+
+
 class SplitScorer:
     # A list [(parameter_name, default_value), ...]
     PARAMETERS = [
-        ('start_of_hunk_bonus', 5),
-        ('end_of_hunk_bonus', 5),
+        ('start_of_hunk_bonus', 8),
+        ('end_of_hunk_bonus', 8),
         ('follows_blank_bonus', 3),
         ('precedes_blank_bonus', 1),
         ('between_blanks_bonus', 1),
-        ('indent_bonus', -4),
-        ('outdent_bonus', 2),
-        ('dedent_bonus', 0),
+        ('relative_indent_bonus', -4),
+        ('relative_outdent_bonus', 2),
+        ('relative_dedent_bonus', 0),
         ('block_bonus', 0),
         ]
 
@@ -71,105 +97,111 @@ class SplitScorer:
                 file=sys.stderr, sep='\n'
                 )
 
-    def __call__(self, lines, index):
-        """Return the badness of splitting lines before lines[index].
+    def measure(self, lines, index):
+        """Measure various characteristics of a split before lines[index].
 
-        The lower the score, the more preferable the split."""
+        Return a SplitMeasurements instance."""
+
+        m = SplitMeasurements()
+
+        try:
+            line = lines[index]
+        except IndexError:
+            m.end_of_hunk = True
+        else:
+            m.indent = get_indent(line)
+
+        i = index - 1
+        while i >= 0:
+            m.pre_indent = get_indent(lines[i])
+            if m.pre_indent is not None:
+                break
+            m.pre_blank += 1
+            i -= 1
+
+        i = index + 1
+        while i < len(lines):
+            m.post_indent = get_indent(lines[i])
+            if m.post_indent is not None:
+                break
+            m.post_blank += 1
+            i += 1
+
+        return m
+
+    def evaluate(self, m):
+        """Evaluate the score for a split with the specified measurements."""
 
         # A place to accumulate bonus factors (positive makes this
         # index more favored):
         bonus = 0
 
-        try:
-            line = lines[index]
-        except IndexError:
-            indent = None
-        else:
-            indent = get_indent(line)
-
-        blank = (indent is None)
-
-        pre_blank = False
-        if index == 0:
-            pre_indent = 0
-            pre_blank = 1
+        if m.pre_indent is None and m.pre_blank == 0:
             bonus += self.start_of_hunk_bonus
-        else:
-            i = index - 1
-            while i >= 0:
-                pre_indent = get_indent(lines[i])
-                if pre_indent is not None:
-                    break
-                pre_blank = True
-                i -= 1
-            else:
-                pre_indent = 0
 
-        post_blank = None
-        if index == len(lines):
-            post_indent = 0
-            post_blank = True
+        if m.end_of_hunk:
             bonus += self.end_of_hunk_bonus
-        else:
-            i = index + 1
-            while i < len(lines):
-                post_indent = get_indent(lines[i])
-                if post_indent is not None:
-                    break
-                post_blank = True
-                i += 1
-            else:
-                post_indent = 0
-
-        if blank:
-            # Blank lines are treated as if they were indented like the
-            # following non-blank line:
-            indent = post_indent
 
         # Bonuses based on the location of blank lines:
-        if pre_blank and not blank:
+        if m.pre_blank and m.indent is not None:
             bonus += self.follows_blank_bonus
-        elif blank and not pre_blank:
+        elif m.indent is None and not m.pre_blank:
             bonus += self.precedes_blank_bonus
-        elif blank and pre_blank:
+        elif m.indent is None and m.pre_blank:
             bonus += self.between_blanks_bonus
 
-        if indent > pre_indent:
-            # The line is indented more than its predecessor. It is
-            # preferable to keep these lines together, so we score it
-            # based on the larger indent:
-            score = indent
-            bonus += self.indent_bonus
+        if m.indent is not None:
+            indent = m.indent
+        else:
+            indent = m.post_indent
 
-        elif indent < pre_indent:
-            # The line is indented less than its predecessor. It could
-            # be that this line is the start of a new block (e.g., of
-            # an "else" block, or of a block without a block
-            # terminator) or it could be the end of the previous
-            # block.
-            if indent < post_indent:
-                # The following line is indented more. So it is likely
-                # that this line is the start of a block. It's a
-                # pretty good place to split, so score it based on the
-                # smaller indent:
+        if indent is None:
+            score = 0
+        elif m.pre_indent is None:
+            score = indent
+        elif indent > m.pre_indent:
+            # The line is indented more than its predecessor. It
+            # is preferable to keep these lines together, so we
+            # score it based on the larger indent:
+            score = indent
+            bonus += self.relative_indent_bonus
+
+        elif indent < m.pre_indent:
+            # The line is indented less than its predecessor. It
+            # could be that this line is the start of a new block
+            # (e.g., of an "else" block, or of a block without a
+            # block terminator) or it could be the end of the
+            # previous block.
+            if m.post_indent is None or indent >= m.post_indent:
+                # That was probably the end of a block. Score
+                # based on the line's own indent:
                 score = indent
-                bonus += self.outdent_bonus
+                bonus += self.relative_dedent_bonus
             else:
-                # This was probably the end of a block. We score based
-                # on the line's own indent:
+                # The following line is indented more. So it is
+                # likely that this line is the start of a block.
+                # It's a pretty good place to split, so score it
+                # based on its own indent:
                 score = indent
-                bonus += self.dedent_bonus
+                bonus += self.relative_outdent_bonus
 
         else:
             # The line has the same indentation level as its
             # predecessor. We score it based on its own indent:
             score = indent
-            # ...but if it's not blank, give it a small bonus because
-            # this is more likely to span a balanced block:
-            if not blank:
+            # If it's not blank, that's a little bit of evidence
+            # that the split is within a block of sibling lines:
+            if m.indent is not None:
                 bonus += self.block_bonus
 
         return 10 * score - bonus
+
+    def __call__(self, lines, index):
+        """Return the badness of splitting lines before lines[index].
+
+        The lower the score, the more preferable the split."""
+
+        return self.evaluate(self.measure(lines, index))
 
 
 class DiffLine:
