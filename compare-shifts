@@ -4,7 +4,7 @@
 
 usage:
 
-    improve-slider --repo=<repo> [<c>=<path>...]
+    compare-shifts --repo=<repo> [<c>=<path>...]
 
 where each <path> is a *.sliders file with or without shifts, and <c>
 is the character with which that file's shift will be presented.
