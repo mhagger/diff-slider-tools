@@ -4,7 +4,12 @@
 
 usage:
 
-    improve-slider <old-sha1>:<old-filename> <new-sha1>:<new-filename> [-/+] <line-number>
+    improve-slider --repo=<PATH> [--verbose]
+
+To stdin should be written one or more sliders to be processed, in the
+following format:
+
+    <old-sha1>:<old-filename> <new-sha1>:<new-filename> [-/+] <line-number> [<shift>...]
 
 where
 
@@ -18,9 +23,10 @@ where
   The line number is relative to the old blob if lines are being
   deleted and relative to the new blob if lines are being added.
 
-Output the shift chosen for that slider to stdout as
+* <shift> can be integers. These are ignored.
 
-    <old-sha1>:<old-filename> <new-sha1>:<new-filename> [-/+] <line-number> <shift>
+Write the results to stdout in the same format as the input, where
+<shift> is the preferred shift.
 
 """
 
