@@ -676,7 +676,12 @@ def compute_diff(repo, old, new):
 
 
 def find_slider(lines, old_filename, new_filename, prefix, line_number):
-    """Find the specified slider in the lines provided."""
+    """Find the specified slider in the lines provided.
+
+    The line number must be canonical, but the returned slider will
+    not necessarily be shifted canonically.
+
+    """
 
     for file_diff in iter_file_diffs(lines):
         for hunk in file_diff.hunks:
