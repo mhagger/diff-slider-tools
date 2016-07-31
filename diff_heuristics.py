@@ -303,17 +303,19 @@ class Slider:
                     )
 
             # Move lines from end of change to post-context:
-            difflines = self.change.difflines[shift:]
+            difflines = [
+                DiffLine(' ', diffline.line)
+                for diffline in self.change.difflines[shift:]
+                ]
             del self.change.difflines[shift:]
-            for diffline in difflines:
-                diffline.prefix = ' '
             self.post_context.difflines[0:0] = difflines
 
             # Move lines from end of pre-context to change:
-            difflines = self.pre_context.difflines[shift:]
+            difflines = [
+                DiffLine(self.change.prefix, diffline.line)
+                for diffline in self.pre_context.difflines[shift:]
+                ]
             del self.pre_context.difflines[shift:]
-            for diffline in difflines:
-                diffline.prefix = self.change.prefix
             self.change.difflines[0:0] = difflines
             if self.change.prefix == '-':
                 self.change.deletes.difflines[0:0] = difflines
@@ -328,17 +330,19 @@ class Slider:
                     )
 
             # Move lines from beginning of change to pre-context:
-            difflines = self.change.difflines[:shift]
+            difflines = [
+                DiffLine(' ', diffline.line)
+                for diffline in self.change.difflines[:shift]
+                ]
             del self.change.difflines[:shift]
-            for diffline in difflines:
-                diffline.prefix = ' '
             self.pre_context.difflines.extend(difflines)
 
             # Move lines from begining of post-context to change:
-            difflines = self.post_context.difflines[:shift]
+            difflines = [
+                DiffLine(self.change.prefix, diffline.line)
+                for diffline in self.post_context.difflines[:shift]
+                ]
             del self.post_context.difflines[:shift]
-            for diffline in difflines:
-                diffline.prefix = self.change.prefix
             self.change.difflines.extend(difflines)
             if self.change.prefix == '-':
                 self.change.deletes.difflines.extend(difflines)
