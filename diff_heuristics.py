@@ -257,18 +257,18 @@ class Slider:
         self.slide(max_shift)
         return -max_shift
 
-    def get_score_for_line(self, shift):
-        """Return the score for using the specified shift.
+    def get_score_for_split(self, split):
+        """Return the score for splitting above the specified line.
 
-        The lower the score, the more preferable the shift."""
+        The lower the score, the less bad the split."""
 
-        return score_split(self.lines, shift + len(self.pre_context))
+        return score_split(self.lines, split + len(self.pre_context))
 
     def get_score(self, shift):
         assert shift + len(self.change) <= len(self.change) + len(self.post_context)
         return (
-            self.get_score_for_line(shift)
-            + self.get_score_for_line(shift + len(self.change))
+            self.get_score_for_split(shift)
+            + self.get_score_for_split(shift + len(self.change))
             )
 
     def _compute_shift_range(self):
@@ -397,9 +397,9 @@ class Slider:
                 continue
 
             if i in self.shift_range:
-                score = '%5d' % (self.get_score_for_line(i),)
+                score = '%5d' % (self.get_score_for_split(i),)
             elif i - len(self.change) in self.shift_range:
-                score = '%5d' % (self.get_score_for_line(i),)
+                score = '%5d' % (self.get_score_for_split(i),)
             else:
                 score = '     '
 
@@ -415,7 +415,7 @@ class Slider:
                 i == len(self.change) + len(self.post_context)
                 and i - len(self.change) in self.shift_range
                 ):
-            score = '%5d' % (self.get_score_for_line(i),)
+            score = '%5d' % (self.get_score_for_split(i),)
             print('    %s%s %s %s >%s' % (
                 ' ', ' ',
                 score,
