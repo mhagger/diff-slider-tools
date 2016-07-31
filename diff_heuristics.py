@@ -265,10 +265,14 @@ class Slider:
         return score_split(self.lines, split + len(self.pre_context))
 
     def get_score(self, shift):
-        assert shift + len(self.change) <= len(self.change) + len(self.post_context)
+        split1 = shift
+        split2 = shift + len(self.change)
+
+        assert -len(self.pre_context) <= split1
+        assert split2 <= len(self.change) + len(self.post_context)
         return (
-            self.get_score_for_split(shift)
-            + self.get_score_for_split(shift + len(self.change))
+            self.get_score_for_split(split1)
+            + self.get_score_for_split(split2)
             )
 
     def _compute_shift_range(self):
