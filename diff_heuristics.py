@@ -296,7 +296,11 @@ class Slider:
 
         if shift < 0:
             if verbose:
-                sys.stderr.write('Sliding hunk up by %d\n' % (-shift,))
+                sys.stderr.write(
+                    'Sliding hunk up by %d from %d to %d\n' % (
+                        -shift, self.line_number, self.line_number + shift,
+                        )
+                    )
 
             # Move lines from end of change to post-context:
             difflines = self.change.difflines[shift:]
@@ -317,7 +321,11 @@ class Slider:
                 self.change.adds.difflines[0:0] = difflines
         elif shift > 0:
             if verbose:
-                sys.stderr.write('Sliding hunk down by %d\n' % (shift,))
+                sys.stderr.write(
+                    'Sliding hunk down by %d from %d to %d\n' % (
+                        shift, self.line_number, self.line_number + shift,
+                        )
+                    )
 
             # Move lines from beginning of change to pre-context:
             difflines = self.change.difflines[:shift]
