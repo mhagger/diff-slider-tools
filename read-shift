@@ -48,7 +48,7 @@ def main(args):
     parser.add_argument('new', type=str)
     parser.add_argument('prefix', type=str, choices=['-', '+'])
     parser.add_argument('line_number', type=int)
-    parser.add_argument('--verbose', '-v')
+    parser.add_argument('--verbose', '-v', action='store_true')
 
     options = parser.parse_args(args)
 

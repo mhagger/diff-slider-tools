@@ -18,7 +18,7 @@ def main(args):
         description='Improve sliders read from stdin, showing scores'
         )
     parser.add_argument('--repo', type=str, required=True)
-    parser.add_argument('--verbose', '-v')
+    parser.add_argument('--verbose', '-v', action='store_true')
 
     options = parser.parse_args(args)
 

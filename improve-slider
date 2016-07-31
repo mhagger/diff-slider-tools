@@ -45,7 +45,7 @@ def main(args):
         description='Read a slider shift from a diff'
         )
     parser.add_argument('--repo', type=str, required=True)
-    parser.add_argument('--verbose', '-v')
+    parser.add_argument('--verbose', '-v', action='store_true')
 
     options = parser.parse_args(args)
 

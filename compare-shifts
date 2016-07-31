@@ -33,7 +33,7 @@ def main(args):
     parser.add_argument('--repo', type=str, required=True)
     parser.add_argument('--all', '-a')
     parser.add_argument('--any-nonzero', action='store_true')
-    parser.add_argument('--verbose', '-v')
+    parser.add_argument('--verbose', '-v', action='store_true')
     parser.add_argument('--correct', type=str)
     parser.add_argument('columns', nargs='+')
 
