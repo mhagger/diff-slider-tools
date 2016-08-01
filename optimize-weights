@@ -38,6 +38,14 @@ def main(args):
         help='the number of parameters to perturb at once'
         )
     parser.add_argument(
+        '--vary', action='append',
+        choices=SplitScorer2.get_parameter_names() + [
+            name.replace('_', '-')
+            for name in SplitScorer2.get_parameter_names()
+            ],
+        help='parameters that should be varied as part of the optimization',
+        )
+    parser.add_argument(
         '--freeze', action='append',
         choices=SplitScorer2.get_parameter_names() + [
             name.replace('_', '-')
@@ -90,14 +98,19 @@ def main(args):
     if not options.steps:
         options.steps = [-1, 1]
 
-    vary_parameters = SplitScorer2.get_parameter_names()
-    if options.freeze:
+    if options.freeze and options.vary:
+        parser.error('--freeze and --vary are incompatible')
+    elif options.freeze:
         omit = set(name.replace('-', '_') for name in options.freeze)
         vary_parameters = [
             name
-            for name in vary_parameters
+            for name in SplitScorer2.get_parameter_names()
             if not name in omit
             ]
+    elif options.vary:
+        vary_parameters = [name.replace('-', '_') for name in options.vary]
+    else:
+        vary_parameters = SplitScorer2.get_parameter_names()
 
     collected_scores = dict()
 
