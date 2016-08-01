@@ -98,20 +98,20 @@ def main(args):
             if not name in omit
             ]
 
-    all_scorers_seen = dict()
+    collected_scores = dict()
 
     if options.load:
         for filename in options.load:
-            all_scorers_seen.update(load_scores(filename))
+            collected_scores.update(load_scores(filename))
 
-    if all_scorers_seen and options.seed:
+    if collected_scores and options.seed:
         sorted_scorers = sorted(
-            all_scorers_seen,
-            key=lambda scorer: (all_scorers_seen[scorer],)
+            collected_scores,
+            key=lambda scorer: (collected_scores[scorer],)
             )
 
         best_scorer = sorted_scorers[0]
-        best_score = all_scorers_seen[best_scorer]
+        best_score = collected_scores[best_scorer]
         print('Best score so far: %d  %r' % (best_score, best_scorer,), file=sys.stderr)
 
         try:
@@ -119,11 +119,11 @@ def main(args):
         except IndexError:
             last = sorted_scorers[-1]
 
-        threshold = all_scorers_seen[last]
+        threshold = collected_scores[last]
         base_scorers = [
             scorer
             for scorer in sorted_scorers
-            if all_scorers_seen[scorer] <= threshold
+            if collected_scores[scorer] <= threshold
             ]
     else:
         base_scorers = [SplitScorer.from_options(options)]
@@ -136,7 +136,7 @@ def main(args):
                     options.steps, vary_parameters=vary_parameters,
                     max_perturbations=options.max_perturbations,
                     ):
-                if scorer not in all_scorers_seen:
+                if scorer not in collected_scores:
                     scorers.add(scorer)
         scorers = list(scorers)
 
@@ -147,7 +147,7 @@ def main(args):
 
         print(
             'Iteration %d: %d new scorers to test (%d tested already).' % (
-                iteration, len(scorers), len(all_scorers_seen)
+                iteration, len(scorers), len(collected_scores)
                 ),
             file=sys.stderr,
             )
@@ -189,7 +189,7 @@ def main(args):
                                         ):
                                     del error_counts[scorer]
                                     del scorers[i]
-                                    all_scorers_seen[scorer] = None
+                                    collected_scores[scorer] = None
                                     sys.stderr.write('%d.' % (len(scorers),))
                                 else:
                                     i += 1
@@ -218,7 +218,7 @@ def main(args):
         for scorer in sorted_scorers:
             error_count = error_counts[scorer]
             print('%4d  %r' % (error_count, scorer,))
-            all_scorers_seen[scorer] = error_count
+            collected_scores[scorer] = error_count
 
         sys.stdout.flush()
 
