@@ -11,6 +11,7 @@ usage:
 import sys
 import os
 import argparse
+import random
 
 sys.path.insert(0, os.path.dirname(sys.argv[0]))
 
@@ -86,8 +87,8 @@ def main(args):
             break
 
         print(
-            '%d new scorers to test (%d tested already).' % (
-                len(scorers), len(all_scorers_seen)
+            'Iteration %d: %d new scorers to test (%d tested already).' % (
+                iteration, len(scorers), len(all_scorers_seen)
                 ),
             file=sys.stderr,
             )
@@ -162,7 +163,19 @@ def main(args):
 
         sys.stdout.flush()
 
-        base_scorers = sorted_scorers[:options.keep]
+        try:
+            last = sorted_scorers[options.keep - 1]
+        except IndexError:
+            last = sorted_scorers[-1]
+
+        threshold = error_counts[last]
+        base_scorers = [
+            scorer
+            for scorer in sorted_scorers
+            if error_counts[scorer] <= threshold
+        ]
+        if len(base_scorers) > options.keep:
+            base_scorers = random.sample(base_scorers, options.keep)
 
 
 if __name__ == '__main__':
