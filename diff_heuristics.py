@@ -519,16 +519,16 @@ class Slider:
 
         shift_min = 0
         while (
-                shift_min - 1 >= -len(self.pre_context)
-                and shift_min - 1 >= -len(self.change)
+                len(self.pre_context) + shift_min - 1 >= 0
+                and len(self.change) + shift_min - 1 >= 0
                 and (self[shift_min - 1].line
                      == self[len(self.change) + shift_min - 1].line)
                 ):
             shift_min -= 1
 
         shift_limit = 1
-        while (shift_limit < len(self.change)
-               and shift_limit < len(self.post_context)
+        while (shift_limit <= len(self.change)
+               and shift_limit <= len(self.post_context)
                and (self[shift_limit - 1].line
                     == self[len(self.change) + shift_limit - 1].line)
                 ):
