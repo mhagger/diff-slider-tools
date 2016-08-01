@@ -4,7 +4,7 @@
 
 usage:
 
-    optimize-weights [--step=STEP] [--max-perturbations=N] [--cull=SCORE] [--verbose] <repo> ...
+    optimize-weights OPTIONS <repo> ...
 
 """
 
@@ -26,13 +26,37 @@ def main(args):
     parser = argparse.ArgumentParser(
         description='Read a slider shift from a diff'
         )
-    parser.add_argument('--step', dest='steps', type=int, action='append')
-    parser.add_argument('--max-perturbations', type=int, default=1)
-    parser.add_argument('--iterations', type=int, default=1)
-    parser.add_argument('--keep', type=int, default=20)
-    parser.add_argument('--verbose', '-v', action='store_true')
-    parser.add_argument('--cull', type=int, default=None)
-    parser.add_argument('repos', nargs='+')
+    parser.add_argument(
+        '--step', dest='steps', type=int, action='append',
+        help='deltas to apply to parameters when perturbing them',
+        )
+    parser.add_argument(
+        '--max-perturbations', type=int, default=1,
+        help='the number of parameters to perturb at once'
+        )
+    parser.add_argument(
+        '--iterations', type=int, default=1,
+        help='the number of times to repeat the optimization step',
+        )
+    parser.add_argument(
+        '--keep', type=int, default=20,
+        help='the number of best scorers to perturb between iterations',
+        )
+    parser.add_argument(
+        '--cull', metavar='delta', type=int, default=None,
+        help=(
+            'discard scorers whose score is more than DELTA worse '
+            'than the best score seen so far'
+            ),
+        )
+    parser.add_argument(
+        'repos', nargs='+',
+        help='corpus repositories to use for testing',
+        )
+    parser.add_argument(
+        '--verbose', '-v', action='store_true',
+        help='increase verbosity',
+        )
     SplitScorer.add_arguments(parser)
 
     options = parser.parse_args(args)
@@ -45,6 +69,8 @@ def main(args):
 
     base_scorers = [SplitScorer.from_options(options)]
     all_scorers_seen = dict()
+
+    best_score = None
 
     for iteration in range(options.iterations):
         scorers = set()
@@ -98,7 +124,8 @@ def main(args):
                                 error_counts[scorer] += 1
                                 if (
                                         options.cull is not None
-                                        and error_counts[scorer] > options.cull
+                                        and best_score is not None
+                                        and error_counts[scorer] > best_score + options.cull
                                         ):
                                     del error_counts[scorer]
                                     del scorers[i]
@@ -113,14 +140,20 @@ def main(args):
                     sys.stderr.flush()
         sys.stderr.write('\n')
 
+        if not scorers:
+            break
+
         sorted_scorers = sorted(
             scorers,
             key=lambda scorer: (error_counts[scorer], repr(scorer))
             )
 
         best_scorer = sorted_scorers[0]
-        print('Best:', file=sys.stderr)
-        print('%4d  %r' % (error_counts[best_scorer], best_scorer,), file=sys.stderr)
+        error_count = error_counts[best_scorer]
+        if best_score is None or error_count < best_score:
+            best_score = error_count
+        print('Best: %d  %r' % (error_count, best_scorer,), file=sys.stderr)
+        print('Best score so far: %d' % (best_score,), file=sys.stderr)
 
         for scorer in sorted_scorers:
             error_count = error_counts[scorer]
