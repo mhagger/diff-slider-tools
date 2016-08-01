@@ -1,0 +1,136 @@
+#! /usr/bin/env python3
+
+"""Optimize the heuristic weights by testing against hand-generated data.
+
+usage:
+
+    optimize-weights [--step=STEP] [--max-perturbations=N] [--cull=SCORE] [--verbose] <repo> ...
+
+"""
+
+import sys
+import os
+import argparse
+
+sys.path.insert(0, os.path.dirname(sys.argv[0]))
+
+import diff_heuristics
+from diff_heuristics import compute_diff
+from diff_heuristics import find_slider
+from diff_heuristics import iter_shifts
+from diff_heuristics import SplitMeasurements
+from diff_heuristics import SplitScorer
+
+
+def main(args):
+    parser = argparse.ArgumentParser(
+        description='Read a slider shift from a diff'
+        )
+    parser.add_argument('--step', dest='steps', type=int, action='append')
+    parser.add_argument('--max-perturbations', type=int, default=1)
+    parser.add_argument('--iterations', type=int, default=1)
+    parser.add_argument('--keep', type=int, default=20)
+    parser.add_argument('--verbose', '-v', action='store_true')
+    parser.add_argument('--cull', type=int, default=None)
+    parser.add_argument('repos', nargs='+')
+    SplitScorer.add_arguments(parser)
+
+    options = parser.parse_args(args)
+
+    if options.verbose:
+        diff_heuristics.verbose = True
+
+    if not options.steps:
+        options.steps = [-1, 1]
+
+    base_scorers = [SplitScorer.from_options(options)]
+    all_scorers_seen = dict()
+
+    for iteration in range(options.iterations):
+        scorers = set()
+        for base_scorer in base_scorers:
+            for scorer in base_scorer.iter_perturbed(
+                    options.steps, options.max_perturbations
+                    ):
+                if scorer not in all_scorers_seen:
+                    scorers.add(scorer)
+        scorers = list(scorers)
+
+        if len(scorers) == 0:
+            break
+
+        print(
+            '%d new scorers to test (%d tested already).' % (
+                len(scorers), len(all_scorers_seen)
+                ),
+            file=sys.stderr,
+            )
+
+        error_counts = dict((scorer, 0) for scorer in scorers)
+
+        for repo in options.repos:
+            with open('corpus/%s-human.sliders' % (repo,)) as f:
+                for (old, new, prefix, line_number, shifts) in iter_shifts(f):
+                    (old_sha1, old_filename) = old.split(':', 1)
+                    (new_sha1, new_filename) = new.split(':', 1)
+                    correct = set(shifts)
+
+                    lines = compute_diff('corpus/%s' % (repo,), old, new)
+                    try:
+                        slider = find_slider(lines, old_filename, new_filename, prefix, line_number)
+                    except diff_heuristics.ParsingError as e:
+                        sys.stderr.write(
+                            'Error parsing slider %s:%s %s:%s %s %d: %s\n' % (
+                                old_sha1, old_filename,
+                                new_sha1, new_filename,
+                                prefix, line_number,
+                                e,
+                                )
+                            )
+                    else:
+                        slider.shift_canonically()
+
+                        i = 0
+                        while i < len(scorers):
+                            scorer = scorers[i]
+                            shift = slider.find_best_shift(scorer)
+                            if shift not in correct:
+                                error_counts[scorer] += 1
+                                if (
+                                        options.cull is not None
+                                        and error_counts[scorer] > options.cull
+                                        ):
+                                    del error_counts[scorer]
+                                    del scorers[i]
+                                    all_scorers_seen[scorer] = None
+                                    sys.stderr.write('%d.' % (len(scorers),))
+                                else:
+                                    i += 1
+                            else:
+                                i += 1
+
+                    sys.stderr.write('.')
+                    sys.stderr.flush()
+        sys.stderr.write('\n')
+
+        sorted_scorers = sorted(
+            scorers,
+            key=lambda scorer: (error_counts[scorer], repr(scorer))
+            )
+
+        best_scorer = sorted_scorers[0]
+        print('Best:', file=sys.stderr)
+        print('%4d  %r' % (error_counts[best_scorer], best_scorer,), file=sys.stderr)
+
+        for scorer in sorted_scorers:
+            error_count = error_counts[scorer]
+            print('%4d  %r' % (error_count, scorer,))
+            all_scorers_seen[scorer] = error_count
+
+        sys.stdout.flush()
+
+        base_scorers = sorted_scorers[:options.keep]
+
+
+if __name__ == '__main__':
+    main(sys.argv[1:])

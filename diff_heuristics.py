@@ -56,6 +56,39 @@ class SplitMeasurements:
         # line)?
         self.post_indent = None
 
+    @staticmethod
+    def measure(lines, index):
+        """Measure various characteristics of a split before lines[index].
+
+        Return a SplitMeasurements instance."""
+
+        m = SplitMeasurements()
+
+        try:
+            line = lines[index]
+        except IndexError:
+            m.end_of_hunk = True
+        else:
+            m.indent = get_indent(line)
+
+        i = index - 1
+        while i >= 0:
+            m.pre_indent = get_indent(lines[i])
+            if m.pre_indent is not None:
+                break
+            m.pre_blank += 1
+            i -= 1
+
+        i = index + 1
+        while i < len(lines):
+            m.post_indent = get_indent(lines[i])
+            if m.post_indent is not None:
+                break
+            m.post_blank += 1
+            i += 1
+
+        return m
+
 
 class SplitScorer:
     # A list [(parameter_name, default_value), ...]
@@ -96,38 +129,6 @@ class SplitScorer:
                 *['    %s' % (k,) for k in kw],
                 file=sys.stderr, sep='\n'
                 )
-
-    def measure(self, lines, index):
-        """Measure various characteristics of a split before lines[index].
-
-        Return a SplitMeasurements instance."""
-
-        m = SplitMeasurements()
-
-        try:
-            line = lines[index]
-        except IndexError:
-            m.end_of_hunk = True
-        else:
-            m.indent = get_indent(line)
-
-        i = index - 1
-        while i >= 0:
-            m.pre_indent = get_indent(lines[i])
-            if m.pre_indent is not None:
-                break
-            m.pre_blank += 1
-            i -= 1
-
-        i = index + 1
-        while i < len(lines):
-            m.post_indent = get_indent(lines[i])
-            if m.post_indent is not None:
-                break
-            m.post_blank += 1
-            i += 1
-
-        return m
 
     def evaluate(self, m):
         """Evaluate the score for a split with the specified measurements."""
@@ -201,7 +202,51 @@ class SplitScorer:
 
         The lower the score, the more preferable the split."""
 
-        return self.evaluate(self.measure(lines, index))
+        return self.evaluate(SplitMeasurements.measure(lines, index))
+
+    def iter_perturbed(self, steps, max_perturbations=1):
+        yield self
+
+        if max_perturbations == 0 or not steps:
+            return
+
+        args = dict(self.get_arguments())
+        for (name, default) in self.PARAMETERS:
+            old_value = args[name]
+            for step in steps:
+                args[name] = old_value + step
+                scorer = SplitScorer(**args)
+                yield from scorer.iter_perturbed(steps, max_perturbations - 1)
+            args[name] = old_value
+
+    def get_arguments(self):
+        return tuple(
+            (name, getattr(self, name))
+            for (name,default) in self.PARAMETERS
+            )
+
+    def __hash__(self):
+        return hash(self.get_arguments())
+
+    def __eq__(self, other):
+        return (
+            isinstance(other, SplitScorer)
+            and self.get_arguments() == other.get_arguments()
+            )
+
+    def __str__(self):
+        return '_'.join(
+            '%s=%d' % (name, value)
+            for (name,value) in self.get_arguments()
+            )
+
+    def __repr__(self):
+        return 'SplitScorer(%s)' % (
+            ', '.join(
+                '%s=%d' % (name, value)
+                for (name,value) in self.get_arguments()
+                )
+            )
 
 
 class DiffLine:
