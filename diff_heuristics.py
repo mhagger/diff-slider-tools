@@ -93,15 +93,15 @@ class SplitMeasurements:
 class SplitScorer:
     # A list [(parameter_name, default_value), ...]
     PARAMETERS = [
-        ('start_of_hunk_bonus', 8),
-        ('end_of_hunk_bonus', 8),
-        ('follows_blank_bonus', 3),
-        ('precedes_blank_bonus', 1),
-        ('between_blanks_bonus', 1),
-        ('relative_indent_bonus', -4),
-        ('relative_outdent_bonus', 2),
-        ('relative_dedent_bonus', 0),
-        ('block_bonus', 0),
+        ('start_of_hunk_bonus', 9),
+        ('end_of_hunk_bonus', 20),
+        ('follows_blank_bonus', 20),
+        ('precedes_blank_bonus', 5),
+        ('between_blanks_bonus', 19),
+        ('relative_indent_bonus', -2),
+        ('relative_outdent_bonus', -13),
+        ('relative_dedent_bonus', -13),
+        ('block_bonus', -1),
         ]
 
     @classmethod
