@@ -43,6 +43,7 @@ from diff_heuristics import compute_diff
 from diff_heuristics import find_slider
 from diff_heuristics import iter_shifts
 from diff_heuristics import SplitScorer
+from diff_heuristics import SplitScorer2
 
 
 INPUT_RE = re.compile(r'^(?P<old_sha1>[0-9a-f]{40})\.\.(?P<new_sha1>[0-9a-f]{40})$')
@@ -53,14 +54,14 @@ def main(args):
         )
     parser.add_argument('--repo', type=str, required=True)
     parser.add_argument('--verbose', '-v', action='store_true')
-    SplitScorer.add_arguments(parser)
+    SplitScorer2.add_arguments(parser)
 
     options = parser.parse_args(args)
 
     if options.verbose:
         diff_heuristics.verbose = True
 
-    scorer = SplitScorer.from_options(options)
+    scorer = SplitScorer2.from_options(options)
 
     for (old, new, prefix, line_number, shifts) in iter_shifts(sys.stdin):
         (old_sha1, old_filename) = old.split(':', 1)

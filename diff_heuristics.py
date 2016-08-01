@@ -262,6 +262,98 @@ class SplitScorer(BaseSplitScorer):
         return 10 * score - bonus
 
 
+class SplitScorer2(BaseSplitScorer):
+    # A list [(parameter_name, default_value), ...]
+    PARAMETERS = [
+        ('start_of_hunk_bonus', 9),
+        ('end_of_hunk_bonus', 46),
+
+        ('total_blank_weight', 4),
+        ('pre_blank_weight', 16),
+
+        ('relative_indent_bonus', -2),
+        ('relative_indent_has_blank_bonus', 13),
+        ('relative_outdent_bonus', -19),
+        ('relative_outdent_has_blank_bonus', 0),
+        ('relative_dedent_bonus', -16),
+        ('relative_dedent_has_blank_bonus', 1),
+        ]
+
+    def evaluate(self, m):
+        """Evaluate the score for a split with the specified measurements."""
+
+        # A place to accumulate bonus factors (positive makes this
+        # index more favored):
+        bonus = 0
+
+        if m.pre_indent is None and m.pre_blank == 0:
+            bonus += self.start_of_hunk_bonus
+
+        if m.end_of_hunk:
+            bonus += self.end_of_hunk_bonus
+
+        total_blank = m.pre_blank + int(m.indent is None) + m.post_blank
+
+        # Bonuses based on the location of blank lines:
+        bonus += (
+            self.total_blank_weight * total_blank
+            + self.pre_blank_weight * m.pre_blank
+            )
+
+        if m.indent is not None:
+            indent = m.indent
+        else:
+            indent = m.post_indent
+
+        is_blank = int(bool(total_blank))
+
+        if indent is None:
+            score = 0
+        elif m.pre_indent is None:
+            score = indent
+        elif indent > m.pre_indent:
+            # The line is indented more than its predecessor. It
+            # is preferable to keep these lines together, so we
+            # score it based on the larger indent:
+            score = indent
+            bonus += (
+                self.relative_indent_bonus
+                + self.relative_indent_has_blank_bonus * is_blank
+                )
+
+        elif indent < m.pre_indent:
+            # The line is indented less than its predecessor. It
+            # could be that this line is the start of a new block
+            # (e.g., of an "else" block, or of a block without a
+            # block terminator) or it could be the end of the
+            # previous block.
+            if m.post_indent is None or indent >= m.post_indent:
+                # That was probably the end of a block. Score
+                # based on the line's own indent:
+                score = indent
+                bonus += (
+                    self.relative_dedent_bonus
+                    + self.relative_dedent_has_blank_bonus * is_blank
+                    )
+            else:
+                # The following line is indented more. So it is
+                # likely that this line is the start of a block.
+                # It's a pretty good place to split, so score it
+                # based on its own indent:
+                score = indent
+                bonus += (
+                    self.relative_outdent_bonus
+                    + self.relative_outdent_has_blank_bonus * is_blank
+                    )
+
+        else:
+            # The line has the same indentation level as its
+            # predecessor. We score it based on its own indent:
+            score = indent
+
+        return 10 * score - bonus
+
+
 class DiffLine:
     def __init__(self, prefix, line):
         self.prefix = prefix

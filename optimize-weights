@@ -21,6 +21,7 @@ from diff_heuristics import find_slider
 from diff_heuristics import iter_shifts
 from diff_heuristics import SplitMeasurements
 from diff_heuristics import SplitScorer
+from diff_heuristics import SplitScorer2
 from diff_heuristics import load_scores
 
 
@@ -38,9 +39,9 @@ def main(args):
         )
     parser.add_argument(
         '--freeze', action='append',
-        choices=SplitScorer.get_parameter_names() + [
+        choices=SplitScorer2.get_parameter_names() + [
             name.replace('_', '-')
-            for name in SplitScorer.get_parameter_names()
+            for name in SplitScorer2.get_parameter_names()
             ],
         help='parameters that should be frozen at their initial values',
         )
@@ -79,7 +80,7 @@ def main(args):
         '--verbose', '-v', action='store_true',
         help='increase verbosity',
         )
-    SplitScorer.add_arguments(parser)
+    SplitScorer2.add_arguments(parser)
 
     options = parser.parse_args(args)
 
@@ -89,7 +90,7 @@ def main(args):
     if not options.steps:
         options.steps = [-1, 1]
 
-    vary_parameters = SplitScorer.get_parameter_names()
+    vary_parameters = SplitScorer2.get_parameter_names()
     if options.freeze:
         omit = set(name.replace('-', '_') for name in options.freeze)
         vary_parameters = [
@@ -126,7 +127,7 @@ def main(args):
             if collected_scores[scorer] <= threshold
             ]
     else:
-        base_scorers = [SplitScorer.from_options(options)]
+        base_scorers = [SplitScorer2.from_options(options)]
         best_score = None
 
     for iteration in range(options.iterations):
