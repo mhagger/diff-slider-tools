@@ -52,6 +52,6 @@ dcde7c3c10c4a36611daefc7eef020b886c98961:test/etap/060-kt-merging.t f9e1dc5bf2fc
 c91f851dc421466402721eb7baa644860f874ce1:share/www/script/couch_tests.js 146bc594aef47b675670e7a7fd7f89b7c6a10843:share/www/script/couch_tests.js + 2428 0
 496e3b2e876b74b3da3007268271c3c667e8fbee:src/mochiweb/mochiweb.erl 65e850a01858509e0bc519832686aa52d58809b0:src/mochiweb/mochiweb.erl + 80 -4
 449ad331057100adc830016d08dac081077b3df2:etc/couchdb/local_dev.ini e27fb8eaa628128f0ec8f1797805e92ec39ec6cb:etc/couchdb/local_dev.ini + 23 -2
-5018945adf233336e6777e3dd085e565ffc4cccb:etc/couchdb/local_dev.ini 6cc0a3fcaddb3094f8f0fcd5bd51b3e74e70d11c:etc/couchdb/local_dev.ini + 57 -2
-ae3a9d4a0f06ef9eb6fcb0ce44e719bfc5bebbbd:etc/couchdb/local_dev.ini 56a3ee28e006aa42150482e1c3f91dc1906273f9:etc/couchdb/local_dev.ini + 51 -2 -5
+5018945adf233336e6777e3dd085e565ffc4cccb:etc/couchdb/local_dev.ini 6cc0a3fcaddb3094f8f0fcd5bd51b3e74e70d11c:etc/couchdb/local_dev.ini + 57 0 -2
+ae3a9d4a0f06ef9eb6fcb0ce44e719bfc5bebbbd:etc/couchdb/local_dev.ini 56a3ee28e006aa42150482e1c3f91dc1906273f9:etc/couchdb/local_dev.ini + 51 0 -2 -5
 d32d8acff4bac6f51b87ddef7091c04ff7245d40:etc/couchdb/local_dev.ini aee6f18edf8cdf3f7c09c93fcf1af48c2c15fcd8:etc/couchdb/local_dev.ini + 27 -2 -5
