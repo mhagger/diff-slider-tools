@@ -36,6 +36,14 @@ def main(args):
         help='the number of parameters to perturb at once'
         )
     parser.add_argument(
+        '--freeze', action='append',
+        choices=SplitScorer.get_parameter_names() + [
+            name.replace('_', '-')
+            for name in SplitScorer.get_parameter_names()
+            ],
+        help='parameters that should be frozen at their initial values',
+        )
+    parser.add_argument(
         '--iterations', type=int, default=1,
         help='the number of times to repeat the optimization step',
         )
@@ -68,6 +76,15 @@ def main(args):
     if not options.steps:
         options.steps = [-1, 1]
 
+    vary_parameters = SplitScorer.get_parameter_names()
+    if options.freeze:
+        omit = set(name.replace('-', '_') for name in options.freeze)
+        vary_parameters = [
+            name
+            for name in vary_parameters
+            if not name in omit
+            ]
+
     base_scorers = [SplitScorer.from_options(options)]
     all_scorers_seen = dict()
 
@@ -77,7 +94,8 @@ def main(args):
         scorers = set()
         for base_scorer in base_scorers:
             for scorer in base_scorer.iter_perturbed(
-                    options.steps, options.max_perturbations
+                    options.steps, vary_parameters=vary_parameters,
+                    max_perturbations=options.max_perturbations,
                     ):
                 if scorer not in all_scorers_seen:
                     scorers.add(scorer)

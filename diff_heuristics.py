@@ -105,6 +105,10 @@ class SplitScorer:
         ]
 
     @classmethod
+    def get_parameter_names(klass):
+        return [name for (name, default) in klass.PARAMETERS]
+
+    @classmethod
     def add_arguments(klass, parser):
         for (parameter, default) in klass.PARAMETERS:
             parser.add_argument(
@@ -119,7 +123,7 @@ class SplitScorer:
         return klass(**kw)
 
     def __init__(self, **kw):
-        for (parameter, default) in SplitScorer.PARAMETERS:
+        for (parameter, default) in self.PARAMETERS:
             setattr(self, parameter, kw.pop(parameter, default))
 
         if kw:
@@ -204,25 +208,31 @@ class SplitScorer:
 
         return self.evaluate(SplitMeasurements.measure(lines, index))
 
-    def iter_perturbed(self, steps, max_perturbations=1):
+    def iter_perturbed(self, steps, vary_parameters=None, max_perturbations=1,):
         yield self
 
         if max_perturbations == 0 or not steps:
             return
 
+        if vary_parameters is None:
+            vary_parameters = self.get_parameter_names()
+
         args = dict(self.get_arguments())
-        for (name, default) in self.PARAMETERS:
+        for name in vary_parameters:
             old_value = args[name]
             for step in steps:
                 args[name] = old_value + step
                 scorer = SplitScorer(**args)
-                yield from scorer.iter_perturbed(steps, max_perturbations - 1)
+                yield from scorer.iter_perturbed(
+                    steps, vary_parameters=vary_parameters,
+                    max_perturbations=max_perturbations - 1,
+                    )
             args[name] = old_value
 
     def get_arguments(self):
         return tuple(
             (name, getattr(self, name))
-            for (name,default) in self.PARAMETERS
+            for name in self.get_parameter_names()
             )
 
     def __hash__(self):
