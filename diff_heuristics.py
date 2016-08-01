@@ -292,7 +292,9 @@ class SplitScorer2(BaseSplitScorer):
         if m.end_of_hunk:
             bonus += self.end_of_hunk_bonus
 
-        total_blank = m.pre_blank + int(m.indent is None) + m.post_blank
+        total_blank = m.pre_blank
+        if m.indent is None:
+            total_blank += 1 + m.post_blank
 
         # Bonuses based on the location of blank lines:
         bonus += (
