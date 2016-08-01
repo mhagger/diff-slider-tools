@@ -48,6 +48,10 @@ def main(args):
         help='the number of times to repeat the optimization step',
         )
     parser.add_argument(
+        '--batch-limit', type=int, default=1000,
+        help='the maximum number of scorers to test per iteration',
+        )
+    parser.add_argument(
         '--keep', type=int, default=20,
         help='the number of best scorers to perturb between iterations',
         )
@@ -103,6 +107,8 @@ def main(args):
 
         if len(scorers) == 0:
             break
+        elif len(scorers) > options.batch_limit:
+            scorers = random.sample(scorers, options.batch_limit)
 
         print(
             'Iteration %d: %d new scorers to test (%d tested already).' % (
@@ -191,9 +197,7 @@ def main(args):
             scorer
             for scorer in sorted_scorers
             if error_counts[scorer] <= threshold
-        ]
-        if len(base_scorers) > options.keep:
-            base_scorers = random.sample(base_scorers, options.keep)
+            ]
 
 
 if __name__ == '__main__':
