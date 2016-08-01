@@ -356,6 +356,10 @@ class Slider:
         assert len(self.shift_range) > 1
 
         self.lines = [diffline.line for diffline in self.difflines]
+
+        # A cache of measure() results:
+        self.measurements = dict()
+
         if verbose:
             sys.stderr.write(
                 '    Slider: %d..%d at line %d\n'
@@ -385,12 +389,22 @@ class Slider:
         self.slide(max_shift)
         return -max_shift
 
+    def measure(self, split):
+        """Return a SplitMeasurements for the specified split."""
+
+        m = self.measurements.get(split)
+        if m is None:
+            m = SplitMeasurements.measure(self.lines, split + len(self.pre_context))
+            self.measurements[split] = m
+
+        return m
+
     def get_score_for_split(self, scorer, split):
         """Return the score for splitting above the specified line.
 
         The lower the score, the less bad the split."""
 
-        return scorer(self.lines, split + len(self.pre_context))
+        return scorer.evaluate(self.measure(split))
 
     def get_score(self, scorer, shift):
         split1 = shift
@@ -487,6 +501,8 @@ class Slider:
         self.shift_range = range(self.shift_range.start - shift,
                                  self.shift_range.stop - shift)
         self.line_number += shift
+
+        self.measurements = dict()
 
     def find_best_shift(self, scorer):
         if len(self.shift_range) == 1:
