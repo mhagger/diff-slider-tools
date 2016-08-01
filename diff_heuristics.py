@@ -271,12 +271,12 @@ class SplitScorer2(BaseSplitScorer):
         ('total_blank_weight', 4),
         ('pre_blank_weight', 16),
 
-        ('relative_indent_bonus', -2),
-        ('relative_indent_has_blank_bonus', 13),
+        ('relative_indent_bonus', -1),
+        ('relative_indent_has_blank_bonus', 15),
         ('relative_outdent_bonus', -19),
-        ('relative_outdent_has_blank_bonus', 0),
-        ('relative_dedent_bonus', -16),
-        ('relative_dedent_has_blank_bonus', 1),
+        ('relative_outdent_has_blank_bonus', 2),
+        ('relative_dedent_bonus', -63),
+        ('relative_dedent_has_blank_bonus', 50),
         ]
 
     def evaluate(self, m):
