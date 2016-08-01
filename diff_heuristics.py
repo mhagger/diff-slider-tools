@@ -90,20 +90,7 @@ class SplitMeasurements:
         return m
 
 
-class SplitScorer:
-    # A list [(parameter_name, default_value), ...]
-    PARAMETERS = [
-        ('start_of_hunk_bonus', 9),
-        ('end_of_hunk_bonus', 20),
-        ('follows_blank_bonus', 20),
-        ('precedes_blank_bonus', 5),
-        ('between_blanks_bonus', 19),
-        ('relative_indent_bonus', -2),
-        ('relative_outdent_bonus', -13),
-        ('relative_dedent_bonus', -13),
-        ('block_bonus', -1),
-        ]
-
+class BaseSplitScorer:
     @classmethod
     def get_parameter_names(klass):
         return [name for (name, default) in klass.PARAMETERS]
@@ -128,11 +115,84 @@ class SplitScorer:
 
         if kw:
             print(
-                'The following SplitScorer parameter(s) are unknown '
-                'and will be ignored:',
+                'The following %s parameter(s) are unknown '
+                'and will be ignored:' % (self.__class__.__name__,),
                 *['    %s' % (k,) for k in kw],
                 file=sys.stderr, sep='\n'
                 )
+
+    def __call__(self, lines, index):
+        """Return the badness of splitting lines before lines[index].
+
+        The lower the score, the more preferable the split."""
+
+        return self.evaluate(SplitMeasurements.measure(lines, index))
+
+    def iter_perturbed(self, steps, vary_parameters=None, max_perturbations=1,):
+        yield self
+
+        if max_perturbations == 0 or not steps:
+            return
+
+        if vary_parameters is None:
+            vary_parameters = self.get_parameter_names()
+
+        args = dict(self.get_arguments())
+        for name in vary_parameters:
+            old_value = args[name]
+            for step in steps:
+                args[name] = old_value + step
+                scorer = self.__class__(**args)
+                yield from scorer.iter_perturbed(
+                    steps, vary_parameters=vary_parameters,
+                    max_perturbations=max_perturbations - 1,
+                    )
+            args[name] = old_value
+
+    def get_arguments(self):
+        return tuple(
+            (name, getattr(self, name))
+            for name in self.get_parameter_names()
+            )
+
+    def __hash__(self):
+        return hash((self.__class__.__name__, self.get_arguments()))
+
+    def __eq__(self, other):
+        return (
+            isinstance(other, self.__class__)
+            and self.get_arguments() == other.get_arguments()
+            )
+
+    def __str__(self):
+        return '_'.join(
+            '%s=%d' % (name, value)
+            for (name,value) in self.get_arguments()
+            )
+
+    def __repr__(self):
+        return '%s(%s)' % (
+            self.__class__.__name__,
+            ', '.join(
+                '%s=%d' % (name, value)
+                for (name,value) in self.get_arguments()
+                )
+            )
+
+
+class SplitScorer(BaseSplitScorer):
+    # A list [(parameter_name, default_value), ...]
+    PARAMETERS = [
+        ('start_of_hunk_bonus', 9),
+        ('end_of_hunk_bonus', 20),
+        ('follows_blank_bonus', 20),
+        ('precedes_blank_bonus', 5),
+        ('between_blanks_bonus', 19),
+        ('relative_indent_bonus', -2),
+        ('relative_outdent_bonus', -13),
+        ('relative_dedent_bonus', -13),
+        ('block_bonus', -1),
+        ]
 
     def evaluate(self, m):
         """Evaluate the score for a split with the specified measurements."""
@@ -200,63 +260,6 @@ class SplitScorer:
                 bonus += self.block_bonus
 
         return 10 * score - bonus
-
-    def __call__(self, lines, index):
-        """Return the badness of splitting lines before lines[index].
-
-        The lower the score, the more preferable the split."""
-
-        return self.evaluate(SplitMeasurements.measure(lines, index))
-
-    def iter_perturbed(self, steps, vary_parameters=None, max_perturbations=1,):
-        yield self
-
-        if max_perturbations == 0 or not steps:
-            return
-
-        if vary_parameters is None:
-            vary_parameters = self.get_parameter_names()
-
-        args = dict(self.get_arguments())
-        for name in vary_parameters:
-            old_value = args[name]
-            for step in steps:
-                args[name] = old_value + step
-                scorer = SplitScorer(**args)
-                yield from scorer.iter_perturbed(
-                    steps, vary_parameters=vary_parameters,
-                    max_perturbations=max_perturbations - 1,
-                    )
-            args[name] = old_value
-
-    def get_arguments(self):
-        return tuple(
-            (name, getattr(self, name))
-            for name in self.get_parameter_names()
-            )
-
-    def __hash__(self):
-        return hash(self.get_arguments())
-
-    def __eq__(self, other):
-        return (
-            isinstance(other, SplitScorer)
-            and self.get_arguments() == other.get_arguments()
-            )
-
-    def __str__(self):
-        return '_'.join(
-            '%s=%d' % (name, value)
-            for (name,value) in self.get_arguments()
-            )
-
-    def __repr__(self):
-        return 'SplitScorer(%s)' % (
-            ', '.join(
-                '%s=%d' % (name, value)
-                for (name,value) in self.get_arguments()
-                )
-            )
 
 
 class DiffLine:
