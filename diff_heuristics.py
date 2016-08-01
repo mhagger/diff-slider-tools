@@ -886,3 +886,19 @@ def iter_shifts(lines):
         yield (old, new, prefix, line_number, shifts)
 
 
+def load_scores(filename):
+    """Load previously-computed scores from a file.
+
+    Return a dict {scorer : score}."""
+
+    scores = dict()
+    with open(filename) as f:
+        for line in f:
+            (score, scorer) = line.strip().split(maxsplit=1)
+            score = int(score)
+            scorer = eval(scorer)
+            scores[scorer] = score
+
+    return scores
+
+

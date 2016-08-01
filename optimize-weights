@@ -21,6 +21,7 @@ from diff_heuristics import find_slider
 from diff_heuristics import iter_shifts
 from diff_heuristics import SplitMeasurements
 from diff_heuristics import SplitScorer
+from diff_heuristics import load_scores
 
 
 def main(args):
@@ -63,6 +64,14 @@ def main(args):
             ),
         )
     parser.add_argument(
+        '--load', action='append',
+        help='load scores from these files before starting',
+        )
+    parser.add_argument(
+        '--seed', type=int, default=20,
+        help='seed the iteration with SEED of the best loaded scorers',
+        )
+    parser.add_argument(
         'repos', nargs='+',
         help='corpus repositories to use for testing',
         )
@@ -89,10 +98,36 @@ def main(args):
             if not name in omit
             ]
 
-    base_scorers = [SplitScorer.from_options(options)]
     all_scorers_seen = dict()
 
-    best_score = None
+    if options.load:
+        for filename in options.load:
+            all_scorers_seen.update(load_scores(filename))
+
+    if all_scorers_seen and options.seed:
+        sorted_scorers = sorted(
+            all_scorers_seen,
+            key=lambda scorer: (all_scorers_seen[scorer],)
+            )
+
+        best_scorer = sorted_scorers[0]
+        best_score = all_scorers_seen[best_scorer]
+        print('Best score so far: %d  %r' % (best_score, best_scorer,), file=sys.stderr)
+
+        try:
+            last = sorted_scorers[options.keep - 1]
+        except IndexError:
+            last = sorted_scorers[-1]
+
+        threshold = all_scorers_seen[last]
+        base_scorers = [
+            scorer
+            for scorer in sorted_scorers
+            if all_scorers_seen[scorer] <= threshold
+            ]
+    else:
+        base_scorers = [SplitScorer.from_options(options)]
+        best_score = None
 
     for iteration in range(options.iterations):
         scorers = set()
