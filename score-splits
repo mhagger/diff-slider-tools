@@ -3,6 +3,7 @@
 import sys
 import os
 import io
+import argparse
 
 sys.path.insert(0, os.path.dirname(sys.argv[0]))
 
@@ -29,8 +30,8 @@ def main(args):
     input = io.TextIOWrapper(sys.stdin.buffer, encoding='utf-8', errors='replace')
     lines = [line.rstrip('\n\r') for line in input.readlines()]
     for (i, line) in enumerate(lines):
-        print('%5d|%s' % (scorer(lines, i), line))
-    print('%5d' % (scorer(lines, len(lines))))
+        print('%5d   %5d|%s' % (i, scorer(lines, i), line))
+    print('%5d   %5d' % (len(lines), scorer(lines, len(lines))))
 
 
 if __name__ == '__main__':
