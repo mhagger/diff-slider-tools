@@ -36,6 +36,7 @@ sys.path.insert(0, os.path.dirname(sys.argv[0]))
 import diff_heuristics
 from diff_heuristics import iter_file_diffs
 from diff_heuristics import find_slider
+from diff_heuristics import ParsingError
 
 
 INPUT_RE = re.compile(r'^(?P<old_sha1>[0-9a-f]{40})\.\.(?P<new_sha1>[0-9a-f]{40})$')
@@ -60,18 +61,29 @@ def main(args):
 
     input = io.TextIOWrapper(sys.stdin.buffer, encoding='utf-8', errors='replace')
     lines = [line.rstrip('\n\r') for line in input.readlines()]
-    slider = find_slider(lines, old_filename, new_filename, options.prefix, options.line_number)
-
-    shift = slider.shift_canonically()
-
-    print(
-        '%s:%s %s:%s %s %d %d' % (
-            old_sha1, old_filename,
-            new_sha1, new_filename,
-            slider.prefix, slider.line_number,
-            shift
+    try:
+        slider = find_slider(lines, old_filename, new_filename, options.prefix, options.line_number)
+    except ParsingError as e:
+        print(
+            'Could not parse following slider: %s\n    %s:%s %s:%s %s %d' % (
+                e,
+                old_sha1, old_filename,
+                new_sha1, new_filename,
+                options.prefix, options.line_number,
+                ),
+            file=sys.stderr,
             )
-        )
+    else:
+        shift = slider.shift_canonically()
+
+        print(
+            '%s:%s %s:%s %s %d %d' % (
+                old_sha1, old_filename,
+                new_sha1, new_filename,
+                slider.prefix, slider.line_number,
+                shift
+                )
+            )
 
 if __name__ == '__main__':
     main(sys.argv[1:])
