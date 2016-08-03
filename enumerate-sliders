@@ -70,12 +70,13 @@ def main(args):
             for hunk in file_diff.hunks:
                 for slider in hunk.iter_sliders():
                     if len(slider.shift_range) > 1:
-                        slider.shift_canonically()
+                        shift = slider.shift_canonically()
                         print(
-                            '%s:%s %s:%s %s %d' % (
+                            '%s:%s %s:%s %s %d %d' % (
                                 old_sha1, file_diff.old_filename,
                                 new_sha1, file_diff.new_filename,
                                 slider.prefix, slider.line_number,
+                                shift,
                                 )
                             )
 
