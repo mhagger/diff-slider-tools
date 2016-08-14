@@ -39,9 +39,7 @@ import argparse
 sys.path.insert(0, os.path.dirname(sys.argv[0]))
 
 import diff_heuristics
-from diff_heuristics import compute_diff
-from diff_heuristics import find_slider
-from diff_heuristics import iter_shifts
+from diff_heuristics import SliderName
 from diff_heuristics import SplitScorer
 from diff_heuristics import SplitScorer2
 
@@ -61,33 +59,20 @@ def main(args):
 
     scorer = SplitScorer2.from_options(options)
 
-    for (old, new, prefix, line_number, shifts) in iter_shifts(sys.stdin):
-        (old_sha1, old_filename) = old.split(':', 1)
-        (new_sha1, new_filename) = new.split(':', 1)
+    for (slidername, shifts) in SliderName.read(sys.stdin):
+        (old_sha1, old_filename) = slidername.old.split(':', 1)
+        (new_sha1, new_filename) = slidername.new.split(':', 1)
 
-        lines = compute_diff('corpus/%s.git' % (options.repo,), old, new)
         try:
-            slider = find_slider(lines, old_filename, new_filename, prefix, line_number)
+            slider = slidername.compute_slider(
+                'corpus/%s.git' % (options.repo,)
+                )
         except diff_heuristics.ParsingError as e:
             sys.stderr.write(
-                'Error parsing slider %s:%s %s:%s %s %d: %s\n' % (
-                    old_sha1, old_filename,
-                    new_sha1, new_filename,
-                    prefix, line_number,
-                    e,
-                    )
+                'Error parsing slider %s: %s\n' % (slidername, e,)
                 )
         else:
-            slider.shift_canonically()
-
-            print(
-                '%s:%s %s:%s %s %d %d' % (
-                    old_sha1, old_filename,
-                    new_sha1, new_filename,
-                    slider.prefix, slider.line_number,
-                    slider.find_best_shift(scorer),
-                    )
-                )
+            slidername.write(sys.stdout, slider.find_best_shift(scorer))
 
 
 if __name__ == '__main__':
