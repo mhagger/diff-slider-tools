@@ -6,8 +6,8 @@ GIT_EXPERIMENTAL_OPTS="--compaction-heuristic"
 analyze() {
     local repo="$1"
 
-    git -C corpus/$repo log --min-parents=1 --max-parents=1 --format='%P..%H' HEAD |
-	./enumerate-sliders --repo=corpus/$repo >corpus/$repo.sliders
+    git -C corpus/$repo.git log --min-parents=1 --max-parents=1 --format='%P..%H' HEAD |
+	./enumerate-sliders --repo=$repo >corpus/$repo.sliders
 
     cat corpus/$repo.sliders |
         while read old new prefix line_number
@@ -17,9 +17,9 @@ analyze() {
         done >corpus/$repo-compaction.sliders
 
     cat corpus/$repo.sliders |
-        ./improve-slider --repo=corpus/$repo >corpus/$repo-indent.sliders
+        ./improve-slider --repo=$repo >corpus/$repo-indent.sliders
 
-    ./compare-shifts --repo=corpus/$repo --any-nonzero \
+    ./compare-shifts --repo=$repo --any-nonzero \
 		     g=0 \
 		     c=corpus/$repo-compaction.sliders \
 		     i=corpus/$repo-indent.sliders \

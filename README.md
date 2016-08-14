@@ -106,7 +106,7 @@ The first line shows the two blobs being diffed, whether lines were added (`+`) 
 The prototype heuristic can be analyzed by piping a `*.slider` file to `show-slider-scores`, or as follows to analyze a single slider:
 
 ```
-$ echo '8ad3cb08690bdf9a340e47ed4fdb67cbacd1edf2:dir.c 5cee349370bd2dce48d0d653ab4ce99bb79a3415:dir.c - 2191' | ./show-slider-scores --repo=corpus/$repo
+$ echo '8ad3cb08690bdf9a340e47ed4fdb67cbacd1edf2:dir.c 5cee349370bd2dce48d0d653ab4ce99bb79a3415:dir.c - 2191' | ./show-slider-scores --repo=$repo
 8ad3cb08690bdf9a340e47ed4fdb67cbacd1edf2:dir.c 5cee349370bd2dce48d0d653ab4ce99bb79a3415:dir.c - 2191
 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
                > 			       PATHSPEC_ICASE |
@@ -142,7 +142,7 @@ Basic use:
 
 1. In the `analyze` script, adjust `GIT_EXPERIMENTAL` and `GIT_EXPERIMENTAL_OPTS` to invoke some Git version that you want to test.
 
-2. Clone a Git repository that you would like to use as a source of diffs to a directory `corpus/$repo`. This can be a bare clone if you like.
+2. Create a bare clone of a Git repository that you would like to use as a source of diffs to a directory `corpus/$repo.git`.
 
 3. Run
 

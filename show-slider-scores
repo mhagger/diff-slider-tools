@@ -34,7 +34,7 @@ def main(args):
         (old_sha1, old_filename) = old.split(':', 1)
         (new_sha1, new_filename) = new.split(':', 1)
 
-        lines = compute_diff(options.repo, old, new)
+        lines = compute_diff('corpus/%s.git' % (options.repo,), old, new)
         slider = find_slider(lines, old_filename, new_filename, prefix, line_number)
 
         print(

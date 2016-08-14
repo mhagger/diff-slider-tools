@@ -175,7 +175,7 @@ def main(args):
                     (new_sha1, new_filename) = new.split(':', 1)
                     correct = set(shifts)
 
-                    lines = compute_diff('corpus/%s' % (repo,), old, new)
+                    lines = compute_diff('corpus/%s.git' % (repo,), old, new)
                     try:
                         slider = find_slider(lines, old_filename, new_filename, prefix, line_number)
                     except diff_heuristics.ParsingError as e:

@@ -4,10 +4,10 @@
 
 usage:
 
-    compare-shifts --repo=<repo> [<c>=<path>...]
+    compare-shifts --repo=REPO [<c>=PATH...]
 
-where each <path> is a *.sliders file with or without shifts, and <c>
-is the character with which that file's shift will be presented.
+where each PATH is a *.sliders file with or without shifts, and <c> is
+the character with which that file's shift will be presented.
 
 """
 
@@ -93,7 +93,7 @@ def main(args):
                 or options.any_nonzero and list(shifts_seen) != [0]
                 ):
             slider = compute_slider(
-                options.repo,
+                'corpus/%s.git' % (options.repo,),
                 old_sha1, old_filename,
                 new_sha1, new_filename,
                 prefix, line_number,

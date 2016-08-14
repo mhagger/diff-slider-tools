@@ -4,7 +4,7 @@
 
 usage:
 
-    improve-slider --repo=<PATH> [--verbose]
+    improve-slider --repo=REPO [--verbose]
 
 To stdin should be written one or more sliders to be processed, in the
 following format:
@@ -67,7 +67,7 @@ def main(args):
         (old_sha1, old_filename) = old.split(':', 1)
         (new_sha1, new_filename) = new.split(':', 1)
 
-        lines = compute_diff(options.repo, old, new)
+        lines = compute_diff('corpus/%s.git' % (options.repo,), old, new)
         try:
             slider = find_slider(lines, old_filename, new_filename, prefix, line_number)
         except diff_heuristics.ParsingError as e:

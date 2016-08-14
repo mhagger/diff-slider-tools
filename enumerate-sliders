@@ -64,7 +64,7 @@ def main(args):
 
         if options.verbose:
             sys.stderr.write('Processing %s..%s\n' % (old_sha1, new_sha1))
-        lines = compute_diff(options.repo, old_sha1, new_sha1)
+        lines = compute_diff('corpus/%s.git' % (options.repo,), old_sha1, new_sha1)
 
         for file_diff in iter_file_diffs(lines):
             for hunk in file_diff.hunks:

@@ -2,7 +2,7 @@
 
 evaluate() {
     local repo="$1"
-    ./compare-shifts --repo=corpus/$repo --correct=h \
+    ./compare-shifts --repo=$repo --correct=h \
 		     h=corpus/$repo-human.sliders \
 		     i=corpus/$repo-indent.sliders \
 		     >corpus/$repo-compare-shifts.out
