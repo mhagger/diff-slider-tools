@@ -136,7 +136,7 @@ This output includes the heuristic's scores for each possible shift of the slide
 
 ## Use
 
-:warning: This software is very experimental! Note especially that it is not careful to quote filenames. Running it against a repository with strange filenames could probably lead to arbitrary code execution! :warning:
+:warning: This software is experimental! Note that parts of it are intolerant of filenames that include shell metacharacters (though we try to skip over diffs affecting such files). It is still possible that running this program against a repository with maliciously-constructed filenames could lead to arbitrary code execution! :warning:
 
 Basic use:
 
