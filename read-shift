@@ -39,8 +39,6 @@ from diff_heuristics import find_slider
 from diff_heuristics import ParsingError
 
 
-INPUT_RE = re.compile(r'^(?P<old_sha1>[0-9a-f]{40})\.\.(?P<new_sha1>[0-9a-f]{40})$')
-
 def main(args):
     parser = argparse.ArgumentParser(
         description='Read a slider shift from a diff'
