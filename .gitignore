@@ -1,2 +1,4 @@
 __pycache__
-/corpus
+/corpus/*
+!/corpus/*.info
+!/corpus/*-human.sliders
