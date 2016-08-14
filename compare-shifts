@@ -21,8 +21,7 @@ from collections import OrderedDict
 sys.path.insert(0, os.path.dirname(sys.argv[0]))
 
 import diff_heuristics
-from diff_heuristics import compute_slider
-from diff_heuristics import iter_shifts
+from diff_heuristics import SliderName
 
 
 def main(args):
@@ -56,10 +55,11 @@ def main(args):
                 sys.stderr.write('Skipping non-existing file %r\n' % (path,))
                 continue
             with open(path) as f:
-                for (old, new, prefix, line_number, shifts) in iter_shifts(f):
-                    params = (old, new, prefix, line_number)
-                    params = slider_intern.setdefault(params, params)
-                    all_shifts.setdefault(params, {})[column_name] = shifts
+                for (slidername, shifts) in SliderName.read(f):
+                    slidername = slider_intern.setdefault(slidername, slidername)
+                    all_shifts.setdefault(slidername, {})[column_name] = shifts
+
+    del slider_intern
 
     for column in options.columns:
         (column_name, path) = column.split('=', 1)
@@ -69,9 +69,7 @@ def main(args):
 
     differences = 0
 
-    for ((old, new, prefix, line_number), values) in all_shifts.items():
-        (old_sha1, old_filename) = old.split(':', 1)
-        (new_sha1, new_filename) = new.split(':', 1)
+    for (slidername, values) in all_shifts.items():
         columns = []
         shifts_seen = set()
         correct = None
@@ -92,14 +90,9 @@ def main(args):
                 or options.correct and correct and shifts_seen - correct
                 or options.any_nonzero and list(shifts_seen) != [0]
                 ):
-            slider = compute_slider(
-                'corpus/%s.git' % (options.repo,),
-                old_sha1, old_filename,
-                new_sha1, new_filename,
-                prefix, line_number,
-                )
+            slider = slidername.compute_slider('corpus/%s.git' % (options.repo,))
 
-            print('%s %s %s %d' % (old, new, prefix, line_number))
+            slidername.write(sys.stdout)
             print('# %s' % ('v' * 60,))
             slider.show_comparison(columns, line_prefix='# ')
             print('# %s' % ('^' * 60,))
