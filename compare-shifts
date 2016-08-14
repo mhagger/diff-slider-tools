@@ -7,7 +7,8 @@ usage:
     compare-shifts --repo=REPO [<c>=PATH...]
 
 where each PATH is a *.sliders file with or without shifts, and <c> is
-the character with which that file's shift will be presented.
+the character with which that file's shift will be presented. If PATH
+is '-', read that column from stdin.
 
 """
 
@@ -50,13 +51,17 @@ def main(args):
     for column in options.columns:
         (column_name, path) = column.split('=', 1)
         column_names.append(column_name)
-        if not os.path.isfile(path):
+        if path == '-':
+            source = SliderName.read(sys.stdin)
+        elif not os.path.isfile(path):
             sys.stderr.write('Skipping non-existing file %r\n' % (path,))
             continue
-        with open(path) as f:
-            for (slidername, shifts) in SliderName.read(f):
-                slidername = slider_intern.setdefault(slidername, slidername)
-                all_shifts.setdefault(slidername, {})[column_name] = shifts
+        else:
+            source = SliderName.read(open(path))
+
+        for (slidername, shifts) in source:
+            slidername = slider_intern.setdefault(slidername, slidername)
+            all_shifts.setdefault(slidername, {})[column_name] = shifts
 
     del slider_intern
 
