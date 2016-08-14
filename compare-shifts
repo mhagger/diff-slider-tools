@@ -50,22 +50,15 @@ def main(args):
     for column in options.columns:
         (column_name, path) = column.split('=', 1)
         column_names.append(column_name)
-        if path != '0':
-            if not os.path.isfile(path):
-                sys.stderr.write('Skipping non-existing file %r\n' % (path,))
-                continue
-            with open(path) as f:
-                for (slidername, shifts) in SliderName.read(f):
-                    slidername = slider_intern.setdefault(slidername, slidername)
-                    all_shifts.setdefault(slidername, {})[column_name] = shifts
+        if not os.path.isfile(path):
+            sys.stderr.write('Skipping non-existing file %r\n' % (path,))
+            continue
+        with open(path) as f:
+            for (slidername, shifts) in SliderName.read(f):
+                slidername = slider_intern.setdefault(slidername, slidername)
+                all_shifts.setdefault(slidername, {})[column_name] = shifts
 
     del slider_intern
-
-    for column in options.columns:
-        (column_name, path) = column.split('=', 1)
-        if path == '0':
-            for values in all_shifts.values():
-                values[column_name] = [0]
 
     differences = 0
 
