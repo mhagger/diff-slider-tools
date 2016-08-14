@@ -10,7 +10,7 @@ analyze() {
 	./enumerate-sliders --repo=$repo >corpus/$repo.sliders
 
     cat corpus/$repo.sliders |
-        while read old new prefix line_number
+        while read old new prefix line_number shifts
         do
             $GIT_EXPERIMENTAL -C corpus/$repo diff $GIT_EXPERIMENTAL_OPTS -U10 "$old" "$new" -- |
                 ./read-shift "$old" "$new" "$prefix" $line_number
