@@ -1018,6 +1018,66 @@ def iter_shifts(lines):
         yield (old, new, prefix, line_number, shifts)
 
 
+class SliderName:
+    def __init__(self, old, new, prefix, line_number):
+        self.old = old
+        self.new = new
+        self.prefix = prefix
+        self.line_number = line_number
+
+    def __hash__(self):
+        return hash((self.old, self.new, self.prefix, self.line_number))
+
+    def __eq__(self, other):
+        return (
+            (self.old, self.new, self.prefix, self.line_number)
+            == (other.old, other.new, other.prefix, other.line_number)
+            )
+
+    def __str__(self):
+        s = '%s %s %s %d' % (
+            self.old, self.new, self.prefix, self.line_number,
+            )
+
+        return s
+
+    def compute_slider(self, repo):
+        (old_sha1, old_filename) = self.old.split(':', 1)
+        (new_sha1, new_filename) = self.new.split(':', 1)
+
+        return compute_slider(
+            repo,
+            old_sha1, old_filename,
+            new_sha1, new_filename,
+            self.prefix, self.line_number,
+            )
+
+    def write(self, f, shifts=[]):
+        """Write this SliderName to f, followed by a newline.
+
+        If shifts is specified, include those at the end of the line.
+
+        """
+
+        s = str(self)
+        if shifts:
+            s += ' ' + ' '.join(map(str, shifts))
+        s += '\n'
+        f.write(s)
+
+    @staticmethod
+    def read(lines):
+        """Iterate over (SliderName, shifts) found in lines.
+
+        `lines` can be any iterable over lines. See `iter_shifts` for more
+        information.
+
+        """
+
+        for (old, new, prefix, line_number, shifts) in iter_shifts(lines):
+            yield (SliderName(old, new, prefix, line_number), shifts,)
+
+
 def load_scores(filename):
     """Load previously-computed scores from a file.
 
