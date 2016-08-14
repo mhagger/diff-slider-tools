@@ -16,9 +16,7 @@ import random
 sys.path.insert(0, os.path.dirname(sys.argv[0]))
 
 import diff_heuristics
-from diff_heuristics import compute_diff
-from diff_heuristics import find_slider
-from diff_heuristics import iter_shifts
+from diff_heuristics import SliderName
 from diff_heuristics import SplitMeasurements
 from diff_heuristics import SplitScorer
 from diff_heuristics import SplitScorer2
@@ -170,21 +168,17 @@ def main(args):
 
         for repo in options.repos:
             with open('corpus/%s-human.sliders' % (repo,)) as f:
-                for (old, new, prefix, line_number, shifts) in iter_shifts(f):
-                    (old_sha1, old_filename) = old.split(':', 1)
-                    (new_sha1, new_filename) = new.split(':', 1)
+                for (slider, shifts) in SliderName.read(f):
                     correct = set(shifts)
 
-                    lines = compute_diff('corpus/%s.git' % (repo,), old, new)
                     try:
-                        slider = find_slider(lines, old_filename, new_filename, prefix, line_number)
+                        slider = slidername.compute_slider(
+                            'corpus/%s.git' % (repo,)
+                            )
                     except diff_heuristics.ParsingError as e:
                         sys.stderr.write(
-                            'Error parsing slider %s:%s %s:%s %s %d: %s\n' % (
-                                old_sha1, old_filename,
-                                new_sha1, new_filename,
-                                prefix, line_number,
-                                e,
+                            'Error parsing slider %s: %s\n' % (
+                                slidername, e,
                                 )
                             )
                     else:
