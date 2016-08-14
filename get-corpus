@@ -1,0 +1,29 @@
+#! /bin/sh
+
+# clone or re-fetch the repositories forming the corpus, or the
+# repositories listed on the command line.
+
+get_repo() {
+    local repo=$1
+
+    if test -d corpus/$repo.git
+    then
+	git -C corpus/$repo.git remote update --prune
+    else
+	git clone --mirror $(cat corpus/$repo.info) corpus/$repo.git
+    fi
+}
+
+get_repos() {
+    for repo in "$@"
+    do
+	get_repo $repo
+    done
+}
+
+if test $# = 0
+then
+    get_repos $(./repos)
+else
+    get_repos "$@"
+fi
