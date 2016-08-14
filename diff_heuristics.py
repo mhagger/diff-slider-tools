@@ -9,6 +9,9 @@ import subprocess
 
 verbose = False
 
+# The git command (possibly including options) to use when computing diffs:
+git = ['git', '-c', 'diff.algorithm=myers']
+
 
 class ParsingError(Exception):
     pass
@@ -930,10 +933,8 @@ def compute_diff(repo, old, new):
     if last_diff_args == args:
         return last_diff
 
-    cmd = [
-        'git',
+    cmd = git + [
         '-C', repo,
-        '-c', 'diff.algorithm=myers',
         'diff', '-U10',
         old, new,
         '--',
