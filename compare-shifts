@@ -30,7 +30,7 @@ def main(args):
         description='Read a slider shift from a diff'
         )
     parser.add_argument('--repo', type=str, required=True)
-    parser.add_argument('--all', '-a')
+    parser.add_argument('--all', '-a', action='store_true')
     parser.add_argument('--any-nonzero', action='store_true')
     parser.add_argument('--verbose', '-v', action='store_true')
     parser.add_argument('--correct', type=str)
