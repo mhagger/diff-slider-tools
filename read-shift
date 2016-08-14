@@ -34,6 +34,7 @@ import argparse
 sys.path.insert(0, os.path.dirname(sys.argv[0]))
 
 import diff_heuristics
+from diff_heuristics import SliderName
 from diff_heuristics import iter_file_diffs
 from diff_heuristics import find_slider
 from diff_heuristics import ParsingError
@@ -51,8 +52,12 @@ def main(args):
 
     options = parser.parse_args(args)
 
-    (old_sha1, old_filename) = options.old.split(':', 1)
-    (new_sha1, new_filename) = options.new.split(':', 1)
+    slidername = SliderName(
+        options.old, options.new, options.prefix, options.line_number,
+        )
+
+    (old_sha1, old_filename) = slidername.old.split(':', 1)
+    (new_sha1, new_filename) = slidername.new.split(':', 1)
 
     if options.verbose:
         diff_heuristics.verbose = True
@@ -60,28 +65,23 @@ def main(args):
     input = io.TextIOWrapper(sys.stdin.buffer, encoding='utf-8', errors='replace')
     lines = [line.rstrip('\n\r') for line in input.readlines()]
     try:
-        slider = find_slider(lines, old_filename, new_filename, options.prefix, options.line_number)
+        slider = find_slider(
+            lines,
+            old_filename, new_filename,
+            slidername.prefix, slidername.line_number,
+            )
     except ParsingError as e:
         print(
-            'Could not parse following slider: %s\n    %s:%s %s:%s %s %d' % (
-                e,
-                old_sha1, old_filename,
-                new_sha1, new_filename,
-                options.prefix, options.line_number,
+            'Could not parse following slider: %s\n'
+            '    %s' % (
+                e, slidername,
                 ),
             file=sys.stderr,
             )
     else:
         shift = slider.shift_canonically()
+        slidername.write(sys.stdout, [shift])
 
-        print(
-            '%s:%s %s:%s %s %d %d' % (
-                old_sha1, old_filename,
-                new_sha1, new_filename,
-                slider.prefix, slider.line_number,
-                shift
-                )
-            )
 
 if __name__ == '__main__':
     main(sys.argv[1:])
