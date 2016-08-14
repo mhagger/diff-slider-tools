@@ -974,23 +974,6 @@ def find_slider(lines, old_filename, new_filename, prefix, line_number):
     raise ParsingError('requested Slider was not found')
 
 
-def compute_slider(repo,
-                old_sha1, old_filename,
-                new_sha1, new_filename,
-                prefix, line_number):
-    """Read the specified Slider."""
-
-    lines = compute_diff(
-        repo,
-        '%s:%s' % (old_sha1, old_filename),
-        '%s:%s' % (new_sha1, new_filename),
-        )
-
-    slider = find_slider(lines, old_filename, new_filename, prefix, line_number)
-    slider.shift_canonically()
-    return slider
-
-
 COMMENT_RE = re.compile(r'^\s*(\#.*)?$')
 
 
@@ -1045,12 +1028,17 @@ class SliderName:
         (old_sha1, old_filename) = self.old.split(':', 1)
         (new_sha1, new_filename) = self.new.split(':', 1)
 
-        return compute_slider(
+        lines = compute_diff(
             repo,
-            old_sha1, old_filename,
-            new_sha1, new_filename,
-            self.prefix, self.line_number,
+            '%s:%s' % (old_sha1, old_filename),
+            '%s:%s' % (new_sha1, new_filename),
             )
+
+        slider = find_slider(
+            lines, old_filename, new_filename, self.prefix, self.line_number,
+            )
+        slider.shift_canonically()
+        return slider
 
     def write(self, f, shifts=[]):
         """Write this SliderName to f, followed by a newline.
