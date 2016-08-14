@@ -981,12 +981,21 @@ def compute_slider(repo,
     return slider
 
 
+COMMENT_RE = re.compile(r'^\s*(\#.*)?$')
+
+
 def iter_shifts(lines):
     """Iterate over (old, new, prefix, line_number, [shift,...]) read from lines.
 
-    lines can be any iterable over lines."""
+    lines can be any iterable over lines. Ignore blank lines or lines
+    that start with '#'.
+
+    """
 
     for line in lines:
+        if COMMENT_RE.match(line):
+            continue
+
         words = line.rstrip().split()
 
         if len(words) < 4:
