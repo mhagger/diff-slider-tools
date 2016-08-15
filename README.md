@@ -196,7 +196,7 @@ More and more diverse training data means that the heuristic can be trained bett
 
 3.  View the sliders where your version's output differed from the standard version, the human version, or any other version that you have an output slider file for:
 
-        ./compare-shifts --repo=$repo --any-disagreements \
+        ./compare-shifts --repo=$repo --any-wrong --controversial \
                 h=corpus/$repo-human.sliders \
                 g=corpus/$repo.sliders \
                 x=corpus/$repo-experimental.sliders \
