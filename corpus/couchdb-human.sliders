@@ -55,3 +55,24 @@ c91f851dc421466402721eb7baa644860f874ce1:share/www/script/couch_tests.js 146bc59
 5018945adf233336e6777e3dd085e565ffc4cccb:etc/couchdb/local_dev.ini 6cc0a3fcaddb3094f8f0fcd5bd51b3e74e70d11c:etc/couchdb/local_dev.ini + 57 0 -2
 ae3a9d4a0f06ef9eb6fcb0ce44e719bfc5bebbbd:etc/couchdb/local_dev.ini 56a3ee28e006aa42150482e1c3f91dc1906273f9:etc/couchdb/local_dev.ini + 51 0 -2 -5
 d32d8acff4bac6f51b87ddef7091c04ff7245d40:etc/couchdb/local_dev.ini aee6f18edf8cdf3f7c09c93fcf1af48c2c15fcd8:etc/couchdb/local_dev.ini + 27 -2 -5
+c2fd04dd8e515d45cbb552a39b218504e52e0608:test/javascript/tests/users_db_security.js b124719e84c020b996f4b5bfeb577ebda99d36f5:test/javascript/tests/users_db_security.js - 342 -2
+6411a40494f0e8f59a8852c17a7d9692b2a19ad9:test/javascript/tests/cookie_auth.js 869cf544a119426d94ff0c783415467618d3a591:test/javascript/tests/cookie_auth.js + 289 0
+d8bd7ee0d22c403c314d18021e8bd2da8fdf2015:src/fauxton/app/addons/fauxton/tests/filterViewSpec.js 2abdb2cca937ca4551edb92bba8066672033042f:src/fauxton/app/addons/fauxton/tests/filterViewSpec.js + 80 0
+c84a71cb9b3d8fd20fe7b8df0a320152e035d6e2:src/fauxton/settings.json.default 27cc89cb7c306f72c2746b5ea3736bd94f17cebf:src/fauxton/settings.json.default + 49 0
+0fb5aa9e67bd291ca2638dba961f4ddd3f6ccb3e:src/fauxton/assets/js/libs/nv.d3.js 95d6d6b035242d9a203b2df3af342274b29f98b1:src/fauxton/assets/js/libs/nv.d3.js + 13715 0
+5f99ec2c793816a921f8795cde1c729f32e9dcdf:src/fauxton/assets/less/fauxton.less f71431192c09c773d69e2cf551490a932267711c:src/fauxton/assets/less/fauxton.less - 593 0
+cab37a1e117fb9c7c05858bad7cd45049e091145:src/fauxton/app/templates/fauxton/nav_bar.html 1490f18a49937fab1c9e0bfb38f1b6a74124a2be:src/fauxton/app/templates/fauxton/nav_bar.html + 42 0
+eed363ce7b675876684d6011db627d3845dee75d:src/fauxton/assets/less/fauxton.less acecae56f3e8442e067a3f0c1847d95ecd92e876:src/fauxton/assets/less/fauxton.less + 680 0
+b4480facc3d7bc72223c25e8b05c0fa00c08dd3f:share/www/script/test/users_db_security.js 6ce887fadc04cd06d7c09291df17799d63429b17:share/www/script/test/users_db_security.js + 313 0
+a4eb1b35f6d32390f17fde518dbfc3a4d97562f0:src/ibrowse/ibrowse_lib.erl fd4b78671c4367f4f6469156e428176648c07a76:src/ibrowse/ibrowse_lib.erl + 402 0
+1074767a6b2a254fc6abcb08ec8ccc156e5aa6e9:share/www/script/test/view_pagination.js aae8762c1560a110f11fa8f2524018f20504e40d:share/www/script/test/view_pagination.js + 39 -3 0
+4c6355483d3e97971a97a9a3935263ecf47f7ca8:src/couchdb/couch_view_group.erl 3a5ef653409c167cbcc6ec352e3a32467420fd56:src/couchdb/couch_view_group.erl + 98 0
+cec0ef2ac1d2ecb5e2153f2415cb947fadeb42e0:share/www/script/test/rewrite.js 1294f5df57c956b93232aa1635f6574c055825f8:share/www/script/test/rewrite.js + 140 0
+22c551bb103072826c0299265670d1483c753dde:test/view_server/query_server_spec.rb ea3b1153e52ac1513da4d634eedefb05c261039c:test/view_server/query_server_spec.rb + 449 0
+779b8a8d2f9204546db0cc41cc36830504b50c0a:etc/launchd/org.apache.couchdb.plist.tpl.in d371de8641a9482f138fbcd4bbb3ead7d85abeba:etc/launchd/org.apache.couchdb.plist.tpl.in - 29 0
+ea95901fe52df11338134bd86f9bc8f028c5444b:test/query_server_spec.rb 36bbc72b6b0992639a0ba7a2077d75ec9f7cf03d:test/query_server_spec.rb + 251 0
+a05287f49dc20ef83f89668f1d2603174823565e:share/www/script/test/list_views.js 2cf4fec22fa7214b11363eb7430c411e0afa6221:share/www/script/test/list_views.js + 163 0
+2de233d67c05b32b1de6f2af18fefc56d8aad704:src/ibrowse/ibrowse.erl a2ab68be599153add0fb8b3049f71afbae1a89a1:src/ibrowse/ibrowse.erl - 667 -3
+958c8a6c8c0aa03d854a1aef4ad06e0ae6583375:share/www/script/test/changes.js ce663765f3f774d07c58579dff8b5398fdfbb6ce:share/www/script/test/changes.js + 33 -2 0
+9885c09375a374d6cceb95f59b3fef26b6177ad3:share/www/script/test/replication.js 899fedf56790c3c4c213d02ce698e796dbbb6b43:share/www/script/test/replication.js + 153 0
+9885c09375a374d6cceb95f59b3fef26b6177ad3:share/www/script/test/replication.js 899fedf56790c3c4c213d02ce698e796dbbb6b43:share/www/script/test/replication.js + 171 0

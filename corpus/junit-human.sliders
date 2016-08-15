@@ -149,3 +149,13 @@ bfc94ee739d62127c7477300b26127bd560765a1:README.html 04f4f3197084ad9ad7c050ce1a4
 f268f458843fc84e83c244a5c271cc71386eb1cf:doc/faq/faq.htm 4b1869ebb8002e5d0b82ab55460f6126043c9ec4:doc/faq/faq.htm + 17 -1
 f268f458843fc84e83c244a5c271cc71386eb1cf:junit/framework/Assert.java 4b1869ebb8002e5d0b82ab55460f6126043c9ec4:junit/framework/Assert.java - 115 -2
 f268f458843fc84e83c244a5c271cc71386eb1cf:junit/framework/TestResult.java 4b1869ebb8002e5d0b82ab55460f6126043c9ec4:junit/framework/TestResult.java + 56 -1
+c07965ab1b232b04a13ea84fdbcdd8be04ea0182:src/main/java/org/junit/internal/ArrayComparisonFailure.java e6a20043db694056ac00456f6076091012ecba87:src/main/java/org/junit/internal/ArrayComparisonFailure.java + 46 -1
+dc23211eb83c7d9f23f6a7031fedc091c6365bed:src/test/java/org/junit/runners/model/FrameworkMethodTest.java 15c925c4412d993a12e91a2a6c0168977402efec:src/test/java/org/junit/runners/model/FrameworkMethodTest.java + 55 0
+56193048f411846a58c0e0377a5f1ccfecd3d2f9:src/main/java/org/junit/runner/JUnitCommandLineParser.java 826529633261161edd2d9dc0f866b2c3c0420514:src/main/java/org/junit/runner/JUnitCommandLineParser.java - 88 0
+0030e51f286ed52ad4c2c44857c4a28525c83f93:src/test/java/org/junit/tests/experimental/theories/runner/WithParameterSupplier.java 3375d1c3f489fc5d2b5c6629c55867bbfe2a033f:src/test/java/org/junit/tests/experimental/theories/runner/WithParameterSupplier.java + 84 0
+e8b91fa9f797dfe16aff66ed6ad5d6104e5133fe:src/main/java/org/junit/rules/TemporaryFolder.java 67e43ab827da24baa6477e33e4e883a36dfcf645:src/main/java/org/junit/rules/TemporaryFolder.java + 80 0
+d0d4772f56e598b55c12f336e17cc18d6302f26f:src/main/java/org/junit/Assert.java 7a65992af084650c52dc69380ae1ac24b107715c:src/main/java/org/junit/Assert.java + 128 0
+5ccb8e7c1189ac4a248dc2aa2852d1a760937466:src/test/java/org/junit/tests/experimental/interceptor/InterceptorTest.java 5261a76c3014edc93f568ac76e8012d59dc2c831:src/test/java/org/junit/tests/experimental/interceptor/InterceptorTest.java + 230 0
+38f920506399298a945ed38e08e18e1dafb62520:src/test/java/org/junit/tests/experimental/interceptor/InterceptorTest.java 1e54b68d2fe7c4238993b360c7be6fbb05d30528:src/test/java/org/junit/tests/experimental/interceptor/InterceptorTest.java + 230 0
+e727dd6b1cb2caa1699da3b2df7625c9554adc36:src/main/java/org/junit/internal/runners/model/TestClass.java 95bd62b2ffd80394d1a17e9078a4d79478423030:src/main/java/org/junit/internal/runners/model/TestClass.java + 132 0
+2cd770c3511bd9ae15320ea4cd81f2ae284cc659:junit/framework/TestSuite.java 68c5ef13b49282e2497d1381ce98ef213660ef2f:junit/framework/TestSuite.java - 105 0

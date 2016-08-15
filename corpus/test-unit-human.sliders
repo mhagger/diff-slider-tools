@@ -42,3 +42,10 @@ ebe17d8e2163b56006cd356c494118ddc13dfe84:lib/test/unit/assertions.rb 8c21bab7148
 c53ebd08e663753f536483c9eed9aeb5937c7f4b:lib/test/unit/assertions.rb 9f80361a7afbc2d41369593e980e441d1d311430:lib/test/unit/assertions.rb + 531 -1
 b28a5eeba154b6f3c35218c9efc2e863f640ed4b:lib/test/unit/assertions.rb ac785194f2832f8ce0706f5625fa49ed3642a305:lib/test/unit/assertions.rb + 515 -1
 fc639ce994e76bab685f74936b6b690841ab97d7:test/test_emacs_runner.rb 981e67bbc8e54fb6c573cba9538a2bdbe9483dd9:test/test_emacs_runner.rb + 36 0
+f10baf0a42af625c1b601e5ca1d57a60e061fce9:test/test-priority.rb d4b060a093ff6dd3b9d49467f0aea8a11775d901:test/test-priority.rb + 120 9
+62c3598ce0d55ee90dedfc261208d284a03cebff:test/test-testcase.rb 6af0cf080e471c16d5a7431e15e9e9df7eefd10b:test/test-testcase.rb - 682 0
+62c3598ce0d55ee90dedfc261208d284a03cebff:test/test-testcase.rb 6af0cf080e471c16d5a7431e15e9e9df7eefd10b:test/test-testcase.rb - 698 0
+42bf939c2cb784c8b81845b380b889d89b528c56:test/test-testcase.rb 7a12bffdf9a47f6c2679c0f4c3a979c36e5138ad:test/test-testcase.rb + 644 0
+42bf939c2cb784c8b81845b380b889d89b528c56:test/test-testcase.rb 7a12bffdf9a47f6c2679c0f4c3a979c36e5138ad:test/test-testcase.rb + 660 0
+42bf939c2cb784c8b81845b380b889d89b528c56:test/test-testcase.rb 7a12bffdf9a47f6c2679c0f4c3a979c36e5138ad:test/test-testcase.rb + 676 0
+42bf939c2cb784c8b81845b380b889d89b528c56:test/test-testcase.rb 7a12bffdf9a47f6c2679c0f4c3a979c36e5138ad:test/test-testcase.rb + 708 0
