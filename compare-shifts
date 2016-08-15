@@ -30,8 +30,28 @@ def main(args):
         description='Read a slider shift from a diff'
         )
     parser.add_argument('--repo', type=str, required=True)
-    parser.add_argument('--all', '-a', action='store_true')
-    parser.add_argument('--any-nonzero', action='store_true')
+    parser.add_argument(
+        '--all', '-a', action='store_true',
+        help='show all sliders',
+        )
+    parser.add_argument(
+        '--any-wrong', action='store_true',
+        help=(
+            'show sliders for which the correct values are known '
+            'and any shift disagrees with them'
+            ),
+        )
+    parser.add_argument(
+        '--any-nonzero', action='store_true',
+        help='show sliders for which any shift differs from zero',
+        )
+    parser.add_argument(
+        '--controversial', action='store_true',
+        help=(
+            'show sliders for which the correct values are not known '
+            'and some shifts disagree with each other'
+            )
+        )
     parser.add_argument('--verbose', '-v', action='store_true')
     parser.add_argument('--correct', type=str)
     parser.add_argument('columns', nargs='+')
@@ -85,8 +105,9 @@ def main(args):
 
         if (
                 options.all
-                or options.correct and correct and shifts_seen - correct
+                or options.any_wrong and correct and shifts_seen - correct
                 or options.any_nonzero and list(shifts_seen) != [0]
+                or options.controversial and not correct and len(shifts_seen) != 1
                 ):
             slider = slidername.compute_slider('corpus/%s.git' % (options.repo,))
 
