@@ -168,7 +168,7 @@ def main(args):
 
         for repo in options.repos:
             with open('corpus/%s-human.sliders' % (repo,)) as f:
-                for (slider, shifts) in SliderName.read(f):
+                for (slidername, shifts) in SliderName.read(f):
                     correct = set(shifts)
 
                     try:
