@@ -995,7 +995,14 @@ def iter_shifts(lines):
             raise ParsingError('could not read %r' % (line,))
 
         (old, new, prefix, line_number, *shifts) = words
-        line_number = int(line_number)
+        try:
+            line_number = int(line_number)
+        except ValueError:
+            raise ParsingError(
+                'line number (%r) is not an integer in line %r'
+                % (line_number, line,)
+                )
+
         shifts = [int(shift) for shift in shifts]
 
         yield (old, new, prefix, line_number, shifts)
