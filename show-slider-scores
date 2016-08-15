@@ -9,8 +9,7 @@ sys.path.insert(0, os.path.dirname(sys.argv[0]))
 
 import diff_heuristics
 from diff_heuristics import SliderName
-from diff_heuristics import SplitScorer
-from diff_heuristics import SplitScorer2
+from diff_heuristics import DefaultSplitScorer as SplitScorer
 
 
 def main(args):
@@ -19,14 +18,14 @@ def main(args):
         )
     parser.add_argument('--repo', type=str, required=True)
     parser.add_argument('--verbose', '-v', action='store_true')
-    SplitScorer2.add_arguments(parser)
+    SplitScorer.add_arguments(parser)
 
     options = parser.parse_args(args)
 
     if options.verbose:
         diff_heuristics.verbose = True
 
-    scorer = SplitScorer2.from_options(options)
+    scorer = SplitScorer.from_options(options)
 
     for (slidername, shifts) in SliderName.read(sys.stdin):
         slider = slidername.compute_slider('corpus/%s.git' % (options.repo,))

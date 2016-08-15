@@ -200,7 +200,7 @@ class BaseSplitScorer:
             )
 
 
-class SplitScorer(BaseSplitScorer):
+class SplitScorer1(BaseSplitScorer):
     # A list [(parameter_name, default_value), ...]
     PARAMETERS = [
         ('start_of_hunk_bonus', 9),
@@ -374,6 +374,129 @@ class SplitScorer2(BaseSplitScorer):
             score = indent
 
         return 10 * score - bonus
+
+
+class SplitScore3:
+    def __init__(self, scorer, effective_indent, bonus):
+        self.scorer = scorer
+        self.effective_indent = effective_indent
+        self.bonus = bonus
+
+    def __add__(self, other):
+        return SplitScore3(
+            self.scorer,
+            self.effective_indent + other.effective_indent,
+            self.bonus + other.bonus
+            )
+
+    def __le__(self, other):
+        cmp_indents = (
+            (self.effective_indent > other.effective_indent)
+            - (self.effective_indent < other.effective_indent)
+            )
+        return 60 * cmp_indents - self.bonus + other.bonus <= 0
+
+    def __str__(self):
+        return '(%d,%d)' % (self.effective_indent, self.bonus)
+
+
+class SplitScorer3(BaseSplitScorer):
+    # A list [(parameter_name, default_value), ...]
+    PARAMETERS = [
+        ('start_of_hunk_bonus', 9),
+        ('end_of_hunk_bonus', -21),
+
+        ('total_blank_weight', 24),
+        ('pre_blank_weight', 6),
+
+        ('relative_indent_bonus', -6),
+        ('relative_indent_with_blank_bonus', -11),
+        ('relative_outdent_bonus', -29),
+        ('relative_outdent_with_blank_bonus', -18),
+        ('relative_dedent_bonus', -23),
+        ('relative_dedent_with_blank_bonus', -16),
+        ]
+
+    def evaluate(self, m):
+        """Evaluate the score for a split with the specified measurements."""
+
+        # A place to accumulate bonus factors (positive makes this
+        # index more favored):
+        bonus = 0
+
+        if m.pre_indent is None and m.pre_blank == 0:
+            bonus += self.start_of_hunk_bonus
+
+        if m.end_of_hunk:
+            bonus += self.end_of_hunk_bonus
+
+        total_blank = m.pre_blank
+        if m.indent is None:
+            total_blank += 1 + m.post_blank
+
+        # Bonuses based on the location of blank lines:
+        bonus += (
+            self.total_blank_weight * total_blank
+            + self.pre_blank_weight * m.pre_blank
+            )
+
+        if m.indent is not None:
+            indent = m.indent
+        else:
+            indent = m.post_indent
+
+        is_blank = int(bool(total_blank))
+
+        if indent is None:
+            effective_indent = -1
+        else:
+            effective_indent = indent
+
+        if indent is None:
+            # No adjustments needed.
+            pass
+        elif m.pre_indent is None:
+            # No adjustments needed.
+            pass
+        elif indent > m.pre_indent:
+            # The line is indented more than its predecessor. It
+            # is preferable to keep these lines together, so we
+            # score it based on the larger indent:
+            if is_blank:
+                bonus += self.relative_indent_with_blank_bonus
+            else:
+                bonus += self.relative_indent_bonus
+
+        elif indent == m.pre_indent:
+            # No adjustments needed.
+            pass
+        else:
+            # The line is indented less than its predecessor. It
+            # could be that this line is the start of a new block
+            # (e.g., of an "else" block, or of a block without a
+            # block terminator) or it could be the end of the
+            # previous block.
+            if m.post_indent is None or indent >= m.post_indent:
+                # That was probably the end of a block. Score
+                # based on the line's own indent:
+                if is_blank:
+                    bonus += self.relative_dedent_with_blank_bonus
+                else:
+                    bonus += self.relative_dedent_bonus
+            else:
+                # The following line is indented more. So it is
+                # likely that this line is the start of a block.
+                # It's a pretty good place to split, so score it
+                # based on its own indent:
+                if is_blank:
+                    bonus += self.relative_outdent_with_blank_bonus
+                else:
+                    bonus += self.relative_outdent_bonus
+
+        return SplitScore3(self, effective_indent, bonus)
+
+
+DefaultSplitScorer = SplitScorer3
 
 
 class DiffLine:
@@ -662,9 +785,9 @@ class Slider:
                 continue
 
             if i in self.shift_range:
-                score = '%5d' % (self.get_score_for_split(scorer, i),)
+                score = '%5s' % (self.get_score_for_split(scorer, i),)
             elif i - len(self.change) in self.shift_range:
-                score = '%5d' % (self.get_score_for_split(scorer, i),)
+                score = '%5s' % (self.get_score_for_split(scorer, i),)
             else:
                 score = '     '
 

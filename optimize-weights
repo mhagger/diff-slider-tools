@@ -18,8 +18,7 @@ sys.path.insert(0, os.path.dirname(sys.argv[0]))
 import diff_heuristics
 from diff_heuristics import SliderName
 from diff_heuristics import SplitMeasurements
-from diff_heuristics import SplitScorer
-from diff_heuristics import SplitScorer2
+from diff_heuristics import DefaultSplitScorer as SplitScorer
 from diff_heuristics import load_scores
 
 
@@ -37,17 +36,17 @@ def main(args):
         )
     parser.add_argument(
         '--vary', action='append',
-        choices=SplitScorer2.get_parameter_names() + [
+        choices=SplitScorer.get_parameter_names() + [
             name.replace('_', '-')
-            for name in SplitScorer2.get_parameter_names()
+            for name in SplitScorer.get_parameter_names()
             ],
         help='parameters that should be varied as part of the optimization',
         )
     parser.add_argument(
         '--freeze', action='append',
-        choices=SplitScorer2.get_parameter_names() + [
+        choices=SplitScorer.get_parameter_names() + [
             name.replace('_', '-')
-            for name in SplitScorer2.get_parameter_names()
+            for name in SplitScorer.get_parameter_names()
             ],
         help='parameters that should be frozen at their initial values',
         )
@@ -86,7 +85,7 @@ def main(args):
         '--verbose', '-v', action='store_true',
         help='increase verbosity',
         )
-    SplitScorer2.add_arguments(parser)
+    SplitScorer.add_arguments(parser)
 
     options = parser.parse_args(args)
 
@@ -102,13 +101,13 @@ def main(args):
         omit = set(name.replace('-', '_') for name in options.freeze)
         vary_parameters = [
             name
-            for name in SplitScorer2.get_parameter_names()
+            for name in SplitScorer.get_parameter_names()
             if not name in omit
             ]
     elif options.vary:
         vary_parameters = [name.replace('-', '_') for name in options.vary]
     else:
-        vary_parameters = SplitScorer2.get_parameter_names()
+        vary_parameters = SplitScorer.get_parameter_names()
 
     collected_scores = dict()
 
@@ -138,7 +137,7 @@ def main(args):
             if collected_scores[scorer] <= threshold
             ]
     else:
-        base_scorers = [SplitScorer2.from_options(options)]
+        base_scorers = [SplitScorer.from_options(options)]
         best_score = None
 
     for iteration in range(options.iterations):

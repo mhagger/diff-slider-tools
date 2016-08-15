@@ -9,8 +9,7 @@ sys.path.insert(0, os.path.dirname(sys.argv[0]))
 
 import diff_heuristics
 
-from diff_heuristics import SplitScorer
-from diff_heuristics import SplitScorer2
+from diff_heuristics import DefaultSplitScorer as SplitScorer
 
 
 def main(args):
@@ -18,14 +17,14 @@ def main(args):
         description='Show the scores for splitting the lines on stdin'
         )
     parser.add_argument('--verbose', '-v', action='store_true')
-    SplitScorer2.add_arguments(parser)
+    SplitScorer.add_arguments(parser)
 
     options = parser.parse_args(args)
 
     if options.verbose:
         diff_heuristics.verbose = True
 
-    scorer = SplitScorer2.from_options(options)
+    scorer = SplitScorer.from_options(options)
 
     input = io.TextIOWrapper(sys.stdin.buffer, encoding='utf-8', errors='replace')
     lines = [line.rstrip('\n\r') for line in input.readlines()]
