@@ -191,7 +191,7 @@ More and more diverse training data means that the heuristic can be trained bett
             while read old new prefix line_number shifts
             do
 			    $EXPERIMENTAL_GIT -C corpus/$repo.git diff $EXPERIMENTAL_GIT_OPTS -U10 "$old" "$new" -- |
-                   ./read-shift "$old" "$new" "$prefix" $line_number
+                   ./read-shift "$old" "$new" "$prefix" "$line_number"
             done >corpus/$repo-experimental.sliders
 
 3.  View the sliders where your version's output differed from the standard version, the human version, or any other version that you have an output slider file for:
