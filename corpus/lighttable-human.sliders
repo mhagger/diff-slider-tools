@@ -1,0 +1,15 @@
+fff5bf4ee3d189bddbcaf26abd0da9a59182eecb:src/lt/objs/langs/clj.cljs 7dd8c65b381c7706c4e6e5acb66f68b05ac681cd:src/lt/objs/langs/clj.cljs + 356 -1
+12cac6e4d698fa594490c2ced0bbcbec8acbbcee:src/lt/objs/langs/clj.cljs 284a1832a481129c8d0c778888acb3545f54b785:src/lt/objs/langs/clj.cljs + 271 -1
+e82d82d0078f0d91bf7e9c20a6de7ccdc76eb742:deploy/core/css/skins/new-dark.css 41673ccdd48342a34b65a3a32d4eda7a7b1d40e9:deploy/core/css/skins/new-dark.css - 68 -1
+fff5bf4ee3d189bddbcaf26abd0da9a59182eecb:deploy/core/node_modules/lighttable/bootstrap.js 7dd8c65b381c7706c4e6e5acb66f68b05ac681cd:deploy/core/node_modules/lighttable/bootstrap.js + 18557 0
+ce8ab48b7ecd8a7110538da1b66c5431f3c95765:deploy/core/node_modules/codemirror/modes/gas.js 9a7e760c6d28ab9d2aad4666653b0f9a4595ae4a:deploy/core/node_modules/codemirror/mode/gas/gas.js + 344 0
+fff5bf4ee3d189bddbcaf26abd0da9a59182eecb:deploy/core/node_modules/lighttable/bootstrap.js 7dd8c65b381c7706c4e6e5acb66f68b05ac681cd:deploy/core/node_modules/lighttable/bootstrap.js + 18573 0
+fff5bf4ee3d189bddbcaf26abd0da9a59182eecb:deploy/core/node_modules/lighttable/bootstrap.js 7dd8c65b381c7706c4e6e5acb66f68b05ac681cd:deploy/core/node_modules/lighttable/bootstrap.js + 18589 0
+d4a8a47ef36a8738242ef6c21ecf134f39ceff50:src/lt/objs/menu.cljs 2a8513542876af9902e47b6e21a4d41295df8a20:src/lt/objs/menu.cljs + 145 0
+e215ed806d73ee8e623f7bde86263ba1cc41508d:deploy/core/node_modules/lighttable/background/behaviorsParser.js 86323e5d847670cbea7aca5869d148d0dc5a0fce:deploy/core/node_modules/lighttable/background/behaviorsParser.js + 79 0
+fff5bf4ee3d189bddbcaf26abd0da9a59182eecb:deploy/core/node_modules/lighttable/bootstrap.js 7dd8c65b381c7706c4e6e5acb66f68b05ac681cd:deploy/core/node_modules/lighttable/bootstrap.js + 15963 0
+ecd1ee5420c93c2c805065e097490a423511e581:src/lt/objs/plugins.cljs 3f900b4266809ae142f4b34d62b86170b97674b8:src/lt/objs/plugins.cljs + 179 -1
+0ec323bfced012412ce258134a4685db6e1cd29c:deploy/core/node_modules/codemirror/vim.js fff5bf4ee3d189bddbcaf26abd0da9a59182eecb:deploy/core/node_modules/codemirror/vim.js + 43 0
+60290bb6a18ef170b08d2ea9d364cbdead97d89a:src/lt/objs/langs/clj.cljs f8f625e826569eb84bd8263b9b63f0e42a9a4c5f:src/lt/objs/langs/clj.cljs + 720 -1
+ce8ab48b7ecd8a7110538da1b66c5431f3c95765:deploy/core/node_modules/codemirror/modes/mirc.js 9a7e760c6d28ab9d2aad4666653b0f9a4595ae4a:deploy/core/node_modules/codemirror/mode/mirc/mirc.js + 192 0
+9c283d003d00fdb2d74e8ca5117e6ecfcd559144:src/lt/objs/search.cljs 2c9b866d8fd6ed45fb896ed2f9c8edf6e38f6069:src/lt/objs/search.cljs + 164 0

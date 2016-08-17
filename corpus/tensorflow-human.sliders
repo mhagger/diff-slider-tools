@@ -1,0 +1,115 @@
+8c413daa09318c6ad021eb830650e3c66ee90891:tensorflow/g3doc/api_docs/python/contrib.distributions.md b10e652bbaff0a1d60256a43bdf7db7a341071ab:tensorflow/g3doc/api_docs/python/contrib.distributions.md + 2585 0
+979e48228936d1ffe0f0bf54680caf58f1294b50:tensorflow/core/ops/compat/ops_history.v0.pbtxt 8031e2823cdbedad42dc6ce9f4f7042f7e1c604e:tensorflow/core/ops/compat/ops_history.v0.pbtxt + 15055 -1
+94d27b6852b3e331fd9d64a0533f0fc27af05bfd:tensorflow/g3doc/api_docs/python/functions_and_classes/tf.train.Server.md ceb04a1b806563615d68d4617822f057405b3bfb:tensorflow/g3doc/api_docs/python/functions_and_classes/tf.train.Server.md + 108 0
+674e389fdf6611ee4a7bb0a9d562d8bf855c0ccc:tensorflow/core/ops/compat/ops_history.v0.pbtxt b069a24b93a3354d35395b0c2ba3f3daec44f384:tensorflow/core/ops/compat/ops_history.v0.pbtxt + 1829 -1
+edf3586caf997d94175a21b5561dbcfaaf9de9ac:tensorflow/core/kernels/BUILD 4671953808f87daa6c8355bdd961242290aab80f:tensorflow/core/kernels/BUILD - 219 -1
+b0aa789423270adfe58496a78cbfd1509f2374f0:tensorflow/g3doc/api_docs/python/io_ops.md 4be49d4d8a91a071d01eeba28ab543782a746d26:tensorflow/g3doc/api_docs/python/io_ops.md + 1573 -2 0
+c1a40c7b9085719cb120ae92f991f86d0757af7e:tensorflow/core/ops/ops.pbtxt 2b9c6e933098b5bff0f379e5f8c3951b588c7a44:tensorflow/core/ops/ops.pbtxt + 4668 -1
+f1bccd320a742c67245ded0cbe5eba971294d769:tensorflow/core/ops/compat/ops_history.v0.pbtxt 4c85a08666796faad743a47b63d350132d5c0c90:tensorflow/core/ops/compat/ops_history.v0.pbtxt + 8747 -1
+6edf3eec9bf32c0957fba0649130d16bee06dab4:tensorflow/g3doc/api_docs/python/contrib.bayesflow.stochastic_graph.md 8430dbec3f160cb496a41ee29438256b59dca2bf:tensorflow/g3doc/api_docs/python/contrib.bayesflow.stochastic_graph.md + 205 -2 0
+bc624aa8d9460dca794fde6d5534f1d3e8054016:tensorflow/core/ops/ops.pbtxt 0a21a38d4ef5b66177f407f74f14dd7b72232b36:tensorflow/core/ops/ops.pbtxt + 7678 -1
+ab30c2d368ecd7fc691de15a1a8b242ad59bc2af:tensorflow/core/ops/compat/ops_history.v0.pbtxt 0b9cb6c8dd7c01ad89b5f4e20aeed8fa2eafdd99:tensorflow/core/ops/compat/ops_history.v0.pbtxt + 10934 -1
+4b935e00c584579dad18c41167f89a0e2e9e5f6f:tensorflow/g3doc/api_docs/python/functions_and_classes/shard3/tf.contrib.distributions.Gamma.md 7ecbe480858bbf64e0a8a7cbfbf938d2c610ff6f:tensorflow/g3doc/api_docs/python/functions_and_classes/shard3/tf.contrib.distributions.Gamma.md + 182 -2 0
+cf3bc09caffe50a538682928aaa716dfc4b08930:tensorflow/g3doc/api_docs/python/functions_and_classes/shard2/tf.contrib.learn.BaseEstimator.md 7f4ab1e341698075fd692d24b7ebe3e32f70e00b:tensorflow/g3doc/api_docs/python/functions_and_classes/shard2/tf.contrib.learn.BaseEstimator.md + 98 -2 0
+545df470168f52a369b5f1510f26ad001f48c650:tensorflow/core/ops/ops.pbtxt e67225e24a42b0e60ed3724f6e100590a3327c31:tensorflow/core/ops/ops.pbtxt + 6727 -1
+30dccdb2a6a0af9c28bcb693804835a507c6ac97:tensorflow/g3doc/api_docs/python/contrib.learn.md 3a720e45238190a9c4e5fcc69c3777edc6aeefcb:tensorflow/g3doc/api_docs/python/contrib.learn.md + 3124 -2 0
+f6b03d61dfdfc6f2a6a3c8b2f57fbf899d83be58:tensorflow/g3doc/api_docs/python/contrib.learn.md 99e7181043c08c2dc9a4d6e8c422944100881a84:tensorflow/g3doc/api_docs/python/contrib.learn.md + 1063 -2 0
+ded14ab7e10349a55ad365df70b25582202e6873:tensorflow/core/ops/compat/ops_history.v0.pbtxt 5a84537852ef9b164bad165c8450bde67d30df05:tensorflow/core/ops/compat/ops_history.v0.pbtxt + 12372 -1
+eed87c923ead02c0e209d0b8d2e4c29baa983ffe:third_party/eigen3/unsupported/Eigen/CXX11/src/NeuralNetworks/SpatialConvolutions.h 884763c04240f533dd059a3e47a24ae465dd777a:third_party/eigen3/unsupported/Eigen/CXX11/src/NeuralNetworks/SpatialConvolutions.h + 215 -1
+fdfbd3af7a25410a999cbd6a0733e36ddd1ddb14:tensorflow/python/BUILD 8509f88ade3fc65f4cc530780d06100f0b1ea108:tensorflow/python/BUILD + 487 -1
+aafb9be5e8abedcdb263324f8d90f769e494199f:tensorflow/g3doc/api_docs/python/functions_and_classes/shard1/tf.contrib.distributions.StudentT.md f40302caddb44249c665b9a66e27a33f06167264:tensorflow/g3doc/api_docs/python/functions_and_classes/shard1/tf.contrib.distributions.StudentT.md + 264 -2 0
+979e48228936d1ffe0f0bf54680caf58f1294b50:tensorflow/core/ops/ops.pbtxt 8031e2823cdbedad42dc6ce9f4f7042f7e1c604e:tensorflow/core/ops/ops.pbtxt + 41 -1
+1602ac6a918aa130c14e8058c9b940792242d995:tensorflow/python/BUILD 6290ac2c25a4f4310e072cf1472afea38031bf59:tensorflow/python/BUILD + 860 -1
+58a72af2bb7b1b51c92ab26edea114c33a91c9ff:tensorflow/core/ops/array_ops.cc bb3674caeb8e21e217ffe6446e816608990297bd:tensorflow/core/ops/array_ops.cc - 875 -1
+ff92b6b3f335ecd8bbeade1e5d8c60bdd6ea371f:tensorflow/core/ops/ops.pbtxt d27f334dc0b0aafcca08e3a252252389468d7ddc:tensorflow/core/ops/ops.pbtxt + 15084 -1
+d269d53c05117f9fc9f389ef52850fc9d21b00f4:tensorflow/stream_executor/stream.cc 61b12f567ad167556bf55d4375112ed262d37975:tensorflow/stream_executor/stream.cc + 282 -1
+f1bccd320a742c67245ded0cbe5eba971294d769:tensorflow/core/ops/compat/ops_history.v0.pbtxt 4c85a08666796faad743a47b63d350132d5c0c90:tensorflow/core/ops/compat/ops_history.v0.pbtxt + 7598 -1
+bbce152b48ab4c5ac66ac87979c8db22bff0a2c8:tensorflow/g3doc/api_docs/python/train.md 586528c8f37293e3752deff56cd794c7d548eada:tensorflow/g3doc/api_docs/python/train.md + 1887 -2 0
+d7d1ab97e6f476a285a586d085592ac0573ff5fd:tensorflow/g3doc/api_docs/python/functions_and_classes/shard0/tf.contrib.learn.LinearRegressor.md 0af43cad69980f916fb5e9f944cc9e09c6504aa2:tensorflow/g3doc/api_docs/python/functions_and_classes/shard0/tf.contrib.learn.LinearRegressor.md - 279 -2 0
+eff93149a6dc8e6826898fd9f9c28c81e21c9836:tensorflow/core/ops/compat/ops_history.v0.pbtxt aafb9be5e8abedcdb263324f8d90f769e494199f:tensorflow/core/ops/compat/ops_history.v0.pbtxt + 14617 -1
+e1c2ad4b5191ede7d45b815ab7032b0ff898d6e2:tensorflow/g3doc/api_docs/python/functions_and_classes/shard3/tf.contrib.distributions.DirichletMultinomial.md 445aa09103e3bb18366079e10bce9f9a08e80a79:tensorflow/g3doc/api_docs/python/functions_and_classes/shard3/tf.contrib.distributions.DirichletMultinomial.md + 201 -2 0
+e52cecf69fa0efa782609a6d8f9494c08ae3aa7b:tensorflow/g3doc/api_docs/python/state_ops.md 0279b3e6107d99df322afd09ca9211ccc9cbd3bf:tensorflow/g3doc/api_docs/python/state_ops.md + 416 -2 0
+d0dec7ccd438c29b7806baef849c78b7a95e4467:tensorflow/g3doc/api_docs/python/contrib.learn.md dea93a2a67d604c7236155b274d752b04d925561:tensorflow/g3doc/api_docs/python/contrib.learn.md + 1508 -2 0
+0e12a0b0dbcf17da880402bc01d8511aa4568cda:tensorflow/python/BUILD fddaa6b035492776f761e16003685b45ee9e6c60:tensorflow/python/BUILD + 367 -1
+87cabf37f326838c69d2cf196c123851f32f0ffd:tensorflow/tensorboard/components/tf-graph-common/lib/common.ts 5aa3965ba44cd9a0da68022d00c1a5de3425c875:tensorflow/tensorboard/components/tf-graph-common/lib/common.ts + 107 -1
+6ac44c7123f53e2ba5af8987bbd959de5704044b:tensorflow/g3doc/api_docs/python/image.md 785fa7a3d8c2b06f2336077bdc26fae4200db4bc:tensorflow/g3doc/api_docs/python/image.md - 1237 0
+d0dec7ccd438c29b7806baef849c78b7a95e4467:tensorflow/g3doc/api_docs/python/functions_and_classes/shard9/tf.contrib.learn.DNNRegressor.md dea93a2a67d604c7236155b274d752b04d925561:tensorflow/g3doc/api_docs/python/functions_and_classes/shard9/tf.contrib.learn.DNNRegressor.md + 320 0
+aafb9be5e8abedcdb263324f8d90f769e494199f:tensorflow/g3doc/api_docs/python/contrib.distributions.md f40302caddb44249c665b9a66e27a33f06167264:tensorflow/g3doc/api_docs/python/contrib.distributions.md + 1108 -2 0
+a2d856c20551861c40662859726c687bc7e8d7ac:tensorflow/core/ops/compat/ops_history.v0.pbtxt 8c972763fe5cc2330d997c016303e510b7d0c707:tensorflow/core/ops/compat/ops_history.v0.pbtxt + 24944 -1
+3aae89809f54562174b9e9d725bc28599dc1f33c:tensorflow/tensorboard/backend/BUILD 8e677731f07bc457c3e4278f4b865d6edcd6a678:tensorflow/tensorboard/backend/BUILD - 44 -1
+0249729a26b2cd3bdbbc5880f8d634a56860b0fd:tensorflow/tools/ci_build/builds/pip.sh 3b49611933c109b6f589e19ab5827aa586587318:tensorflow/tools/ci_build/builds/pip.sh + 31 0
+c1a40c7b9085719cb120ae92f991f86d0757af7e:tensorflow/core/ops/compat/ops_history.v0.pbtxt 2b9c6e933098b5bff0f379e5f8c3951b588c7a44:tensorflow/core/ops/compat/ops_history.v0.pbtxt + 5642 -1
+4b935e00c584579dad18c41167f89a0e2e9e5f6f:tensorflow/g3doc/api_docs/python/functions_and_classes/shard2/tf.contrib.distributions.Categorical.md 7ecbe480858bbf64e0a8a7cbfbf938d2c610ff6f:tensorflow/g3doc/api_docs/python/functions_and_classes/shard2/tf.contrib.distributions.Categorical.md + 83 -2 0
+fdc6752cda33e8d5879e4db68093eca7d7395988:tensorflow/core/ops/compat/ops_history.v0.pbtxt 9a4878cc17d4039939e8df5a2a984cca8028baeb:tensorflow/core/ops/compat/ops_history.v0.pbtxt - 501 -1
+6a365818d427f1778b1154a0507a963a3e8f8b58:tensorflow/g3doc/api_docs/python/client.md 4409db7877a0aff98bf34af80b8626ed2e47a6e5:tensorflow/g3doc/api_docs/python/client.md + 262 -2 0
+8c413daa09318c6ad021eb830650e3c66ee90891:tensorflow/g3doc/api_docs/python/contrib.distributions.md b10e652bbaff0a1d60256a43bdf7db7a341071ab:tensorflow/g3doc/api_docs/python/contrib.distributions.md + 3776 -2 0
+6ea8a70bd776fd1914a3517364a5e7c08f825096:tensorflow/g3doc/api_docs/python/functions_and_classes/shard3/tf.contrib.distributions.OperatorPDBase.md a64d708b858cecf9b847525d2b9f60e06db3ec00:tensorflow/g3doc/api_docs/python/functions_and_classes/shard3/tf.contrib.distributions.OperatorPDBase.md + 395 -2 0
+3972c791b9f4d9a61b9ad6399b481df396f359ff:tensorflow/core/kernels/cwise_ops_common.h 795f35da2d458cbae477ac2fe2bff80c1427a771:tensorflow/core/kernels/cwise_ops_common.h + 382 0
+31e84299816f332a2db4ab19f52390599e542e12:tensorflow/core/ops/compat/ops_history.v0.pbtxt 784778e76d3f5fd75b9ec99138770795907f1616:tensorflow/core/ops/compat/ops_history.v0.pbtxt + 5828 -1
+bbb640b2d454123c428704fd68ed311f5def58d1:tensorflow/g3doc/api_docs/python/functions_and_classes/shard4/tf.contrib.bayesflow.stochastic_graph.SampleValue.md 69232a160116cc804f456b672fa02b215a07e38f:tensorflow/g3doc/api_docs/python/functions_and_classes/shard4/tf.contrib.bayesflow.stochastic_graph.SampleValue.md + 33 -2 0
+a0d21ec39cc3f18781d2d37798aa328e12f92844:tensorflow/core/ops/compat/ops_history.v0.pbtxt 3ae663ccc5d08976e0f547d5b2ece35067a6673e:tensorflow/core/ops/compat/ops_history.v0.pbtxt + 2908 -1
+cf3bc09caffe50a538682928aaa716dfc4b08930:tensorflow/g3doc/api_docs/python/functions_and_classes/shard4/tf.contrib.learn.TensorFlowRNNRegressor.md 7f4ab1e341698075fd692d24b7ebe3e32f70e00b:tensorflow/g3doc/api_docs/python/functions_and_classes/shard4/tf.contrib.learn.TensorFlowRNNRegressor.md + 155 -2 0
+ed5cf5b92611cd5ee60ff97ba9186eb5b211e2c5:tensorflow/core/ops/compat/ops_history.v0.pbtxt a43f7b4d06fe4c96668451a720e7761d8d6ba82a:tensorflow/core/ops/compat/ops_history.v0.pbtxt + 5466 -1
+a2d856c20551861c40662859726c687bc7e8d7ac:tensorflow/core/ops/compat/ops_history.v0.pbtxt 8c972763fe5cc2330d997c016303e510b7d0c707:tensorflow/core/ops/compat/ops_history.v0.pbtxt + 24869 -1
+5e2019571a0c09bd627dd4f0abbf6b08e19a65e5:tensorflow/g3doc/api_docs/python/contrib.graph_editor.md ce43d9b319c3e2d789447dfff465ca4e3cd67a32:tensorflow/g3doc/api_docs/python/contrib.graph_editor.md + 107 0
+8c413daa09318c6ad021eb830650e3c66ee90891:tensorflow/g3doc/api_docs/python/functions_and_classes/shard0/tf.contrib.distributions.Bernoulli.md b10e652bbaff0a1d60256a43bdf7db7a341071ab:tensorflow/g3doc/api_docs/python/functions_and_classes/shard0/tf.contrib.distributions.Bernoulli.md - 316 -2 0
+536e7caf86f3dd70518f6d45c2ab7ed19747c0c1:tensorflow/core/ops/compat/ops_history.v0.pbtxt 9bedadceab3e126684494e6e6a8103ccab9d90c7:tensorflow/core/ops/compat/ops_history.v0.pbtxt + 2937 -1
+fbad3029807ccfd1048dc2fcd0d66c81f1b0b181:bower.BUILD f76c72ad4852bcf7059ffdf8e66ffa1ee526d483:bower.BUILD + 536 -1
+d8c888d23f27a6072fe7e87da95ce8ea51bef3a0:tensorflow/g3doc/api_docs/python/contrib.learn.md 5c8be711f7eacfa2a940158effaa3bf4b060bedb:tensorflow/g3doc/api_docs/python/contrib.learn.md - 2242 -2 0
+f7a0b752131dc145191521730779e096864efc1d:tensorflow/core/ops/compat/ops_history.v0.pbtxt 13ab7ff23f645157db978122baf5f4ca0af25ca8:tensorflow/core/ops/compat/ops_history.v0.pbtxt + 2898 -1
+9ca686593a3e0c69669c3f0d7f75c466d3041904:tensorflow/tensorboard/components/tf-storage/storage.ts 0c70f5b2504f2e0e180d64c64ca871102d1ddd7e:tensorflow/tensorboard/components/tf-storage/storage.ts + 103 -1
+ec490db88a1b624157f24a61dee0bd7d3c2630de:tensorflow/core/public/session.h e28c1dbab3506d536ded7f1b1f0a527d4cad1b14:tensorflow/core/public/session.h + 59 0
+cf3bc09caffe50a538682928aaa716dfc4b08930:tensorflow/g3doc/api_docs/python/functions_and_classes/shard3/tf.contrib.learn.Estimator.md 7f4ab1e341698075fd692d24b7ebe3e32f70e00b:tensorflow/g3doc/api_docs/python/functions_and_classes/shard3/tf.contrib.learn.Estimator.md + 104 -2 0
+31fd4868711f393bec74200231c2936bf3df079a:tensorflow/core/ops/compat/ops_history.v0.pbtxt 8d8baf78b608dac7bccee26ef579e9a36ccd0647:tensorflow/core/ops/compat/ops_history.v0.pbtxt + 17961 -1
+6ea8a70bd776fd1914a3517364a5e7c08f825096:tensorflow/g3doc/api_docs/python/contrib.distributions.md a64d708b858cecf9b847525d2b9f60e06db3ec00:tensorflow/g3doc/api_docs/python/contrib.distributions.md + 5534 -2 0
+8c413daa09318c6ad021eb830650e3c66ee90891:tensorflow/g3doc/api_docs/python/functions_and_classes/shard3/tf.contrib.distributions.Gamma.md b10e652bbaff0a1d60256a43bdf7db7a341071ab:tensorflow/g3doc/api_docs/python/functions_and_classes/shard3/tf.contrib.distributions.Gamma.md - 383 -2 0
+a0d21ec39cc3f18781d2d37798aa328e12f92844:tensorflow/core/ops/compat/ops_history.v0.pbtxt 3ae663ccc5d08976e0f547d5b2ece35067a6673e:tensorflow/core/ops/compat/ops_history.v0.pbtxt + 12682 0
+bd939f92c85b10867d3f4d17e8b2e31f21daedca:tensorflow/core/ops/array_ops.cc adc6a4b1463b5bbfceede319b4dd7985947ffefb:tensorflow/core/ops/array_ops.cc + 176 -1
+208350a6092f9faa473daf8b6eb6a80e9f9518f1:tensorflow/tensorboard/dist/tf-tensorboard.html 1c579361cd1e088dd5e05a394b1561a73e3667ba:tensorflow/tensorboard/dist/tf-tensorboard.html + 1625 -1
+42d705408beb0d7a45798fa22df5684296716a38:tensorflow/core/framework/node_def_util.h 409c68eb2531f450680233c437b219237b0609e2:tensorflow/core/framework/node_def_util.h + 97 -1
+8943617dc9547ea13e4c6906ee070abe49faa13b:tensorflow/core/ops/compat/ops_history.v0.pbtxt 3f19ed561ab01978cfc9dc18b04b3e3b35c2a04f:tensorflow/core/ops/compat/ops_history.v0.pbtxt + 12233 -1
+3daf61b1cd02256aaa031cc34d883f2c0133b3ee:tensorflow/core/ops/compat/ops_history.v0.pbtxt c484f058d858f4162ef8eb2a935ddd688097bf28:tensorflow/core/ops/compat/ops_history.v0.pbtxt + 25201 -1
+b178a08a1ab4a98cd5a95a6bd50ba4c5c5cd5c33:tensorflow/g3doc/api_docs/python/contrib.learn.monitors.md 98698c5f451507157cf9b65d920d2515b0b39c31:tensorflow/g3doc/api_docs/python/contrib.learn.monitors.md + 1015 -2 0
+4a2cfea13d285cbfd5d0c5ae3e6c17fbce8b1127:tensorflow/core/ops/ops.pbtxt 09acc7912d22a23f609778f16b94da89bd3b94d3:tensorflow/core/ops/ops.pbtxt + 8484 -1
+5b5ff3f57264d19538e9d7c0bc862429a557f547:tensorflow/core/ops/compat/ops_history.v0.pbtxt 3f2e192631fe909cc316f4453f9bf5820d3e7580:tensorflow/core/ops/compat/ops_history.v0.pbtxt + 11562 -1
+d0dec7ccd438c29b7806baef849c78b7a95e4467:tensorflow/g3doc/api_docs/python/contrib.learn.md dea93a2a67d604c7236155b274d752b04d925561:tensorflow/g3doc/api_docs/python/contrib.learn.md + 4018 -2 0
+cfcf3d6066a41c61d6cf73b328af5099034cbe86:tensorflow/python/framework/dtypes.py 9f7fc90713cefb2c45467b0b0e487e2003e9001d:tensorflow/python/framework/dtypes.py + 150 -1
+cc7f05f62659c2582f561ea080d01c8a93070f4e:tensorflow/core/ops/ops.pbtxt beea3019aaf19ae635181137b4fda495cd1eb342:tensorflow/core/ops/ops.pbtxt + 5510 -1
+ce9f3044615af06b841407bdfe4aa5e8894ebaa8:tensorflow/core/ops/compat/ops_history.v0.pbtxt dac77d49dbef14ede5310cce6ba70e2abc6d77fd:tensorflow/core/ops/compat/ops_history.v0.pbtxt + 6774 -1
+43b89c901621d8db4a534e32069e5efcb7d0d912:tensorflow/g3doc/api_docs/python/contrib.util.md 55be24524167c1d1879dba64b492c33c82244d1f:tensorflow/g3doc/api_docs/python/contrib.util.md + 86 0
+cf3bc09caffe50a538682928aaa716dfc4b08930:tensorflow/g3doc/api_docs/python/contrib.learn.md 7f4ab1e341698075fd692d24b7ebe3e32f70e00b:tensorflow/g3doc/api_docs/python/contrib.learn.md + 3277 -2 0
+6714c150df0a764b29acf8d23981162dd2f0a9a1:tensorflow/core/ops/compat/ops_history.v0.pbtxt 35eaa24772e69e8dfddd284300851699e12f46ab:tensorflow/core/ops/compat/ops_history.v0.pbtxt + 7333 -1
+495055cb078827606ef9b29a7088629bac8b6a4c:tensorflow/g3doc/api_docs/python/functions_and_classes/tf.contrib.distributions.ContinuousDistribution.md 3ebcb955be90d9c42ad94bd22006f197ad980430:tensorflow/g3doc/api_docs/python/functions_and_classes/tf.contrib.distributions.ContinuousDistribution.md + 94 -2 0
+3f1941853f8703cbf1005c04f76f75bc609fcfc9:tensorflow/g3doc/api_docs/python/contrib.learn.md fdf8f5e4cf2edff07bdac94d68aa257629fff513:tensorflow/g3doc/api_docs/python/contrib.learn.md + 2458 -2 0
+9738a22673d7215b4b37236b96d6da0881b1eddb:tensorflow/contrib/framework/BUILD 428933513509d3c64f23ce33eb88465eca7b5d94:tensorflow/contrib/framework/BUILD + 24 -1
+bfb0abbedfd866b8adcccc776ef95e0a67c89d14:tensorflow/core/ops/compat/ops_history.v0.pbtxt 7a744f67e51733c4c7d13751943a3527d6f5322d:tensorflow/core/ops/compat/ops_history.v0.pbtxt + 7690 -1
+aa7c2472a70a26f4e57508b788eb9791abdbaee1:tensorflow/g3doc/api_docs/python/train.md 39ad4a14d1fa2bdb975d1e4e3de470fd95f79419:tensorflow/g3doc/api_docs/python/train.md + 1206 -2 0
+1bcebcc665e7e9c280be65899002fd3d5a7456a5:tensorflow/core/lib/jpeg/jpeg_mem_unittest.cc 49e337b4f163aa0a570333da7933303096ba3d29:tensorflow/core/lib/jpeg/jpeg_mem_unittest.cc - 85 0
+fa095c5db0ac9cfe2328a19b32ae208e58e3746a:tensorflow/core/kernels/relu_op.cc bf6b536bde7d8060c489b51fedb58968b8cbfd7c:tensorflow/core/kernels/relu_op.cc - 104 -1
+be6c9c0edb5112a42accac0878613f1e189bba45:tensorflow/g3doc/api_docs/python/image.md b65cd92171c06c1e593aa9a92123d16460c01333:tensorflow/g3doc/api_docs/python/image.md + 1237 0
+bb0190f6c26bf11f601102dfe2166a68a7833020:tensorflow/core/ops/compat/ops_history.v0.pbtxt d3aaffbd0a03c17619a5d986b8174030d797ca35:tensorflow/core/ops/compat/ops_history.v0.pbtxt + 18317 -1
+ded14ab7e10349a55ad365df70b25582202e6873:tensorflow/core/ops/compat/ops_history.v0.pbtxt 5a84537852ef9b164bad165c8450bde67d30df05:tensorflow/core/ops/compat/ops_history.v0.pbtxt + 3293 -1
+7bc6f528ec97a1153c5a12f4df6c2edf119d2f8c:skflow/tests/test_nonlinear.py 92f29258496bc8acd49d653f8324a6090c178040:skflow/tests/test_nonlinear.py - 81 -1
+0eab496110d7efe03d9dcac01b2922b591aa5833:tensorflow/contrib/learn/g3doc/api_docs/python/estimators.md 2f190ff993d45bf98aeb0931b90705c8f6fbb18e:tensorflow/g3doc/api_docs/python/contrib.learn.md + 2499 0
+1e0ee048a52cea5cf75347857a4dabc2d29e947b:tensorflow/g3doc/api_docs/python/contrib.distributions.md 1db4fea2d7609d68df3b68c837726e0360c2dc6c:tensorflow/g3doc/api_docs/python/contrib.distributions.md + 811 -2 0
+e3a0d6fb61cbb1dd9864684c20e49ef3fa385bb6:tensorflow/python/BUILD 80a5a3e653f3b10e2680fe2ea9bc511e8801e273:tensorflow/python/BUILD + 1174 -1
+536e7caf86f3dd70518f6d45c2ab7ed19747c0c1:tensorflow/core/ops/compat/ops_history.v0.pbtxt 9bedadceab3e126684494e6e6a8103ccab9d90c7:tensorflow/core/ops/compat/ops_history.v0.pbtxt + 11789 -1
+8943617dc9547ea13e4c6906ee070abe49faa13b:tensorflow/core/ops/compat/ops_history.v0.pbtxt 3f19ed561ab01978cfc9dc18b04b3e3b35c2a04f:tensorflow/core/ops/compat/ops_history.v0.pbtxt + 5628 -1
+5da3cc3643f610de70dc3091cfddbe27fce7498d:tensorflow/g3doc/api_docs/python/io_ops.md 9ace75c7c88f30a488ce022be03b8f6dc1c9c990:tensorflow/g3doc/api_docs/python/io_ops.md + 1573 -2 0
+208350a6092f9faa473daf8b6eb6a80e9f9518f1:tensorflow/core/ops/ops.pbtxt 1c579361cd1e088dd5e05a394b1561a73e3667ba:tensorflow/core/ops/ops.pbtxt + 2416 -1
+733321f6159f55474f4d7822b5a1c174d30e696d:tensorflow/core/ops/compat/ops_history.v0.pbtxt 9d03824d6740be0c043c431566c917ec0cf6cf3f:tensorflow/core/ops/compat/ops_history.v0.pbtxt - 11324 0
+208350a6092f9faa473daf8b6eb6a80e9f9518f1:tensorflow/core/kernels/summary_op.cc 1c579361cd1e088dd5e05a394b1561a73e3667ba:tensorflow/core/kernels/summary_op.cc + 102 -1
+8c413daa09318c6ad021eb830650e3c66ee90891:tensorflow/g3doc/api_docs/python/contrib.distributions.md b10e652bbaff0a1d60256a43bdf7db7a341071ab:tensorflow/g3doc/api_docs/python/contrib.distributions.md + 6034 -2 0
+58c3f7713ca7f9b7081ac087526509fd386b3791:tensorflow/core/kernels/BUILD 7266545fdb124c0b6eae39f7081cd5827072e847:tensorflow/core/kernels/BUILD - 632 -1
+03d9072728aa6fbe9fbd52da6af54a90613571b9:tensorflow/contrib/distributions/BUILD b0e39f2865216ad7da96f4658a9941d31ef3650f:tensorflow/contrib/distributions/BUILD + 73 -1
+3b2309b3c5c762f9366f07bd8d183161163ddef0:tensorflow/tensorboard/dist/tf-tensorboard.html 36fbb89ca566a7296a615be1f2ae4625a13ad3c9:tensorflow/tensorboard/dist/tf-tensorboard.html + 6943 -1
+2c3738db9c4df83adc1aff29f5cb0e9735dd5eac:third_party/eigen3/unsupported/Eigen/CXX11/src/Tensor/TensorBase.h 2d1163582aa689cf0780547a0fb60dacca236b62:third_party/eigen3/unsupported/Eigen/CXX11/src/Tensor/TensorBase.h + 126 -1
+1c069480fc5102474d587678f72fb5762599cd49:tensorflow/core/ops/compat/ops_history.v0.pbtxt 11be20e4948051bdb210e16fd8c36fe54023d8ee:tensorflow/core/ops/compat/ops_history.v0.pbtxt + 9294 -1
+d01dd5c94b908180ea01d80256c49f7208239265:tensorflow/core/ops/ops.pbtxt 0eeeced61ef55b7615690648e7c0cbdb998b54ea:tensorflow/core/ops/ops.pbtxt + 13700 -1
+4355282f7a90713771b36b3a8a32b6647c5166f1:tensorflow/core/ops/ops.pbtxt 5da3cc3643f610de70dc3091cfddbe27fce7498d:tensorflow/core/ops/ops.pbtxt + 9498 -1
+8031e2823cdbedad42dc6ce9f4f7042f7e1c604e:tensorflow/g3doc/api_docs/python/io_ops.md 57b6053185d696a3091f8d5145d93a14ff57a526:tensorflow/g3doc/api_docs/python/io_ops.md + 935 -2 0
+06af3c8bff0da448f9e1d4b23e8278f430a0b250:tensorflow/core/kernels/conv_grad_ops.cc 1b83928b7e69dcc2071aaaee9175eebf4055bb5a:tensorflow/core/kernels/conv_grad_ops.cc - 1449 -1
+4f257a2427ba0414bd7513c9b61fb835870bd3cf:tensorflow/core/ops/compat/ops_history.v0.pbtxt 9bceeaf82a34ace52cc9bc3e1755235174a09ef7:tensorflow/core/ops/compat/ops_history.v0.pbtxt + 6310 -1
+f1bccd320a742c67245ded0cbe5eba971294d769:tensorflow/core/ops/compat/ops_history.v0.pbtxt 4c85a08666796faad743a47b63d350132d5c0c90:tensorflow/core/ops/compat/ops_history.v0.pbtxt + 10992 0
+77a5ee5e64f26a235c4c8583f24f3af10cb1b2a8:tensorflow/core/kernels/BUILD 04ea051de751484988ba686993f9510d4742376c:tensorflow/core/kernels/BUILD + 456 -1
+0cf264b75605ff45cefddd9adeb17de6967e3e74:tensorflow/core/ops/image_ops.cc 10e62dc1e008d08cd877a0f891d486daba8f6288:tensorflow/core/ops/image_ops.cc + 247 -1

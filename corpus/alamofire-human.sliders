@@ -1,0 +1,30 @@
+772af531b0391df404e1b524dbb61160b15ae0cb:Source/MultipartFormData.swift 14f74c3ad962102c7a2b6ce2ec2ebb3b547931e7:Source/MultipartFormData.swift + 445 0
+d2b85f4381e466d1106aa9d3085a9e77f2acb84d:Tests/AuthenticationTests.swift c2a282cc80cfd556159062aae3d2cd76b90e2db3:Tests/AuthenticationTests.swift + 123 0
+fd74161fdcaf3ca2bb9c6750f68617d6b592afcb:Alamofire.xcworkspace/contents.xcworkspacedata 559ef09b027108b2fead76badfa0890564b99db1:Alamofire.xcworkspace/contents.xcworkspacedata + 5 -1
+fd4648a4eef8791dad11dbc260ec39ec5bfd8e87:Source/MultipartFormData.swift 5a572db14da9d8c07c4b9aa8a3893c8bcc78aa61:Source/MultipartFormData.swift + 138 -1
+fe3a29941cd1f8d17a81a0843387743238d24d8f:Example/Images.xcassets/AppIcon.appiconset/Contents.json 88127becca2e492c60d83fe022cedefb8464ef2c:Example/Images.xcassets/AppIcon.appiconset/Contents.json + 10 -2
+2f39b8634ab85cd6b3a55bbcfdec8cbb6463a6ee:Source/Alamofire.swift 950eda9688c0e5538dcc4c97c2cdd45946a33f66:Source/Alamofire.swift + 1143 -1
+1f751881b65fd6587dbb979aa0a733dc64a55e0a:CHANGELOG.md f73b0f829463df2293044659f48e7a817cb86aa1:CHANGELOG.md + 12 -2 0
+92bbee0edbd07218cdb75a9610659f7682de74c3:Tests/RequestTests.swift c3d1aa39223a1843d25b3cd39acf11f2eda741f9:Tests/RequestTests.swift + 56 0
+5a572db14da9d8c07c4b9aa8a3893c8bcc78aa61:Source/MultipartFormData.swift 7de9fe9e96c8701dbcb53af1420a4a57eb473d8d:Source/MultipartFormData.swift + 162 -5
+f2a8a1c84f31b818ba441070853d0d162ea889c3:Source/Alamofire.swift 5b94f2a2f1a368a63db2e692b9004a236560c0f3:Source/Alamofire.swift + 154 -2 0
+7d8484d9e581ea95b46d530624cec6db65a70b02:Source/NetworkReachabilityManager.swift 57f387b58dbe92c99cc59bf14ec45fd1b4a4c19a:Source/NetworkReachabilityManager.swift - 27 -1
+2ff5749ffc0425f05a1411b5b6fd2c25241b5b14:Source/Alamofire.swift af1e24c3835edfe65626ab27422f3a6186ad526f:Source/Alamofire.swift - 1371 -3
+fe3a29941cd1f8d17a81a0843387743238d24d8f:Example/Images.xcassets/AppIcon.appiconset/Contents.json 88127becca2e492c60d83fe022cedefb8464ef2c:Example/Images.xcassets/AppIcon.appiconset/Contents.json + 62 0
+7b2379165def9c3eb7c21fc0561ba02e48d0c2d6:Source/Alamofire.swift d337018a5bf1e8a2d720dbe22846647e3f13e8a4:Source/Alamofire.swift - 1385 -3
+bc6a58d7695740d1de8a66535997b8a5db79c70c:Tests/DownloadTests.swift da237ff228c9c4c4e80643aef96efb8e5f9dfcff:Tests/DownloadTests.swift + 81 0
+b69959b8ad129057a9f4f313a0ccc7772902ee65:Tests/RequestTests.swift 2401f6c92b99df28a250026409a061936b44ab4b:Tests/RequestTests.swift + 253 -2 0
+1f66a59266cb05c277201b59d280bab96e87bb2e:Source/Alamofire.swift 930a91d52eb8bb15446f0d41d7103e81d2311ed1:Source/Alamofire.swift - 89 -3 -1
+b5cce2c5cdd22bd5d58502f4dbcb23dbaa7b62d6:Alamofire.xcworkspace/contents.xcworkspacedata 52dae79cf6c8279d6ae7c65ca473475087b32553:Alamofire.xcworkspace/contents.xcworkspacedata - 5 -1
+5f2c29751b35069ec1452046e24dfba506cbc603:Source/ResponseSerialization.swift d58446edf8d1b204de40e900f11214dc0525d567:Source/ResponseSerialization.swift + 71 -3
+bc6a58d7695740d1de8a66535997b8a5db79c70c:Tests/UploadTests.swift da237ff228c9c4c4e80643aef96efb8e5f9dfcff:Tests/UploadTests.swift + 47 0
+ae1e1148ba41f1b20b922f3a49edd1e7bb01a93c:Source/Alamofire.swift 0d33dbf756fb2b41a270aa82474e1e7dafc8040f:Source/Alamofire.swift + 124 -2 0
+fe3a29941cd1f8d17a81a0843387743238d24d8f:Example/Images.xcassets/AppIcon.appiconset/Contents.json 88127becca2e492c60d83fe022cedefb8464ef2c:Example/Images.xcassets/AppIcon.appiconset/Contents.json + 29 -1
+be764884cf095e1abd0a6691f8b6c0329bd996b0:Source/Alamofire.swift dafd818a9e50d9f7a53b4a715e770b4e7655a477:Source/Alamofire.swift + 298 -1
+fe3a29941cd1f8d17a81a0843387743238d24d8f:Example/Images.xcassets/AppIcon.appiconset/Contents.json 88127becca2e492c60d83fe022cedefb8464ef2c:Example/Images.xcassets/AppIcon.appiconset/Contents.json + 20 -2
+57d14bd78a0edd45858dd4ab1dcef51d2ba67324:README.md 8807fb86bf2e6f8ba979c3ab23bc3903eeab3c15:README.md + 694 -2 0
+8b6484a5bfae6f96a21c600aa44e8379c275f8a1:Source/Alamofire.swift 5be585cf23f6c12224ac010820a1a8dd73e907e6:Source/Alamofire.swift + 1165 -1
+2dd2f6f6186b98f27b75479b15c109ebd4dd8b52:Tests/ResponseTests.swift 445a4ec908aa2b44b13602b2b71e99378084293f:Tests/ResponseTests.swift + 47 0
+2ff5749ffc0425f05a1411b5b6fd2c25241b5b14:Source/Alamofire.swift af1e24c3835edfe65626ab27422f3a6186ad526f:Source/Alamofire.swift - 1458 -3
+fd2eeb7f235c8ce7cc24cb322e94c01ed4291825:README.md 02625150e99a3517d7304d6dff037c4adfa77155:README.md + 646 -1
+5f2c29751b35069ec1452046e24dfba506cbc603:Source/Validation.swift d58446edf8d1b204de40e900f11214dc0525d567:Source/Validation.swift + 28 -1
