@@ -72,7 +72,7 @@ def main(args):
                 'Error parsing slider %s: %s\n' % (slidername, e,)
                 )
         else:
-            slidername.write(sys.stdout, slider.find_best_shift(scorer))
+            slidername.write(sys.stdout, [slider.find_best_shift(scorer)])
 
 
 if __name__ == '__main__':
