@@ -1,31 +1,166 @@
-#! /bin/sh
+#! /usr/bin/env python3
 
-printf "| %-20s " "repository"
-for algo in "$@"
-do
-    printf "| %s " $algo
-done
-printf "|\n"
+"""Summarize the results of various heuristics.
 
-printf "| -------------------- "
-for algo in "$@"
-do
-    printf "| %s " "$(for i in $(seq ${#algo}); do printf "%s" "-"; done)"
-done
-printf "|\n"
+usage: summarize ALGO...
 
-for repo in $(./repos)
-do
-    printf "| %-20s " $repo
-    for algo in "$@"
-    do
-	if test -f corpus/$repo-$algo-incorrect.out
-	then
-            printf "| %${#algo}d " $(grep -v '^#' <corpus/$repo-$algo-incorrect.out | wc -l)
-	else
-            printf "| %${#algo}s " "n/a"
-	fi
-    done
-    printf "|\n"
-done
+where ALGO is the name of an algorithm to include in the comparison
+(which really just tells which slider files to read).
+
+"""
+
+import sys
+import os
+import subprocess
+import argparse
+
+MAIN_DIR = os.path.dirname(sys.argv[0])
+sys.path.insert(0, MAIN_DIR)
+
+import diff_heuristics
+from diff_heuristics import SliderName
+from diff_heuristics import iter_file_diffs
+from diff_heuristics import compute_diff
+
+
+def count_corpus(repo):
+    return len(list(open('corpus/%s-human.sliders' % (repo,))))
+
+
+def count_incorrect(repo, algo):
+    filename = 'corpus/%s-%s.sliders' % (repo, algo,)
+    if not os.path.isfile(filename):
+        sys.stderr.write('Warning: file %r does not exist!\n' % (filename,))
+        return None
+
+    cmd = [
+        './compare-shifts',
+        '--repo', repo,
+        '--correct=h', '--any-wrong', '--no-diff',
+        'h=corpus/%s-human.sliders' % (repo,),
+        'x=corpus/%s-%s.sliders' % (repo, algo,),
+        ]
+    return len(
+        subprocess.check_output(
+            cmd, stderr=open('/dev/null', 'w'),
+            ).splitlines()
+        )
+
+
+numbers_column_width = 14
+
+
+def numbers(value, total):
+    if value is None or total is None or total == 0:
+        return '%*s' % (numbers_column_width, 'n/a')
+    else:
+        percentage = '(%.1f%%)' % (100.0 * value / total,)
+        return '%5d %8s' % (value, percentage,)
+
+
+def summarize(f, repos, algos, training_set=None):
+    column_widths = [
+        max(numbers_column_width, len(algo))
+        for algo in algos
+        ]
+    corpus_sum = 0
+    sums = [0] * len(algos)
+    corpus_training_set_sum = 0
+    training_set_sums = [0] * len(algos)
+    corpus_other_sum = 0
+    other_sums = [0] * len(algos)
+
+    f.write('| %-21s | %s ' % ('repository', 'count'))
+    for (i, algo) in enumerate(algos):
+        f.write('| %*s ' % (column_widths[i], algo,))
+    f.write('|\n')
+
+    f.write('| --------------------- | ----- ')
+    for (i, algo) in enumerate(algos):
+        f.write('| %s ' % ('-' * column_widths[i],))
+    f.write('|\n')
+
+    for repo in repos:
+        in_training_set = training_set and repo in training_set
+        ntot = count_corpus(repo)
+        corpus_sum += ntot
+        if in_training_set:
+            corpus_training_set_sum += ntot
+        else:
+            corpus_other_sum += ntot
+        f.write('| %-21s | %5d ' % (repo, ntot,))
+        for (i, algo) in enumerate(algos):
+            n = count_incorrect(repo, algo)
+            f.write('| %*s ' % (column_widths[i], numbers(n, ntot),))
+            if n is not None:
+                if sums[i] is not None:
+                    sums[i] += n
+                    if in_training_set:
+                        training_set_sums[i] += n
+                    else:
+                        other_sums[i] += n
+            else:
+                sums[i] = None
+                if in_training_set:
+                    training_set_sums[i] = None
+                else:
+                    other_sums[i] = None
+        f.write('|')
+        if in_training_set:
+            f.write(' *')
+        f.write('\n')
+
+    f.write('| --------------------- | ----- ')
+    for (i, algo) in enumerate(algos):
+        f.write('| %s ' % ('-' * column_widths[i],))
+    f.write('|\n')
+
+    f.write('| %-21s | %5d ' % ('totals', corpus_sum,))
+    for (i, algo) in enumerate(algos):
+        n = sums[i]
+        f.write('| %*s ' % (column_widths[i], numbers(n, corpus_sum),))
+    f.write('|\n')
+
+    if training_set:
+        f.write('| %-21s | %5d ' % ('totals (training set)', corpus_training_set_sum,))
+        for (i, algo) in enumerate(algos):
+            n = training_set_sums[i]
+            f.write('| %*s ' % (column_widths[i], numbers(n, corpus_training_set_sum),))
+        f.write('|\n')
+
+        f.write('| %-21s | %5d ' % ('totals (test set)', corpus_other_sum,))
+        for (i, algo) in enumerate(algos):
+            n = other_sums[i]
+            f.write('| %*s ' % (column_widths[i], numbers(n, corpus_other_sum),))
+        f.write('|\n')
+        f.write('\n')
+        f.write('  * - repo was part of training set\n')
+
+
+def main(args):
+    repos = [
+        line.strip()
+        for line in subprocess.check_output(
+                ['./repos'],
+                universal_newlines=True,
+                ).splitlines()
+        ]
+
+    algos = args
+
+    # corpus/training-set can be a file listing the repos that were
+    # used when training the heuristic:
+    if os.path.isfile('corpus/training-set'):
+        training_set = [
+            line.rstrip()
+            for line in open('corpus/training-set')
+            ]
+    else:
+        training_set = None
+
+    summarize(sys.stdout, repos, algos, training_set=training_set)
+
+if __name__ == '__main__':
+   main(sys.argv[1:])
+
 
