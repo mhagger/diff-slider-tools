@@ -52,8 +52,12 @@ def main(args):
             'and some shifts disagree with each other'
             )
         )
-    parser.add_argument('--verbose', '-v', action='store_true')
+    parser.add_argument(
+        '--no-diff', dest='diff', action='store_false',
+        help='suppress output of the diff',
+        )
     parser.add_argument('--correct', type=str)
+    parser.add_argument('--verbose', '-v', action='store_true')
     parser.add_argument('columns', nargs='+')
 
     options = parser.parse_args(args)
@@ -112,10 +116,11 @@ def main(args):
             slider = slidername.compute_slider('corpus/%s.git' % (options.repo,))
 
             slidername.write(sys.stdout)
-            print('# %s' % ('v' * 60,))
-            slider.show_comparison(columns, line_prefix='# ')
-            print('# %s' % ('^' * 60,))
-            print('#')
+            if options.diff:
+                print('# %s' % ('v' * 60,))
+                slider.show_comparison(columns, line_prefix='# ')
+                print('# %s' % ('^' * 60,))
+                print('#')
 
             differences += 1
 
