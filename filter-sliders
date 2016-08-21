@@ -44,6 +44,13 @@ def main(args):
         help='Do not include any shifts in the output',
         )
     parser.add_argument(
+        '--only-rated', action='append', default=[],
+        help=(
+            'Include only sliders with ratings in the specified file. '
+            'This option can be provided multiple times.'
+            ),
+        )
+    parser.add_argument(
         '--omit-rated', action='append', default=[],
         help=(
             'Omit any sliders with ratings in the specified file. '
@@ -56,6 +63,13 @@ def main(args):
 
     if options.verbose:
         diff_heuristics.verbose = True
+
+    only = set()
+    for filename in options.only_rated:
+        with open(filename) as f:
+            for (slider, shifts) in SliderName.read(f):
+                if shifts:
+                    only.add(slider)
 
     omit = set()
     for filename in options.omit_rated:
@@ -70,7 +84,9 @@ def main(args):
                 continue
             if options.unrated and shifts:
                 continue
-            if slider in omit:
+            if options.only_rated and slider not in only:
+                continue
+            if options.omit_rated and slider in omit:
                 continue
 
             if options.omit_shifts:
