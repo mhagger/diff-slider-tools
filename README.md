@@ -163,9 +163,10 @@ More and more diverse training data means that the heuristic can be trained bett
 3.  Create a file that displays the unrated repositories in human-readable form.
 
         ./filter-sliders --omit-rated=corpus/$repo-human.sliders <corpus/$repo.sliders |
+            shuf -n 1000 |
             ./compare-shifts --repo=$repo --all g=- >corpus/$repo-human-input.sliders
 
-    Feel free to add something like `head -n 1000` in the middle of the pipeline if you want to limit the output.
+    This command uses `shuf` to choose 1000 of the sliders at random. Feel free to adjust that part of the pipeline.
 
 4.  Hand-rate some sliders as described in step 7 above.
 
@@ -204,11 +205,16 @@ More and more diverse training data means that the heuristic can be trained bett
 
 4.  Perhaps add more human ratings for sliders that are still unrated but one or more versions disagreed with each other:
 
-        ./compare-shifts --repo=$repo --controversial \
+        ./compare-shifts --repo=$repo --controversial --no-diff \
                 h=corpus/$repo-human.sliders \
                 g=corpus/$repo.sliders \
-                x=corpus/$repo-experimental.sliders \
-                >corpus/$repo-controversial.out
+                x=corpus/$repo-experimental.sliders |
+            shuf -n 1000 |
+            ./compare-shifts --repo=$repo \
+                    h=corpus/$repo-human.sliders \
+                    g=corpus/$repo.sliders \
+                    x=corpus/$repo-experimental.sliders \
+                    >corpus/$repo-human-input.out
 
     See *Adding more human ratings for a repository that is already in the corpus* for how to continue.
 
