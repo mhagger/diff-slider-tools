@@ -79,7 +79,7 @@ Suppose you have one or more versions of `git diff` that you would like to test 
 The output of `./run-comparison` is a table like the following:
 
 | repository            | count |            290 |     compaction |     indent-new |
-| --------------------- | ----- | -------------- | -------------- | -------------- |
+| --------------------- | ----: | -------------: | -------------: | -------------: |
 | afnetworking          |   109 |    89  (81.7%) |    37  (33.9%) |     2   (1.8%) |
 | alamofire             |    30 |    18  (60.0%) |    14  (46.7%) |     0   (0.0%) |
 | angular               |   184 |   127  (69.0%) |    39  (21.2%) |     5   (2.7%) |

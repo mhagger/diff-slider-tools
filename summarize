@@ -75,9 +75,9 @@ def summarize(f, repos, algos, training_set=None):
         f.write('| %*s ' % (column_widths[i], algo,))
     f.write('|\n')
 
-    f.write('| --------------------- | ----- ')
+    f.write('| --------------------- | ----: ')
     for (i, algo) in enumerate(algos):
-        f.write('| %s ' % ('-' * column_widths[i],))
+        f.write('| %s: ' % ('-' * (column_widths[i] - 1),))
     f.write('|\n')
 
     for repo in repos:
