@@ -1026,14 +1026,14 @@ class FileDiff:
             self.old_filename = self.get_filename(FileDiff.OLD_FILE_RE, lines[i])
             if shlex.quote(self.old_filename) != self.old_filename:
                 raise ParsingError(
-                    'filename %r is not safe for shell commands' % (self.old_filename,)
+                    'filename %r ignored: not safe for shell commands' % (self.old_filename,)
                     )
             i += 1
 
             self.new_filename = self.get_filename(FileDiff.NEW_FILE_RE, lines[i])
             if shlex.quote(self.new_filename) != self.new_filename:
                 raise ParsingError(
-                    'filename %r is not safe for shell commands' % (self.new_filename,)
+                    'filename %r ignored: not safe for shell commands' % (self.new_filename,)
                     )
             i += 1
 
