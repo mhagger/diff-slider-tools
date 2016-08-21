@@ -17,6 +17,7 @@ get_repo() {
 get_repos() {
     for repo in "$@"
     do
+	echo >&2 "Updating repository $repo..."
 	get_repo $repo
     done
 }
