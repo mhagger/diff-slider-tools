@@ -1088,7 +1088,7 @@ def compute_diff(repo, old, new):
 
     cmd = git + [
         '-C', repo,
-        'diff', '-U10',
+        'diff', '-U20',
         old, new,
         '--',
         ]
