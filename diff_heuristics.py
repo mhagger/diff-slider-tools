@@ -403,18 +403,18 @@ class SplitScore3:
 class SplitScorer3(BaseSplitScorer):
     # A list [(parameter_name, default_value), ...]
     PARAMETERS = [
-        ('start_of_hunk_bonus', 9),
+        ('start_of_hunk_bonus', -1),
         ('end_of_hunk_bonus', -21),
 
         ('total_blank_weight', 30),
         ('post_blank_weight', -6),
 
-        ('relative_indent_bonus', -6),
-        ('relative_indent_with_blank_bonus', -11),
-        ('relative_outdent_bonus', -29),
-        ('relative_outdent_with_blank_bonus', -18),
+        ('relative_indent_bonus', 4),
+        ('relative_indent_with_blank_bonus', -10),
+        ('relative_outdent_bonus', -24),
+        ('relative_outdent_with_blank_bonus', -17),
         ('relative_dedent_bonus', -23),
-        ('relative_dedent_with_blank_bonus', -16),
+        ('relative_dedent_with_blank_bonus', -17),
         ]
 
     def evaluate(self, m):
