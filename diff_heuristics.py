@@ -785,13 +785,13 @@ class Slider:
                 continue
 
             if i in self.shift_range:
-                score = '%5s' % (self.get_score_for_split(scorer, i),)
+                score = str(self.get_score_for_split(scorer, i))
             elif i - len(self.change) in self.shift_range:
-                score = '%5s' % (self.get_score_for_split(scorer, i),)
+                score = str(self.get_score_for_split(scorer, i))
             else:
-                score = '     '
+                score = ''
 
-            print('    %s%s %s %s >%s' % (
+            print('         %s%s %8s %s >%s' % (
                 self.prefix_for(self.shift_range[0], i),
                 self.prefix_for(self.shift_range[-1], i),
                 score,
@@ -803,8 +803,8 @@ class Slider:
                 i == len(self.change) + len(self.post_context)
                 and i - len(self.change) in self.shift_range
                 ):
-            score = '%5d' % (self.get_score_for_split(scorer, i),)
-            print('    %s%s %s %s >%s' % (
+            score = str(self.get_score_for_split(scorer, i))
+            print('         %s%s %8s %s >%s' % (
                 ' ', ' ',
                 score,
                 ' ',
