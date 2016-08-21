@@ -1,0 +1,50 @@
+#! /usr/bin/env python3
+
+"""Display the specified SplitScorer."""
+
+import sys
+import os
+import argparse
+
+sys.path.insert(0, os.path.dirname(sys.argv[0]))
+
+import diff_heuristics
+from diff_heuristics import DefaultSplitScorer as SplitScorer
+
+
+def main(args):
+    parser = argparse.ArgumentParser(
+        description=__doc__,
+        )
+    parser.add_argument(
+        '--style', choices=['repr', 'options', 'string'], default='repr',
+        help=(
+            'Select the format for the output. Choices are '
+            '"repr" (output the scorer\'s Python representation), '
+            '"options" (output the command-line options needed to select '
+            'this scorer, one per line), or '
+            '"string" (output as a string suitable to include in filenames). '
+            'The default is "repr".'
+            ),
+        )
+    parser.add_argument('--verbose', '-v', action='store_true')
+    SplitScorer.add_arguments(parser)
+
+    options = parser.parse_args(args)
+
+    if options.verbose:
+        diff_heuristics.verbose = True
+
+    scorer = SplitScorer.from_options(options)
+
+    if options.style == 'repr':
+        print(repr(scorer))
+    elif options.style == 'options':
+        for option in scorer.as_command_line_options():
+            print(option)
+    elif options.style == 'string':
+        print(scorer.as_filename_string())
+
+
+if __name__ == '__main__':
+    main(sys.argv[1:])

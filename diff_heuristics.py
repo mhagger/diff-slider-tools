@@ -174,6 +174,22 @@ class BaseSplitScorer:
             for (name,value) in self.get_arguments()
             )
 
+    def as_command_line_options(self):
+        """Return the command-line options needed to select this scorer."""
+
+        return [
+            '--%s=%d' % (parameter.replace('_', '-'), value)
+            for (parameter, value) in self.get_arguments()
+            ]
+
+    def as_filename_string(self):
+        """Return a string representation that could be inserted in a filename."""
+
+        return '_'.join(
+            '%d' % (value,)
+            for (parameter, value) in self.get_arguments()
+            )
+
     def __repr__(self):
         return '%s(%s)' % (
             self.__class__.__name__,
