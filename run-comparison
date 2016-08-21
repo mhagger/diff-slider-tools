@@ -1,0 +1,119 @@
+#! /bin/sh
+
+# Run a full comparison of multiple algorithms from beginning to end.
+
+# Following are the "algorithms", basically, invocations of "git diff".
+#
+# usage: $algo repo old new
+
+GIT_OPTS="-c diff.algorithm=myers"
+CONTEXT="-U20"
+
+git_290() {
+    git.v2.9.0 -C corpus/$1.git $GIT_OPTS diff $CONTEXT "$2" "$3" --
+}
+
+git_290_compaction() {
+    git.v2.9.0 -C corpus/$1.git $GIT_OPTS diff --compaction-heuristic $CONTEXT "$2" "$3" --
+}
+
+git_compaction_fixed() {
+    git.compaction-fixed -C corpus/$1.git $GIT_OPTS diff --compaction-heuristic $CONTEXT "$2" "$3" --
+}
+
+git_indent_old() {
+    git.indent-old -C corpus/$1.git $GIT_OPTS diff --indent-heuristic $CONTEXT "$2" "$3" --
+}
+
+git_indent_new_split() {
+    git.indent-new-split -C corpus/$1.git $GIT_OPTS diff --indent-heuristic $CONTEXT "$2" "$3" --
+}
+
+git_indent_new() {
+    git.indent-new -C corpus/$1.git $GIT_OPTS diff --indent-heuristic $CONTEXT "$2" "$3" --
+}
+
+# Generate all commit diffs for the HEAD branch of a repository.
+# Output is pairs of commits in the format
+#
+#     $old_sha..$new_sha
+#
+# usage: head_diffs repo
+head_diffs() {
+    local repo=$1
+
+    git -C corpus/$repo.git log --min-parents=1 --max-parents=1 --format='%P..%H' HEAD
+}
+
+# Generate all commit pairs for a repository that contain sliders that
+# have been rated. Output is pairs of commits in the format
+#
+#     $old_sha..$new_sha
+#
+# usage: rated_diffs repo
+rated_diffs() {
+    cat corpus/$repo-human.sliders |
+	while read old new prefix line_number shifts
+	do
+	    echo "${old%%:*}..${new%%:*}"
+	done |
+	sort |
+	uniq
+}
+
+# Process a single repository.
+#
+# usage: compute_shifts repo algo_function
+compute_shifts() {
+    local repo=$1
+    local algo_function=$2
+
+    while read old new prefix line_number shifts
+    do
+	$algo_function $repo "$old" "$new" |
+            ./read-shift "$old" "$new" "$prefix" "$line_number"
+    done
+}
+
+#compute_all_diffs=true
+compute_all_diffs=false
+
+#repos="alamofire couchdb lighttable neural-style test-more xmonad"
+repos="$(./repos)"
+
+if test $# != 0
+then
+    algos="$*"
+else
+    algos="290 290-compaction compaction-fixed indent-old indent-new-split indent-new"
+fi
+
+./get-corpus
+
+for repo in $repos
+do
+    echo >&2 "Processing $repo..."
+    if $compute_all_diffs
+    then
+	sliders=corpus/$repo.sliders
+	head_diffs |
+            ./enumerate-sliders --repo=$repo >$sliders
+    else
+	sliders=corpus/$repo-rated.sliders
+	rated_diffs |
+            ./enumerate-sliders --repo=$repo |
+	    ./filter-sliders --only-rated=corpus/$repo-human.sliders >$sliders
+    fi
+
+    for algo in $algos
+    do
+	algo_function=git_$(echo $algo | tr '-' '_')
+	cat $sliders |
+	    compute_shifts $repo $algo_function \
+			   >corpus/$repo-$algo.sliders \
+			   2>corpus/$repo-$algo.err &
+    done
+    wait
+done
+
+./summarize $algos
