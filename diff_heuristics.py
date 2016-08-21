@@ -377,16 +377,16 @@ class SplitScorer2(BaseSplitScorer):
 
 
 class SplitScore3:
-    def __init__(self, scorer, effective_indent, bonus):
+    def __init__(self, scorer, effective_indent, penalty):
         self.scorer = scorer
         self.effective_indent = effective_indent
-        self.bonus = bonus
+        self.penalty = penalty
 
     def __add__(self, other):
         return SplitScore3(
             self.scorer,
             self.effective_indent + other.effective_indent,
-            self.bonus + other.bonus
+            self.penalty + other.penalty
             )
 
     def __le__(self, other):
@@ -394,41 +394,41 @@ class SplitScore3:
             (self.effective_indent > other.effective_indent)
             - (self.effective_indent < other.effective_indent)
             )
-        return 60 * cmp_indents - self.bonus + other.bonus <= 0
+        return 60 * cmp_indents + (self.penalty - other.penalty) <= 0
 
     def __str__(self):
-        return '(%d,%d)' % (self.effective_indent, self.bonus)
+        return '(%d,%d)' % (self.effective_indent, self.penalty)
 
 
 class SplitScorer3(BaseSplitScorer):
     # A list [(parameter_name, default_value), ...]
     PARAMETERS = [
-        ('start_of_hunk_bonus', -1),
-        ('end_of_hunk_bonus', -21),
+        ('start_of_hunk_penalty', 1),
+        ('end_of_hunk_penalty', 21),
 
-        ('total_blank_weight', 30),
-        ('post_blank_weight', -6),
+        ('total_blank_weight', -30),
+        ('post_blank_weight', 6),
 
-        ('relative_indent_bonus', 4),
-        ('relative_indent_with_blank_bonus', -10),
-        ('relative_outdent_bonus', -24),
-        ('relative_outdent_with_blank_bonus', -17),
-        ('relative_dedent_bonus', -23),
-        ('relative_dedent_with_blank_bonus', -17),
+        ('relative_indent_penalty', -4),
+        ('relative_indent_with_blank_penalty', 10),
+        ('relative_outdent_penalty', 24),
+        ('relative_outdent_with_blank_penalty', 17),
+        ('relative_dedent_penalty', 23),
+        ('relative_dedent_with_blank_penalty', 17),
         ]
 
     def evaluate(self, m):
         """Evaluate the score for a split with the specified measurements."""
 
-        # A place to accumulate bonus factors (positive makes this
-        # index more favored):
-        bonus = 0
+        # A place to accumulate penalty factors (positive makes this
+        # index less favored):
+        penalty = 0
 
         if m.pre_indent is None and m.pre_blank == 0:
-            bonus += self.start_of_hunk_bonus
+            penalty += self.start_of_hunk_penalty
 
         if m.end_of_hunk:
-            bonus += self.end_of_hunk_bonus
+            penalty += self.end_of_hunk_penalty
 
         # Set post_blank to the number of blank lines after the split,
         # including the line itself:
@@ -439,8 +439,8 @@ class SplitScorer3(BaseSplitScorer):
 
         total_blank = m.pre_blank + post_blank
 
-        # Bonus based on the location of blank lines:
-        bonus += (
+        # Penalty based on the location of blank lines:
+        penalty += (
             self.total_blank_weight * total_blank
             + self.post_blank_weight * post_blank
             )
@@ -468,9 +468,9 @@ class SplitScorer3(BaseSplitScorer):
             # is preferable to keep these lines together, so we
             # score it based on the larger indent:
             if is_blank:
-                bonus += self.relative_indent_with_blank_bonus
+                penalty += self.relative_indent_with_blank_penalty
             else:
-                bonus += self.relative_indent_bonus
+                penalty += self.relative_indent_penalty
 
         elif indent == m.pre_indent:
             # No adjustments needed.
@@ -485,20 +485,20 @@ class SplitScorer3(BaseSplitScorer):
                 # That was probably the end of a block. Score
                 # based on the line's own indent:
                 if is_blank:
-                    bonus += self.relative_dedent_with_blank_bonus
+                    penalty += self.relative_dedent_with_blank_penalty
                 else:
-                    bonus += self.relative_dedent_bonus
+                    penalty += self.relative_dedent_penalty
             else:
                 # The following line is indented more. So it is
                 # likely that this line is the start of a block.
                 # It's a pretty good place to split, so score it
                 # based on its own indent:
                 if is_blank:
-                    bonus += self.relative_outdent_with_blank_bonus
+                    penalty += self.relative_outdent_with_blank_penalty
                 else:
-                    bonus += self.relative_outdent_bonus
+                    penalty += self.relative_outdent_penalty
 
-        return SplitScore3(self, effective_indent, bonus)
+        return SplitScore3(self, effective_indent, penalty)
 
 
 DefaultSplitScorer = SplitScorer3
