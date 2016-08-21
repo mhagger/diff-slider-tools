@@ -12,7 +12,7 @@ analyze() {
     cat corpus/$repo.sliders |
         while read old new prefix line_number shifts
         do
-            $GIT_EXPERIMENTAL -C corpus/$repo diff $GIT_EXPERIMENTAL_OPTS -U10 "$old" "$new" -- |
+            $GIT_EXPERIMENTAL -C corpus/$repo.git diff $GIT_EXPERIMENTAL_OPTS -U10 "$old" "$new" -- |
                 ./read-shift "$old" "$new" "$prefix" $line_number
         done >corpus/$repo-compaction.sliders
 
