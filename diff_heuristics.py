@@ -406,8 +406,8 @@ class SplitScorer3(BaseSplitScorer):
         ('start_of_hunk_bonus', 9),
         ('end_of_hunk_bonus', -21),
 
-        ('total_blank_weight', 24),
-        ('pre_blank_weight', 6),
+        ('total_blank_weight', 30),
+        ('post_blank_weight', -6),
 
         ('relative_indent_bonus', -6),
         ('relative_indent_with_blank_bonus', -11),
@@ -430,14 +430,19 @@ class SplitScorer3(BaseSplitScorer):
         if m.end_of_hunk:
             bonus += self.end_of_hunk_bonus
 
-        total_blank = m.pre_blank
+        # Set post_blank to the number of blank lines after the split,
+        # including the line itself:
         if m.indent is None:
-            total_blank += 1 + m.post_blank
+            post_blank = 1 + m.post_blank
+        else:
+            post_blank = 0
 
-        # Bonuses based on the location of blank lines:
+        total_blank = m.pre_blank + post_blank
+
+        # Bonus based on the location of blank lines:
         bonus += (
             self.total_blank_weight * total_blank
-            + self.pre_blank_weight * m.pre_blank
+            + self.post_blank_weight * post_blank
             )
 
         if m.indent is not None:
@@ -445,7 +450,7 @@ class SplitScorer3(BaseSplitScorer):
         else:
             indent = m.post_indent
 
-        is_blank = int(bool(total_blank))
+        is_blank = int(bool(m.pre_blank + post_blank))
 
         if indent is None:
             effective_indent = -1
