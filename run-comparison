@@ -52,6 +52,8 @@ head_diffs() {
 #
 # usage: rated_diffs repo
 rated_diffs() {
+    local repo=$1
+
     cat corpus/$repo-human.sliders |
 	while read old new prefix line_number shifts
 	do
@@ -96,11 +98,11 @@ do
     if $compute_all_diffs
     then
 	sliders=corpus/$repo.sliders
-	head_diffs |
+	head_diffs $repo |
             ./enumerate-sliders --repo=$repo >$sliders
     else
 	sliders=corpus/$repo-rated.sliders
-	rated_diffs |
+	rated_diffs $repo |
             ./enumerate-sliders --repo=$repo |
 	    ./filter-sliders --only-rated=corpus/$repo-human.sliders >$sliders
     fi
